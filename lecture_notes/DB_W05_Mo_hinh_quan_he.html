@@ -1,0 +1,258 @@
+<!doctype html><html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light"><title>Database W5 · Mô hình quan hệ</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&amp;family=Space+Grotesk:wght@400;500;600;700&amp;display=swap" rel="stylesheet"><style>
+:root{--ink:#253340;--sub:#435263;--muted:#718194;--line:#dfe5eb;--accent:#315d7d;--soft:#f6f8fa;--blue:#eef4f9}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{max-width:1032px;margin:0 auto;padding:34px 16px 80px;background:#fff;color:var(--ink);font:400 16px/1.68 'Space Grotesk',Arial,Helvetica,sans-serif}
+main{max-width:1000px;margin:0 auto}
+h1,h2,h3,h4,p{margin-top:0}
+h1{font-size:30px;line-height:1.3;letter-spacing:-.55px;margin:8px 0 0}
+h2{font-size:24px;line-height:1.35;letter-spacing:-.28px;margin:0 0 13px}
+h3{font-size:18px;line-height:1.5;margin:22px 0 9px}
+h4{font-size:17px;line-height:1.45;margin:17px 0 7px}
+p,li{font-size:16px;line-height:1.68;color:var(--sub)}
+p{margin:0 0 13px}ul,ol{margin:8px 0 15px;padding-left:25px}li{margin:0 0 6px}
+strong{color:#2e4558}a{color:var(--accent)}a:hover{text-decoration-thickness:2px}
+code,pre,.formula{font-family:'JetBrains Mono',Consolas,monospace;font-size:16px;line-height:1.65}
+code{background:#f1f3f6;border:1px solid #e4e8ee;border-radius:3px;padding:1px 4px;overflow-wrap:anywhere}
+pre{background:#f7f8fa;border:1px solid var(--line);padding:14px 17px;border-radius:5px;overflow:auto;margin:12px 0 16px;color:#34475a}
+.head{padding:19px 0 24px;border-top:3px solid var(--accent);border-bottom:1px solid var(--line)}
+.kicker{color:var(--accent);font:600 11px/1.6 'JetBrains Mono',monospace;letter-spacing:.08em}
+.toc{padding:19px 0 18px;border-bottom:1px solid var(--line);margin-bottom:8px}
+.toc>strong{display:block;margin:0 0 11px}.toc-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 23px}
+.toc a{text-decoration:none;font-size:16px;line-height:1.55;display:flex;align-items:baseline;gap:8px}.toc a:hover{text-decoration:underline}
+.toc a span{font:500 11px 'JetBrains Mono',monospace;color:#8da0af;min-width:24px}
+.sec{padding:27px 0 29px;border-bottom:1px solid #e9edf1}.sec:last-child{border-bottom:0}
+.def{background:#f4f7fa;border-left:3px solid #7396b4;padding:13px 16px;margin:14px 0 17px;color:#435a70;font-size:16px;line-height:1.7}
+.key{border-left:2px solid #9eacb9;padding:5px 14px;margin:14px 0 17px;color:#465c6f;line-height:1.68}.key strong{color:#2d526e}
+.tbl{overflow:auto;margin:14px 0 18px;border:1px solid var(--line);border-radius:5px}.tbl table{border-collapse:collapse;width:100%;min-width:690px;font-size:16px;line-height:1.58}
+.tbl th{background:#eef2f5;color:#30485d;text-align:left;padding:10px 13px;font-size:16px;vertical-align:top;font-weight:700;border-bottom:1px solid #d9e2e9}
+.tbl td{padding:11px 13px;vertical-align:top;color:#48596a;font-size:16px;border-bottom:1px solid #edf0f3}.tbl tr:last-child td{border-bottom:0}.tbl tbody tr:nth-child(even){background:#fcfcfd}
+.tbl td strong{white-space:normal}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:12px 0 18px}.plainbox{border:1px solid var(--line);padding:13px 16px;border-radius:5px}.plainbox h3{margin:0 0 8px}.plainbox p:last-child{margin-bottom:0}
+.diagram{border:1px solid var(--line);border-radius:5px;background:#fff;overflow-x:auto;margin:14px 0 17px;padding:12px 10px}
+.diagram svg{display:block;width:100%;min-width:760px;height:auto;margin:0 auto}.figcap{font-size:16px;color:#64798b;line-height:1.6;margin:10px 7px 2px}
+.label{color:#6f8495;font-size:11.5px;font-family:'JetBrains Mono',monospace;letter-spacing:.035em}
+.formula{background:#f7f8fa;border:1px solid #e1e7eb;border-radius:5px;padding:12px 14px;margin:13px 0 16px;overflow-x:auto;white-space:nowrap;text-align:center;color:#36526b}
+.note{font-size:16px;color:#66788a}.answer{padding:10px 15px;border-left:2px solid #d8e0e7;color:#465b6c;line-height:1.7;margin-top:10px}
+.q{padding:13px 0;border-bottom:1px solid #e7ecf0}.q:last-child{border-bottom:0}.q summary{font-size:16px;line-height:1.6;font-weight:600;color:#30485e;cursor:pointer}
+.q summary::marker{color:#7891a6}
+.review{background:#f7f9fa;border:1px solid #e3e8ed;border-radius:4px;padding:14px 17px;margin:15px 0}.review p{margin:0}
+.ascii{white-space:pre;line-height:1.7}
+@media(max-width:720px){body{padding:22px 12px 68px}h1{font-size:25px}h2{font-size:21px}h3{font-size:18px}h4{font-size:17px}.toc-grid,.two{grid-template-columns:1fr}.sec{padding:24px 0}.diagram{padding:8px 5px}.diagram svg{min-width:810px;width:810px}.tbl table{min-width:700px}}
+@media print{body{padding:0;font-size:16px}.sec{break-inside:auto}.diagram{break-inside:avoid}details .answer{display:block}a{text-decoration:none;color:inherit}}
+
+.svg-sm{font:12px 'Space Grotesk',Arial,sans-serif;fill:#344e62}
+.svg-md{font:600 13px 'Space Grotesk',Arial,sans-serif;fill:#294d67}
+.svg-muted{font:12px 'Space Grotesk',Arial,sans-serif;fill:#627c8f}
+.tiny{font:11.5px 'JetBrains Mono',monospace;color:#74899a}
+.mark{color:#1b5a7c;font-weight:700}
+.warn{border-left:3px solid #d4a173;background:#fffcf7;padding:10px 15px;margin:12px 0 16px;color:#5e554c}
+.flag{display:inline-block;background:#f1f5f8;border:1px solid #e0e8ee;border-radius:3px;padding:2px 7px;font-size:12px;color:#607b8d}
+.diagram svg{max-width:980px}
+@media(max-width:720px){.diagram svg{width:880px;min-width:880px}}
+
+.viz svg{max-width:980px}
+.tok{font:500 12px 'JetBrains Mono',monospace;fill:#647b8f}
+.viz-card{fill:#f0f5f9;stroke:#92aec1;stroke-width:1.6}
+.viz-card2{fill:#f7f9fb;stroke:#a4b6c5;stroke-width:1.5}
+.viz-line{stroke:#8aa3b7;stroke-width:2;fill:none}
+.viz-circle{fill:white;stroke:#7d9cb2;stroke-width:1.6}
+.matrix{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:14px 0 16px}
+.matrix .item{border:1px solid #dfe6eb;background:#fcfdfe;padding:13px 15px;border-radius:5px}
+.matrix .item strong{display:block;font-weight:700;color:#31566f;margin-bottom:5px}
+.matrix .item p{margin-bottom:0}
+.minihead{font-weight:700;color:#31516a;margin:16px 0 7px}
+@media(max-width:720px){.matrix{grid-template-columns:1fr}}
+
+
+/* W5 relational model diagrams */
+.diagram svg{max-width:970px}
+.rel-table{fill:#f3f7fa;stroke:#8aa7bc;stroke-width:1.5}
+.rel-head{fill:#e5eff6;stroke:#8aa7bc;stroke-width:1.5}
+.rel-line{fill:none;stroke:#8aa7bc;stroke-width:1.6}
+.r-small{font:12px 'Space Grotesk',Arial,sans-serif;fill:#344b60}
+.r-title{font:600 13px 'Space Grotesk',Arial,sans-serif;fill:#274c68}
+.r-code{font:12px 'JetBrains Mono',monospace;fill:#35536b}
+.warn{border-left:3px solid #c9a37f;background:#fffcf7;padding:11px 15px;margin:12px 0 17px;color:#625447;line-height:1.68}
+.stacked{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:13px 0 17px}
+.stacked>div{border:1px solid #dfe6ec;padding:13px 14px;border-radius:5px}
+.stacked strong{display:block;margin-bottom:4px}
+.stacked p{margin-bottom:0}
+math{font-size:1em}
+@media(max-width:720px){.stacked{grid-template-columns:1fr}}
+</style></head><body><main><header class="head"><div class="kicker">DATABASE · WEEK 05</div><h1>Mô hình quan hệ</h1><p style="margin:8px 0 0;color:#60798a">Relation · Schema/State · Keys · Integrity Constraints · Update Operations</p></header><nav class="toc"><strong>Nội dung</strong><div class="toc-grid"><a href="#s01"><span>01</span>Relation, tuple, attribute và domain</a><a href="#s02"><span>02</span>Lược đồ quan hệ và trạng thái quan hệ</a><a href="#s03"><span>03</span>Bậc, lực lượng và hai cách hiểu “cardinality”</a><a href="#s04"><span>04</span>Đặc trưng toán học của quan hệ</a><a href="#s05"><span>05</span>Giá trị nguyên tử và NULL</a><a href="#s06"><span>06</span>Siêu khóa, khóa ứng viên, khóa chính, khóa thay thế</a><a href="#s07"><span>07</span>Cách xác định khóa ghép và tránh suy luận từ mẫu</a><a href="#s08"><span>08</span>Lược đồ CSDL quan hệ và khóa ngoại</a><a href="#s09"><span>09</span>Bốn nhóm ràng buộc toàn vẹn</a><a href="#s10"><span>10</span>Ý nghĩa của NULL/NOT NULL trong khóa ngoại</a><a href="#s11"><span>11</span>Bài phân tích state: cùng lúc nhiều lỗi</a><a href="#s12"><span>12</span>INSERT, DELETE và UPDATE: những lỗi phải kiểm tra</a><a href="#s13"><span>13</span>Chính sách hành động tham chiếu</a><a href="#s14"><span>14</span>Bài thao tác trên COMPANY mini-state</a><a href="#s15"><span>15</span>Bài thiết kế khóa và FK: COURSE, SECTION, ENROLLMENT</a><a href="#s16"><span>16</span>Bài tổng hợp và tự kiểm tra</a></div></nav><section class="sec" id="s01"><h2>01. Relation, tuple, attribute và domain</h2>
+<div class="def"><strong>Mô hình quan hệ (Relational Model)</strong> biểu diễn CSDL thành các <strong>quan hệ</strong> (relations). Một quan hệ được hình dung như bảng, nhưng về mặt toán học nó là <strong>tập các bộ</strong> (tuples) có cùng cấu trúc và phải thỏa những ràng buộc đã định.</div>
+<div class="tbl"><table><thead><tr><th>Cách nhìn bảng</th><th>Thuật ngữ quan hệ</th><th>Bản chất</th></tr></thead><tbody>
+<tr><td>Bảng</td><td><strong>Relation</strong> (quan hệ)</td><td>Tập các bộ được xác định theo một lược đồ.</td></tr>
+<tr><td>Cột</td><td><strong>Attribute</strong> (thuộc tính)</td><td>Vai trò/ý nghĩa của giá trị trong từng bộ.</td></tr>
+<tr><td>Hàng</td><td><strong>Tuple</strong> (bộ)</td><td>Một sự kiện hoặc đối tượng cụ thể được biểu diễn bằng các giá trị.</td></tr>
+<tr><td>Miền hợp lệ</td><td><strong>Domain</strong> (miền giá trị)</td><td>Tập các giá trị nguyên tử được chấp nhận cho thuộc tính.</td></tr>
+</tbody></table></div>
+<p><strong>Ví dụ:</strong> <code>STUDENT(Name, Ssn, Home_phone, Address, Office_phone, Age, Gpa)</code>. Thuộc tính <code>Home_phone</code> và <code>Office_phone</code> có thể cùng lấy giá trị từ miền số điện thoại, nhưng đóng <strong>hai vai trò ngữ nghĩa khác nhau</strong>.</p>
+<p>Trong ER (W2–W4), <em>relationship</em> là sự liên hệ nghiệp vụ giữa các thực thể. Trong W5, <em>relation</em> là khái niệm nền tảng của <strong>mô hình quan hệ</strong>. Không đánh đồng hai thuật ngữ.</p>
+</section><section class="sec" id="s02"><h2>02. Lược đồ quan hệ và trạng thái quan hệ</h2>
+<p><strong>Relation schema</strong> là định nghĩa tương đối ổn định về <em>tên quan hệ, các thuộc tính, miền giá trị và ràng buộc</em>; ký hiệu thường dùng <code>R(A₁, A₂, …, Aₙ)</code>. <strong>Relation state</strong> là tập các bộ thật sự có mặt tại một thời điểm, thường ký hiệu <code>r(R)</code>.</p>
+<div class="formula">r(R) ⊆ dom(A₁) × dom(A₂) × ⋯ × dom(Aₙ)</div>
+<p>Tích Đề-các ở vế phải gồm các tổ hợp giá trị <em>có thể có về mặt miền</em>; <code>r(R)</code> chỉ chứa những bộ hiện có và hợp lệ theo các ràng buộc khác. Không phải tổ hợp nào từ các miền cũng xuất hiện trong database.</p>
+<div class="diagram"><svg viewBox="0 0 930 294" role="img" aria-label="Phân biệt lược đồ STUDENT gồm ba thuộc tính với trạng thái gồm ba bộ; bậc 3, lực lượng 3">
+<text x="22" y="25" class="r-title">SCHEMA · STUDENT(Student_id, Name, Gpa)</text>
+<rect x="22" y="46" width="590" height="38" rx="3" class="rel-head"/>
+<g class="r-code" text-anchor="middle"><text x="120" y="70">Student_id</text><text x="330" y="70">Name</text><text x="528" y="70">Gpa</text></g>
+<g stroke="#91adbe" stroke-width="1.2"><path d="M220 46 V215 M430 46 V215"/></g>
+<g class="r-small" text-anchor="middle"><text x="120" y="113">S01</text><text x="330" y="113">An</text><text x="528" y="113">3.70</text><text x="120" y="157">S02</text><text x="330" y="157">Bình</text><text x="528" y="157">3.90</text><text x="120" y="201">S03</text><text x="330" y="201">Chi</text><text x="528" y="201">3.50</text></g>
+<path d="M22 84 H612 M22 127 H612 M22 171 H612 M22 215 H612" class="rel-line"/><path d="M22 46 V215 M612 46 V215" class="rel-line"/>
+<rect x="659" y="53" width="250" height="68" rx="5" fill="#f1f6f9" stroke="#a4bcca"/>
+<text x="784" y="80" text-anchor="middle" class="r-title">Degree = 3</text><text x="784" y="103" text-anchor="middle" class="r-small">3 thuộc tính / cột</text>
+<rect x="659" y="145" width="250" height="68" rx="5" fill="#f8f9fa" stroke="#bacad5"/>
+<text x="784" y="171" text-anchor="middle" class="r-title">Cardinality = 3</text><text x="784" y="194" text-anchor="middle" class="r-small">3 bộ hiện có / hàng</text>
+<text x="24" y="263" class="r-small">Các giá trị thực tế tạo thành state — có thể thay đổi qua INSERT / UPDATE / DELETE</text>
+</svg><div class="figcap">Sơ đồ minh họa độc lập với bảng 7 thuộc tính trong tài liệu: thêm một hàng mới chỉ đổi <em>state</em>; thêm một cột mới sẽ đổi <em>schema</em>.</div></div>
+<div class="tbl"><table><thead><tr><th>Thao tác</th><th>Thay đổi chính</th></tr></thead><tbody>
+<tr><td>Thêm sinh viên; sửa <code>Gpa</code>; xóa một bộ</td><td><strong>State</strong></td></tr>
+<tr><td>Thêm cột <code>Email</code>; đổi domain của <code>Age</code></td><td><strong>Schema</strong> hoặc định nghĩa ràng buộc</td></tr>
+</tbody></table></div>
+</section><section class="sec" id="s03"><h2>03. Bậc, lực lượng và hai cách hiểu “cardinality”</h2>
+<div class="tbl"><table><thead><tr><th>Thuật ngữ</th><th>Định nghĩa</th><th>Ví dụ STUDENT</th></tr></thead><tbody>
+<tr><td><strong>Degree / Arity</strong></td><td>Số thuộc tính trong schema; cố định cho một lược đồ không đổi.</td><td>7 thuộc tính → bậc 7.</td></tr>
+<tr><td><strong>Cardinality của relation state</strong></td><td>Số bộ hiện có trong trạng thái <code>r(R)</code>.</td><td>5 hàng dữ liệu → lực lượng 5.</td></tr>
+<tr><td><strong>Cardinality ratio trong ER</strong></td><td>Giới hạn số lần các thực thể tham gia relationship (1:1, 1:N, M:N).</td><td><strong>Không cùng nghĩa</strong> với số hàng của relation.</td></tr>
+</tbody></table></div>
+<p>Đừng học máy móc “cardinality là N” mà bỏ qua ngữ cảnh. W3 nói về <strong>tỉ lệ của relationship</strong>; W5 nói về <strong>số lượng tuple của relation state</strong>.</p>
+</section><section class="sec" id="s04"><h2>04. Đặc trưng toán học của quan hệ</h2>
+<div class="tbl"><table><thead><tr><th>Tính chất</th><th>Diễn giải và hệ quả</th></tr></thead><tbody>
+<tr><td><strong>Không có tuple trùng hoàn toàn</strong></td><td>Quan hệ là <em>tập</em>, nên cùng một bộ không xuất hiện hai lần trong cùng trạng thái quan hệ.</td></tr>
+<tr><td><strong>Thứ tự hàng không có ý nghĩa logic</strong></td><td>Đổi vị trí các tuple không đổi quan hệ; thứ tự hiển thị/đọc là vấn đề khác.</td></tr>
+<tr><td><strong>Thứ tự cột không phải ngữ nghĩa</strong></td><td>Miễn là từng giá trị vẫn gắn với <strong>đúng tên thuộc tính</strong>. Nếu coi tuple là dãy vị trí, phải giữ đúng ánh xạ theo schema.</td></tr>
+<tr><td><strong>Giá trị nguyên tử</strong></td><td>Trong mô hình quan hệ cơ bản, mỗi vị trí của tuple chứa một giá trị nguyên tử thuộc domain tương ứng.</td></tr>
+<tr><td><strong>NULL có thể xuất hiện</strong></td><td>Biểu diễn giá trị chưa biết, chưa có sẵn hoặc không áp dụng; bị hạn chế bởi các ràng buộc.</td></tr>
+</tbody></table></div>
+<h3>Thứ tự thuộc tính: sự khác nhau giữa dãy giá trị và ánh xạ</h3>
+<p>Viết theo danh sách có thứ tự <code>("An", "S01", 3.70)</code> phải dùng cùng thứ tự schema <code>(Name, Student_id, Gpa)</code>. Cách nhìn trừu tượng hơn xem tuple như ánh xạ <code>{Name↦"An", Student_id↦"S01", Gpa↦3.70}</code>; cách sắp xếp các cặp không thay đổi ý nghĩa.</p>
+<div class="key"><strong>Bẫy:</strong> đổi cột <code>Name</code> và <code>Gpa</code> rồi giữ nguyên dãy dữ liệu nhưng <em>không đổi phép gắn giá trị–thuộc tính</em> không phải chỉ đổi thứ tự trình bày: bạn đã gán sai ý nghĩa của dữ liệu.</div>
+</section><section class="sec" id="s05"><h2>05. Giá trị nguyên tử và NULL</h2>
+<h3>Atomic values — mỗi ô mang một giá trị theo mô hình cơ bản</h3>
+<p>Một ô <code>Phone = "091..., 098..."</code> gộp hai số điện thoại thành danh sách; theo giả định atomic của W5, cách này <strong>không phù hợp</strong>. Có thể tạo quan hệ riêng <code>STUDENT_PHONE(Student_id, Phone)</code> để mỗi bộ mang một số, hoặc tách thuộc tính phức hợp thành các thành phần đơn nếu nghiệp vụ yêu cầu.</p>
+<h3>NULL không phải 0, chuỗi rỗng hay một giá trị bình thường</h3>
+<div class="tbl"><table><thead><tr><th>Tình huống</th><th>Ý nghĩa NULL</th></tr></thead><tbody>
+<tr><td>Sinh viên không có số điện thoại văn phòng</td><td><strong>Không áp dụng</strong>.</td></tr>
+<tr><td>Chưa thu thập số điện thoại nhà</td><td><strong>Chưa biết / chưa có sẵn</strong>.</td></tr>
+<tr><td>Bệnh nhân chưa xuất viện</td><td><strong>Giá trị chưa phát sinh tại thời điểm đó</strong>.</td></tr>
+</tbody></table></div>
+<p><strong>NULL ở khóa ngoại</strong> không tự động sai: còn tùy FK có được phép NULL theo ràng buộc nghiệp vụ và schema hay không. <strong>NULL ở khóa chính</strong> luôn không hợp lệ theo entity integrity. Cần phân biệt hai tình huống.</p>
+</section><section class="sec" id="s06"><h2>06. Siêu khóa, khóa ứng viên, khóa chính, khóa thay thế</h2>
+<div class="def"><strong>Khóa là ràng buộc về tính duy nhất của đối tượng</strong> trong mọi trạng thái hợp lệ theo miniworld, chứ không phải một thuộc tính tình cờ không trùng trong bảng mẫu.</div>
+<div class="tbl"><table><thead><tr><th>Loại khóa</th><th>Điều kiện cốt lõi</th><th>Ví dụ với EMPLOYEE</th></tr></thead><tbody>
+<tr><td><strong>Superkey (siêu khóa)</strong></td><td>Tập thuộc tính có thể phân biệt mọi hai tuple; <strong>có thể có thuộc tính dư</strong>.</td><td><code>{Ssn}</code>, <code>{Ssn,Fname}</code>.</td></tr>
+<tr><td><strong>Candidate key (khóa ứng viên)</strong></td><td><strong>Siêu khóa tối thiểu</strong>: bỏ bất kỳ thuộc tính nào sẽ không còn bảo đảm duy nhất.</td><td><code>{Ssn}</code>, nếu Ssn được nghiệp vụ bảo đảm duy nhất.</td></tr>
+<tr><td><strong>Primary key (khóa chính)</strong></td><td>Một candidate key được chọn để nhận dạng tuple; <strong>không NULL</strong>.</td><td><code>Ssn</code> được chọn làm PK.</td></tr>
+<tr><td><strong>Alternate key (khóa thay thế)</strong></td><td>Candidate key khác không được chọn làm PK.</td><td>Nếu <code>Email</code> cũng được đảm bảo duy nhất, có thể là alternate key.</td></tr>
+</tbody></table></div>
+<div class="formula">K là superkey ⟺ ∀t₁,t₂ ∈ r(R), t₁[K] = t₂[K] ⇒ t₁ = t₂</div>
+<p>Tính duy nhất phải đúng đối với <strong>mọi trạng thái hợp lệ</strong> của mô hình. Mọi tập thuộc tính chứa một superkey vẫn là superkey. Nhưng thêm thuộc tính dư sẽ làm mất tính <em>tối thiểu</em>, nên thường không còn là candidate key.</p>
+<div class="review"><p><strong>Ví dụ CAR:</strong> nếu <code>License_number</code> và <code>Engine_serial_number</code> đều được nghiệp vụ đảm bảo duy nhất, cả hai là candidate key. Chọn một làm PK, cái còn lại là alternate key. Không chọn cả cặp làm khóa ghép chỉ vì cả hai đều độc nhất.</p></div>
+</section><section class="sec" id="s07"><h2>07. Cách xác định khóa ghép và tránh suy luận từ mẫu</h2>
+<h3>ENROLLMENT — khóa ghép cần thiết</h3>
+<pre>ENROLLMENT(Student_id, Course_id, Semester, Grade)
+K = {Student_id, Course_id, Semester}</pre>
+<p>Với giả định <strong>mỗi sinh viên có tối đa một điểm cho một môn trong một học kỳ</strong>:</p>
+<ul><li><code>Student_id</code> không đủ: một sinh viên đăng ký nhiều môn.</li><li><code>Course_id</code> không đủ: nhiều sinh viên học cùng một môn.</li><li><code>Student_id, Course_id</code> cũng không đủ nếu học lại môn đó ở học kỳ khác.</li><li>Cả ba thuộc tính mới nhận dạng được một lần đăng ký theo giả định. Muốn gọi là candidate key, cần bảo đảm không thể bỏ bất kỳ thành phần nào mà vẫn duy nhất.</li></ul>
+<h3>BOOK_COPY — bài kiểm tra tính tối thiểu</h3>
+<pre>BOOK_COPY(Book_id, Copy_no, Title, Publisher, Shelf, Status)</pre>
+<p>Giả định: một đầu sách có nhiều bản sao; <code>Copy_no</code> chỉ duy nhất trong phạm vi <code>Book_id</code>.</p>
+<div class="tbl"><table><thead><tr><th>Tập thuộc tính</th><th>Superkey?</th><th>Candidate key?</th><th>Lý do</th></tr></thead><tbody>
+<tr><td><code>{Book_id}</code></td><td>Không</td><td>Không</td><td>Nhiều bản sao cùng đầu sách.</td></tr>
+<tr><td><code>{Book_id, Copy_no}</code></td><td>Có</td><td><strong>Có</strong></td><td>Cặp định danh bản sao; không bỏ thành phần nào.</td></tr>
+<tr><td><code>{Book_id, Copy_no, Status}</code></td><td>Có</td><td>Không</td><td><code>Status</code> là thuộc tính dư.</td></tr>
+</tbody></table></div>
+<div class="warn"><strong>Tuyệt đối không suy khóa từ sample:</strong> nếu ba tên <code>An, Bình, Chi</code> đều khác nhau, không thể kết luận <code>Name</code> là candidate key. Phải hỏi: <em>nghiệp vụ có cho phép trùng tên về sau không?</em></div>
+</section><section class="sec" id="s08"><h2>08. Lược đồ CSDL quan hệ và khóa ngoại</h2>
+<p>Một <strong>relational database schema</strong> gồm <em>nhiều relation schemas và các ràng buộc toàn vẹn</em>. Khóa ngoại (foreign key, FK) biểu diễn phép tham chiếu giữa các quan hệ; nó không cần trùng tên với thuộc tính được tham chiếu.</p>
+<div class="diagram"><svg viewBox="0 0 930 263" role="img" aria-label="EMPLOYEE.Dno là khóa ngoại tham chiếu DEPARTMENT.Dnumber; giá trị 5 và 4 khớp, 7 không khớp">
+<text x="64" y="25" class="r-title">DEPARTMENT</text><text x="578" y="25" class="r-title">EMPLOYEE</text>
+<rect x="62" y="42" width="302" height="42" rx="3" class="rel-head"/><rect x="520" y="42" width="340" height="42" rx="3" class="rel-head"/>
+<g class="r-code"><text x="87" y="69">Dnumber (PK)</text><text x="288" y="69">Dname</text><text x="545" y="69">Ssn (PK)</text><text x="736" y="69">Dno (FK)</text></g>
+<path d="M245 42 V187 M696 42 V187 M62 84 H364 M62 118 H364 M62 152 H364 M62 187 H364 M520 84 H860 M520 118 H860 M520 152 H860 M520 187 H860 M62 42 V187 M364 42 V187 M520 42 V187 M860 42 V187" class="rel-line"/>
+<g class="r-code"><text x="104" y="108">5</text><text x="281" y="108">Research</text><text x="104" y="143">4</text><text x="281" y="143">Admin</text><text x="104" y="177">1</text><text x="281" y="177">HQ</text><text x="550" y="108">111</text><text x="746" y="108">5</text><text x="550" y="143">222</text><text x="746" y="143">4</text><text x="550" y="177">333</text><text x="746" y="177">7</text></g>
+<text x="68" y="237" class="r-code">EMPLOYEE.Dno → DEPARTMENT.Dnumber (FK → PK)</text>
+<rect x="628" y="207" width="231" height="38" rx="4" fill="#fff9ed" stroke="#cda276"/><text x="743" y="231" text-anchor="middle" class="r-small">Dno = 7: không có PK tương ứng</text>
+</svg><div class="figcap">Mũi tên mô tả <strong>hướng tham chiếu logic</strong> từ EMPLOYEE.Dno sang DEPARTMENT.Dnumber, không phải ràng buộc lực lượng ER. Giá trị Dno = 7 vi phạm nếu DEPARTMENT không có Dnumber = 7.</div></div>
+<div class="key"><strong>Định nghĩa theo bài học:</strong> FK của R tham chiếu PK của S. Giá trị FK phải tương ứng với một giá trị PK đang tồn tại, hoặc là NULL <em>nếu được cho phép</em>. Ví dụ <code>EMPLOYEE.Super_ssn → EMPLOYEE.Ssn</code> là <strong>self-referencing foreign key</strong>, phù hợp quan hệ SUPERVISION đệ quy.</div>
+</section><section class="sec" id="s09"><h2>09. Bốn nhóm ràng buộc toàn vẹn</h2>
+<div class="tbl"><table><thead><tr><th>Loại ràng buộc</th><th>Kiểm tra gì?</th><th>Ví dụ không hợp lệ</th></tr></thead><tbody>
+<tr><td><strong>Domain constraint</strong></td><td>Giá trị đúng tập/kiểu/định dạng/khoảng hợp lệ.</td><td><code>Age = -5</code>; <code>Gpa = 5.1</code> khi miền [0,4].</td></tr>
+<tr><td><strong>Key constraint</strong></td><td>Không có hai tuple khác nhau trùng giá trị trên khóa.</td><td>Hai nhân viên cùng <code>Ssn = 111</code>.</td></tr>
+<tr><td><strong>Entity integrity</strong></td><td>Mọi thành phần của <strong>primary key</strong> đều khác NULL.</td><td><code>EMPLOYEE.Ssn = NULL</code>.</td></tr>
+<tr><td><strong>Referential integrity</strong></td><td>Khóa ngoại trỏ đến bản ghi hợp lệ hoặc NULL nếu cho phép.</td><td><code>EMPLOYEE.Dno = 7</code> không có <code>DEPARTMENT.Dnumber = 7</code>.</td></tr>
+</tbody></table></div>
+<div class="formula">FK hợp lệ: t[FK] ∈ π<sub>PK</sub>(S) &nbsp; hoặc &nbsp; t[FK] = NULL (nếu được phép)</div>
+<p>Công thức trên mô tả <strong>trường hợp FK một thuộc tính</strong> trong bài học. Nếu FK ghép nhiều cột, phải xét toàn bộ bộ giá trị và quy tắc NULL tương ứng; không tự suy rằng từng cột riêng lẻ có thể tham chiếu độc lập.</p>
+<div class="key"><strong>Valid database state:</strong> toàn bộ các relation states trong CSDL phải đồng thời thỏa tất cả ràng buộc. Một tuple có thể vi phạm <em>nhiều loại</em> ràng buộc khác nhau.</div>
+</section><section class="sec" id="s10"><h2>10. Ý nghĩa của NULL/NOT NULL trong khóa ngoại</h2>
+<p>Khóa ngoại tồn tại không có nghĩa nó bắt buộc có giá trị. <strong>Business rule</strong> quyết định liệu một tuple có được phép chưa tham chiếu đến đối tượng khác hay không.</p>
+<div class="tbl"><table><thead><tr><th>Quy tắc nghiệp vụ</th><th>Kỳ vọng khi thiết kế</th></tr></thead><tbody>
+<tr><td>Mỗi nhân viên bắt buộc thuộc đúng một phòng ban.</td><td><code>EMPLOYEE.Dno</code> → FK, <strong>NOT NULL</strong>.</td></tr>
+<tr><td>Nhân viên có thể chưa có cấp trên.</td><td><code>EMPLOYEE.Super_ssn</code> → FK tự tham chiếu, <strong>có thể NULL</strong>.</td></tr>
+<tr><td>Mỗi dự án bắt buộc được một phòng kiểm soát.</td><td><code>PROJECT.Dnum</code> → FK, <strong>NOT NULL</strong>.</td></tr>
+</tbody></table></div>
+<p>Các ví dụ trên là định hướng ánh xạ từ <strong>participation</strong> trong ER sang mô hình quan hệ. Cần thêm các quy tắc về số lượng và cách ánh xạ relationship để quyết định toàn bộ constraints, không chỉ thuộc tính NULL.</p>
+</section><section class="sec" id="s11"><h2>11. Bài phân tích state: cùng lúc nhiều lỗi</h2>
+<p>Xét dữ liệu (giả định <code>EMPLOYEE.Ssn</code> là PK, <code>EMPLOYEE.Dno</code> là FK bắt buộc tham chiếu <code>DEPARTMENT.Dnumber</code>):</p>
+<div class="two"><div class="tbl"><table><thead><tr><th>DEPARTMENT</th><th>Dnumber</th></tr></thead><tbody><tr><td>Research</td><td>5</td></tr><tr><td>Administration</td><td>4</td></tr></tbody></table></div><div class="tbl"><table><thead><tr><th>EMPLOYEE</th><th>Ssn</th><th>Dno</th></tr></thead><tbody><tr><td>An</td><td>111</td><td>5</td></tr><tr><td>Bình</td><td>222</td><td>7</td></tr><tr><td>Chi</td><td>NULL</td><td>4</td></tr><tr><td>Dũng</td><td>111</td><td>4</td></tr></tbody></table></div></div>
+<div class="tbl"><table><thead><tr><th>Vấn đề</th><th>Ràng buộc bị vi phạm</th><th>Cách sửa phù hợp</th></tr></thead><tbody>
+<tr><td><strong>Bình:</strong> <code>Dno = 7</code> không tìm thấy department 7.</td><td>Referential integrity.</td><td>Sửa Dno sang phòng có thật hoặc bổ sung department 7 nếu nghiệp vụ cho phép.</td></tr>
+<tr><td><strong>Chi:</strong> <code>Ssn = NULL</code>.</td><td>Entity integrity.</td><td>Cấp một Ssn hợp lệ, duy nhất.</td></tr>
+<tr><td><strong>An và Dũng:</strong> trùng <code>Ssn = 111</code>.</td><td>Key constraint.</td><td>Kiểm tra ai có định danh đúng; sửa một giá trị sau khi xác minh.</td></tr>
+</tbody></table></div>
+<p>Không thể kết luận một cách sửa <em>cụ thể duy nhất</em> nếu chưa biết dữ liệu nghiệp vụ thực tế; bài thi chủ yếu yêu cầu gọi đúng loại ràng buộc và đề xuất cách sửa không tạo lỗi mới.</p>
+</section><section class="sec" id="s12"><h2>12. INSERT, DELETE và UPDATE: những lỗi phải kiểm tra</h2>
+<div class="tbl"><table><thead><tr><th>Thao tác</th><th>Rủi ro cần xét</th><th>Ví dụ</th></tr></thead><tbody>
+<tr><td><strong>INSERT</strong></td><td>Sai domain; trùng khóa; PK NULL; FK trỏ tới tuple không tồn tại.</td><td>Chèn nhân viên có <code>Dno = 9</code> khi chưa có department 9.</td></tr>
+<tr><td><strong>DELETE</strong></td><td>Xóa tuple đang được tham chiếu làm các FK của bảng khác mất đối tượng đích.</td><td>Xóa department 5 trong khi nhân viên đang thuộc department 5.</td></tr>
+<tr><td><strong>UPDATE</strong></td><td>Phụ thuộc cột sửa: có thể gây lỗi domain, key, PK NULL hoặc FK sai, hay làm hỏng tham chiếu từ bảng khác.</td><td><code>Dno: 5 → 9</code>; <code>Ssn: 333 → NULL</code>; <code>Salary: 30000 → "high"</code>.</td></tr>
+</tbody></table></div>
+<div class="key"><strong>Phương pháp kiểm tra:</strong> xác định bảng/cột bị tác động → xác định khóa, FK, domain, NULL constraint liên quan → mô phỏng trạng thái mới → chỉ ra vi phạm hoặc hành động tham chiếu hợp lệ. Nếu giao dịch thất bại giữa chừng, cơ chế transaction/rollback là vấn đề quản trị bổ sung.</div>
+<p>Ví dụ gốc <code>INSERT INTO EMPLOYEE(Name = "Nam", Ssn = 999, Dno = 9)</code> là <strong>ký pháp mô tả thuộc tính</strong>, không phải câu SQL chuẩn. Khi học SQL thực tế, cú pháp là <code>INSERT INTO EMPLOYEE(Name, Ssn, Dno) VALUES ('Nam', 999, 9);</code>.</p>
+</section><section class="sec" id="s13"><h2>13. Chính sách hành động tham chiếu</h2>
+<p>Khi sửa/xóa PK đang được FK tham chiếu, DBMS cần một cách xử lý nhất quán:</p>
+<div class="tbl"><table><thead><tr><th>Chính sách</th><th>Ý nghĩa</th><th>Điều kiện / lưu ý</th></tr></thead><tbody>
+<tr><td><strong>RESTRICT / NO ACTION</strong></td><td>Không chấp nhận thao tác gây vi phạm tham chiếu.</td><td>Khác biệt chi tiết về thời điểm kiểm tra tùy DBMS; ở mức khái niệm W5 đều thể hiện hướng từ chối.</td></tr>
+<tr><td><strong>CASCADE</strong></td><td>Lan truyền xóa hoặc đổi khóa được tham chiếu sang các bản ghi liên quan.</td><td>Cần xem hậu quả nghiệp vụ trước khi chọn.</td></tr>
+<tr><td><strong>SET NULL</strong></td><td>Đặt FK trong bảng tham chiếu thành NULL.</td><td>Chỉ hợp lệ khi FK được phép NULL.</td></tr>
+<tr><td><strong>SET DEFAULT</strong></td><td>Gán giá trị mặc định cho FK.</td><td>Mặc định phải hợp lệ theo domain và tham chiếu.</td></tr>
+</tbody></table></div>
+<p><strong>Không chọn CASCADE một cách máy móc.</strong> Chẳng hạn xóa một phòng ban mà kéo theo xóa toàn bộ nhân viên thường là hậu quả nghiệp vụ không mong muốn. Ràng buộc kỹ thuật chỉ đúng khi phù hợp yêu cầu thực tế.</p>
+</section><section class="sec" id="s14"><h2>14. Bài thao tác trên COMPANY mini-state</h2>
+<p>Trạng thái ban đầu (giả định <code>Ssn</code> là PK, <code>Dno</code> tham chiếu DEPARTMENT, <code>Super_ssn</code> tự tham chiếu EMPLOYEE và có thể NULL):</p>
+<div class="two"><div class="tbl"><table><thead><tr><th>Department</th><th>Dnumber</th></tr></thead><tbody><tr><td>Research</td><td>5</td></tr><tr><td>Administration</td><td>4</td></tr><tr><td>Headquarters</td><td>1</td></tr></tbody></table></div><div class="tbl"><table><thead><tr><th>Employee</th><th>Ssn</th><th>Dno</th><th>Super_ssn</th></tr></thead><tbody><tr><td>John</td><td>123</td><td>5</td><td>333</td></tr><tr><td>Franklin</td><td>333</td><td>5</td><td>888</td></tr><tr><td>James</td><td>888</td><td>1</td><td>NULL</td></tr></tbody></table></div></div>
+<div class="tbl"><table><thead><tr><th>Thao tác</th><th>Kết luận nếu thực hiện độc lập trên state ban đầu</th></tr></thead><tbody>
+<tr><td><code>INSERT Mai (Ssn=999, Dno=5, Super_ssn=333)</code></td><td><strong>Hợp lệ theo các ràng buộc đã nêu</strong>: 999 mới; phòng 5 và cấp trên 333 tồn tại (giả sử các domain/thuộc tính bắt buộc khác hợp lệ).</td></tr>
+<tr><td><code>INSERT Long (Ssn=NULL, Dno=4, Super_ssn=333)</code></td><td><strong>Sai entity integrity</strong> vì PK NULL, dù hai FK có giá trị hợp lệ.</td></tr>
+<tr><td><code>UPDATE John SET Dno=7</code></td><td><strong>Sai referential integrity</strong> nếu phòng 7 không tồn tại.</td></tr>
+<tr><td><code>DELETE DEPARTMENT 5</code></td><td>Có nhân viên Dno=5 nên cần kiểm tra chính sách <strong>ON DELETE</strong>; nếu từ chối thì không xóa được, nếu cascade/set null phải phù hợp constraints.</td></tr>
+</tbody></table></div>
+<p>Các thao tác được phân tích <strong>độc lập</strong> trên trạng thái cho trước, không ngầm coi thao tác trước đã thành công rồi làm thay đổi dữ liệu cho thao tác sau.</p>
+</section><section class="sec" id="s15"><h2>15. Bài thiết kế khóa và FK: COURSE, SECTION, ENROLLMENT</h2>
+<pre>COURSE(Course_id, Course_name, Credits, Dept_code)
+SECTION(Course_id, Section_no, Semester, Year, Instructor)
+ENROLLMENT(Student_id, Course_id, Section_no,
+           Semester, Year, Grade)</pre>
+<p><strong>Một phương án khóa hợp lý</strong> nếu đề xác nhận mã môn duy nhất, lớp học phần được định danh trong phạm vi môn–học kỳ–năm và mỗi SV đăng ký một lần cho mỗi lớp:</p>
+<div class="tbl"><table><thead><tr><th>Relation</th><th>Khóa chính dự kiến</th><th>Foreign key</th></tr></thead><tbody>
+<tr><td><code>COURSE</code></td><td><code>Course_id</code></td><td><code>Dept_code</code> → DEPARTMENT nếu có relation DEPARTMENT trong hệ thống (chưa xuất hiện trong ba schema đã cho).</td></tr>
+<tr><td><code>SECTION</code></td><td><code>(Course_id, Section_no, Semester, Year)</code></td><td><code>Course_id</code> → <code>COURSE.Course_id</code>.</td></tr>
+<tr><td><code>ENROLLMENT</code></td><td><code>(Student_id, Course_id, Section_no, Semester, Year)</code></td><td><code>(Course_id, Section_no, Semester, Year)</code> → PK của SECTION. <code>Student_id</code> → STUDENT nếu relation STUDENT có trong lược đồ.</td></tr>
+</tbody></table></div>
+<div class="warn"><strong>Giả định quan trọng:</strong> đề chưa khẳng định <code>Section_no</code> duy nhất trong phạm vi nào, chưa cung cấp bảng STUDENT/DEPARTMENT và chưa định nghĩa <code>Instructor</code> là ID hay tên. Vì vậy đây là phương án <em>dự kiến</em>, không được tự động coi mọi FK tiềm năng là đã được xác định chắc chắn.</div>
+<p><strong>Ví dụ dễ gây lỗi tham chiếu:</strong> xóa <code>COURSE C01</code> khi SECTION của C01 còn tồn tại; chèn ENROLLMENT trỏ đến lớp học phần không có trong SECTION; cập nhật toàn bộ khóa SECTION mà không xử lý FK của ENROLLMENT.</p>
+</section><section class="sec" id="s16"><h2>16. Bài tổng hợp và tự kiểm tra</h2>
+<h3>Bốn thao tác — phân loại nhanh</h3>
+<div class="tbl"><table><thead><tr><th>Thao tác / tình huống</th><th>Điều cần kết luận</th></tr></thead><tbody>
+<tr><td><code>INSERT ENROLLMENT(S01,C99,1,Fall,2026,A)</code></td><td>Phải tồn tại <strong>SECTION(C99,1,Fall,2026)</strong> theo FK ghép; chỉ có COURSE C99 thôi chưa đủ. S01 cũng phải hợp lệ nếu có FK đến STUDENT.</td></tr>
+<tr><td><code>DELETE COURSE(C01)</code></td><td>Nếu có SECTION đang tham chiếu C01 thì phải tuân theo chính sách ON DELETE.</td></tr>
+<tr><td><code>UPDATE STUDENT SET Student_id=NULL</code></td><td>Nếu Student_id là PK, <strong>vi phạm entity integrity</strong> cho các tuple được sửa.</td></tr>
+<tr><td><code>UPDATE ENROLLMENT SET Grade=12</code></td><td>Vi phạm domain <strong>chỉ khi</strong> miền Grade được quy định không bao gồm 12; đề không cho miền nên không kết luận chắc chắn.</td></tr>
+</tbody></table></div>
+<h3>12 câu hỏi ôn thi — mở để tự kiểm tra</h3>
+<details class="q"><summary>1. Vì sao một quan hệ không có hai tuple trùng hoàn toàn?</summary><div class="answer">Vì quan hệ trong mô hình toán học là một tập các bộ; phần tử trùng nhau không được xem là hai bộ khác nhau.</div></details><details class="q"><summary>2. Đảo thứ tự các hàng có làm thay đổi relation state không?</summary><div class="answer">Không, nếu tập các bộ giữ nguyên. Thứ tự hiển thị không phải thành phần ngữ nghĩa của quan hệ.</div></details><details class="q"><summary>3. Thêm thuộc tính Email vào STUDENT là đổi schema hay state?</summary><div class="answer">Đổi schema vì số thuộc tính/định nghĩa cấu trúc thay đổi. Sau đó có thể cần bổ sung giá trị tương ứng vào state.</div></details><details class="q"><summary>4. Quan hệ có 7 thuộc tính và 5 bộ: degree và cardinality bằng bao nhiêu?</summary><div class="answer">Degree = 7, cardinality của relation state = 5. Không nhầm cardinality này với ER cardinality ratio.</div></details><details class="q"><summary>5. {Ssn, Fname} là superkey nhưng vì sao chưa phải candidate key?</summary><div class="answer">Nếu {Ssn} đã phân biệt duy nhất, Fname là thuộc tính dư. Candidate key đòi tính tối thiểu.</div></details><details class="q"><summary>6. Ba dòng mẫu có tên khác nhau: Name có chắc là candidate key không?</summary><div class="answer">Không. Khóa cần được đảm bảo bởi quy tắc nghiệp vụ ở mọi state hợp lệ, không suy chỉ từ dữ liệu hiện tại.</div></details><details class="q"><summary>7. Khóa chính có thể bằng NULL không? Khóa ngoại thì sao?</summary><div class="answer">PK không được NULL. FK có thể NULL nếu schema và business rule cho phép; không phải mọi FK đều bắt buộc.</div></details><details class="q"><summary>8. Một bộ vừa PK NULL vừa FK sai có thể vi phạm hai ràng buộc không?</summary><div class="answer">Có. Vi phạm entity integrity và referential integrity có thể xảy ra đồng thời.</div></details><details class="q"><summary>9. Thêm EMPLOYEE với Dno=9 khi không có phòng 9: lỗi gì?</summary><div class="answer">Referential integrity (FK EMPLOYEE.Dno tham chiếu DEPARTMENT.Dnumber không tồn tại).</div></details><details class="q"><summary>10. Xóa DEPARTMENT 5 đang có nhân viên: luôn bị cấm không?</summary><div class="answer">Không. Phụ thuộc chính sách tham chiếu: RESTRICT/NO ACTION, CASCADE, SET NULL hoặc SET DEFAULT khi hợp lệ.</div></details><details class="q"><summary>11. Vì sao khóa của SECTION thường gồm Course_id, Section_no, Semester, Year?</summary><div class="answer">Nếu số lớp học phần tái sử dụng theo môn và kỳ, phải kết hợp bốn thuộc tính để phân biệt mỗi lớp ở từng học kỳ/năm. Cần xác nhận phạm vi duy nhất của Section_no từ yêu cầu.</div></details><details class="q"><summary>12. ENROLLMENT trỏ Course C99 tồn tại nhưng SECTION(C99,1,Fall,2026) không tồn tại: hợp lệ không?</summary><div class="answer">Không, nếu ENROLLMENT có FK ghép tham chiếu SECTION; phải khớp nguyên bộ khóa của SECTION, không chỉ Course_id.</div></details>
+<div class="review"><p><strong>Để kiểm tra một state hoặc thao tác:</strong> (1) xác định schema và domains → (2) tìm PK/candidate keys → (3) liệt kê tất cả FK và quy tắc NULL → (4) kiểm tra giá trị sai miền, trùng khóa, PK NULL, FK không tồn tại → (5) đối với DELETE/UPDATE khóa, xét mọi tuple đang tham chiếu và chính sách tác động.</p></div>
+</section></main></body></html>
