@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+
+<html lang="vi"><head><meta charset="utf-8"/><meta content="width=device-width,initial-scale=1" name="viewport"/><meta content="light" name="color-scheme"/><title>Database W1 · Tổng quan CSDL &amp; DBMS</title><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&amp;family=Space+Grotesk:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/><style>
+:root{--ink:#253340;--sub:#435263;--muted:#728194;--line:#dfe5eb;--accent:#315d7d;--soft:#f6f8fa;--blue:#eef4f9}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{max-width:1032px;padding:34px 16px 80px;margin:auto;background:#fff;color:var(--ink);font:14px/1.72 'Space Grotesk',Arial,sans-serif}main{max-width:1000px;margin:auto}h1,h2,h3,p{margin-top:0}h1{font-size:29px;letter-spacing:-.5px;line-height:1.29;margin:9px 0}h2{font-size:21px;line-height:1.35;letter-spacing:-.25px;margin:0 0 8px}h3{font-size:15px;line-height:1.45;margin:19px 0 8px}p{font-size:13.5px;color:var(--sub);margin:0 0 11px;line-height:1.76}strong{color:#2d4255}ul,ol{color:var(--sub);font-size:13.4px;line-height:1.75;padding-left:22px;margin:8px 0 15px}li{margin-bottom:5px}a{color:var(--accent)}code,pre{font-family:'JetBrains Mono',Consolas,monospace}code{font-size:11.9px;background:#f1f3f6;border:1px solid #e4e8ee;border-radius:3px;padding:1px 4px;overflow-wrap:anywhere}pre{font-size:12px;line-height:1.7;background:#f7f8fa;border:1px solid var(--line);padding:12px 15px;overflow:auto;border-radius:4px;margin:10px 0 16px}.head{border-top:3px solid var(--accent);padding:20px 0 19px;border-bottom:1px solid var(--line)}.kicker{color:var(--accent);font:600 10.5px 'JetBrains Mono',monospace;letter-spacing:.11em}.intro{font-size:13px;color:#667788;max-width:840px;margin-bottom:0}.toc{padding:20px 0 12px;border-bottom:1px solid var(--line);margin:0 0 22px}.toc strong{display:block;margin-bottom:9px}.toc-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px 21px}.toc a{text-decoration:none;font-size:12.7px;line-height:1.6}.toc a span{font:11px 'JetBrains Mono',monospace;color:#91a1ae;margin-right:9px}.sec{padding:21px 0 24px;border-bottom:1px solid #e9edf1}.source{font:10.5px 'JetBrains Mono',monospace;color:#8996a3;margin:0 0 14px}.def{padding:11px 14px;background:#f4f7fa;border-left:3px solid #7396b4;margin:13px 0 15px;font-size:13.6px;line-height:1.75}.key{border-left:2px solid #9eacb9;padding:5px 13px;margin:12px 0 15px;color:#465c6f;font-size:12.8px;line-height:1.72}.key strong{color:#2e506a}.tbl{overflow:auto;margin:12px 0 16px;border:1px solid var(--line);border-radius:4px}.tbl table{border-collapse:collapse;width:100%;min-width:540px;font-size:12.65px;line-height:1.57}.tbl th{background:#eef2f5;color:#30485d;text-align:left;padding:9px 11px;font-weight:700;border-bottom:1px solid #d9e2e9}.tbl td{padding:9px 11px;vertical-align:top;border-bottom:1px solid #edf0f3;color:#48596a}.tbl tr:last-child td{border-bottom:none}.tbl tbody tr:nth-child(even){background:#fcfcfd}.tbl .tight td{padding:7px 10px}.two{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0 16px}.plainbox{border:1px solid var(--line);padding:12px 14px;border-radius:4px}.plainbox h3{margin-top:0}.plainbox p:last-child{margin-bottom:0}.diagram{border:1px solid var(--line);padding:13px 10px;margin:11px 0 16px;border-radius:4px;background:#fff;overflow:auto}.diagram svg{display:block;width:100%;max-width:890px;height:auto;margin:auto}.figcap{font-size:11.7px;color:#687889;margin:8px 8px 1px;line-height:1.55}.flow{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));column-gap:24px;row-gap:20px;margin:14px 0 15px}.flow > div{border:1px solid #dfe6ed;padding:10px 8px;border-radius:4px;position:relative;background:#fbfcfd}.flow > div:not(:last-child)::after{content:'→';position:absolute;left:calc(100% + 3px);top:50%;transform:translateY(-50%);width:18px;text-align:center;font:normal 17px/1 Arial,Helvetica,sans-serif;color:#8196a8;pointer-events:none}.flow b{font-size:12px;line-height:1.42;display:block}.flow small{display:block;color:#637589;line-height:1.56;margin-top:4px;font-size:11.3px}.badge{font:600 10.3px 'JetBrains Mono',monospace;color:#567790;margin-right:3px}.q{border-bottom:1px solid #e7ecf0;padding:11px 0}.q:last-child{border:none}.q summary{font-weight:600;font-size:12.9px;cursor:pointer}.q div{padding:9px 0 3px 14px;border-left:2px solid #d8e0e7;color:#475b6b;font-size:12.9px;line-height:1.8}.end{margin-top:22px;font-size:11.6px;color:#7c8a96}.end p{font-size:11.6px;color:inherit}.review{background:#f7f9fa;border:1px solid #e3e8ed;padding:13px 15px;margin-top:14px}.review p{margin:0;font-size:12.7px}.sourcecite{font:11px 'JetBrains Mono',monospace;color:#8a98a4}.mini{font-size:12px;color:#728194}.small-list li{margin-bottom:2px}
+@media(max-width:720px){body{padding:22px 12px 65px}h1{font-size:25px}h2{font-size:19px}.toc-grid,.two{grid-template-columns:1fr}.flow{grid-template-columns:1fr;gap:24px}.flow > div:not(:last-child)::after{content:'↓';left:50%;top:calc(100% + 3px);transform:translateX(-50%);width:18px;font-size:18px}.diagram{padding:8px 2px}.tbl table{font-size:11.9px}}@media print{body{padding:0;font-size:12px}a{text-decoration:none;color:inherit}.sec{break-inside:avoid}.q div{display:block}}
+
+/* Revision: text and code baseline 16px (the heading hierarchy remains larger). */
+body{font-size:16px;line-height:1.68}
+p,ul,ol,.intro,.def,.key,.figcap,.review p,.end,.end p,.mini,.source,.sourcecite,.kicker,.toc a,.toc a span,.flow b,.flow small,.badge,.q summary,.q div{font-size:16px;line-height:1.65}
+code,pre{font-size:16px;line-height:1.65}
+code{padding:1px 4px}
+.tbl table,.tbl th,.tbl td{font-size:16px;line-height:1.58}
+.tbl table{min-width:700px}
+h3,.plainbox h3{font-size:18px;line-height:1.5}
+h2{font-size:23px;line-height:1.35}
+h1{font-size:30px;line-height:1.3}
+.toc-grid{gap:9px 24px}
+.flow{grid-template-columns:repeat(5,minmax(0,1fr));column-gap:24px}
+.flow>div{padding:12px 10px}
+.flow>div:not(:last-child)::after{font-size:20px}
+.q{padding:13px 0}
+.q div{padding:10px 0 4px 14px}
+.diagram svg{max-width:none;width:100%;min-width:760px}
+@media(max-width:720px){
+ body{font-size:16px}
+ h1{font-size:27px}
+ h2{font-size:22px}
+ .flow{grid-template-columns:1fr;row-gap:25px}
+ .tbl table{font-size:16px}
+ .diagram svg{width:860px;min-width:860px}
+}
+@media print{body{font-size:16px}}
+
+/* Typography specification · user-approved, desktop/mobile */
+body{font-size:16px;line-height:1.68}
+h1{font-size:30px;line-height:1.3}
+h2{font-size:24px;line-height:1.35}
+h3,.plainbox h3{font-size:18px;line-height:1.5}
+h4{font-size:17px;line-height:1.45;margin:15px 0 7px}
+p,ul,ol,li,.intro,.def,.key,.figcap,.review p,.end,.end p,.mini,
+.toc a,.flow b,.flow small,.q summary,.q div{font-size:16px;line-height:1.65}
+code,pre{font-size:16px;line-height:1.65}
+.tbl table,.tbl th,.tbl td{font-size:16px;line-height:1.58}
+/* Auxiliary labels are the only intentionally small text. */
+.kicker{font-size:10.5px;line-height:1.6}
+.toc a span{font-size:11px;line-height:1.6}
+.badge,.source,.sourcecite{font-size:11px;line-height:1.6}
+@media(max-width:720px){
+ h1{font-size:25px;line-height:1.3}
+ h2{font-size:21px;line-height:1.35}
+ h3,.plainbox h3{font-size:18px}
+ h4{font-size:17px}
+}
+@media print{h1{font-size:30px}h2{font-size:24px}}
+</style></head><body><main><header class="head"><div class="kicker">DATABASE SYSTEMS · WEEK 01 · ÔN THI</div><h1>Tổng quan về Cơ sở dữ liệu<br/>và Hệ quản trị CSDL</h1></header><nav class="toc"><strong>Nội dung</strong><div class="toc-grid"><a href="#s01"><span>01</span>Từ dữ liệu đến cơ sở dữ liệu</a><a href="#s02"><span>02</span>Ví dụ UNIVERSITY</a><a href="#s03"><span>03</span>File riêng so với DBMS</a><a href="#s04"><span>04</span>DBMS và hệ CSDL</a><a href="#s05"><span>05</span>Metadata và catalog</a><a href="#s06"><span>06</span>Data model, schema, instance</a><a href="#s07"><span>07</span>Kiến trúc ba mức và độc lập</a><a href="#s08"><span>08</span>Transaction và đồng thời</a><a href="#s09"><span>09</span>Ràng buộc, an toàn, dư thừa</a><a href="#s10"><span>10</span>Vai trò / người dùng</a><a href="#s11"><span>11</span>Quy trình thiết kế</a><a href="#s12"><span>12</span>SQL và giao diện</a><a href="#s13"><span>13</span>Bài tập và lab</a><a href="#s14"><span>14</span>Tự kiểm tra</a></div></nav><section class="sec" id="s01"><h2>1. Từ dữ liệu đến cơ sở dữ liệu</h2>
+<p><strong>Data</strong> là giá trị/sự kiện thô; <strong>information</strong> là dữ liệu được tổ chức và diễn giải trong bối cảnh. <strong>Tri thức nghiệp vụ</strong> là quy tắc giúp hiểu và sử dụng thông tin đúng.</p>
+<div class="tbl"><table><thead><tr><th>Khái niệm</th><th>Ví dụ với mã <code>CS3380</code></th></tr></thead><tbody><tr><td>Dữ liệu (data)</td><td>Chuỗi ký tự <code>CS3380</code>.</td></tr><tr><td>Thông tin (information)</td><td><code>CS3380</code> là mã một môn học, có tên và số tín chỉ xác định.</td></tr><tr><td>Quy tắc nghiệp vụ (business rule)</td><td>Sinh viên phải đạt môn tiên quyết trước khi đăng ký môn tương ứng.</td></tr></tbody></table></div>
+<div class="def"><strong>Database (CSDL)</strong> là tập hợp dữ liệu <strong>có liên quan logic</strong>, <strong>có ý nghĩa ngầm định</strong>, phản ánh một phần thế giới thực (<strong>miniworld</strong>) và được thiết kế cho <strong>mục đích cụ thể</strong>.</div>
+<p><strong>Miniworld</strong> là phạm vi thực tế mà CSDL mô hình hóa. Ví dụ, CSDL UNIVERSITY lưu sinh viên, môn học, lớp học phần, điểm, môn tiên quyết — không cần ghi lại mọi thông tin về đời sống của sinh viên. <strong>Ứng dụng CSDL</strong> là chương trình khai thác CSDL để đăng ký học, nhập điểm, lập báo cáo…</p>
+<div class="key"><strong>Điểm phân biệt:</strong> database là <em>dữ liệu có tổ chức</em>; ứng dụng CSDL là <em>phần mềm dùng dữ liệu</em>. CSDL không phải một tập hợp file bất kỳ, cũng không đồng nhất với phần mềm quản lý nó.</div>
+</section><section class="sec" id="s02"><h2>2. Ví dụ xuyên suốt: UNIVERSITY</h2>
+<p>CSDL UNIVERSITY gồm năm nhóm dữ liệu liên hệ bằng các mã định danh. Quan trọng nhất là phân biệt <strong>môn học (COURSE)</strong> với <strong>lớp học phần (SECTION)</strong>: một môn có thể được mở nhiều lớp ở các học kỳ hoặc giảng viên khác nhau.</p>
+<div class="tbl"><table><thead><tr><th>Relation</th><th>Nội dung và kết nối</th></tr></thead><tbody><tr><td><code>STUDENT</code></td><td>Thông tin sinh viên; nhận diện bởi <code>Student_number</code>.</td></tr><tr><td><code>COURSE</code></td><td>Thông tin môn học; nhận diện bởi <code>Course_number</code>.</td></tr><tr><td><code>SECTION</code></td><td>Lần mở một môn học cụ thể; chứa <code>Course_number</code> để biết thuộc môn nào.</td></tr><tr><td><code>GRADE_REPORT</code></td><td>Ghi điểm một sinh viên ở một lớp học phần; chứa <code>Student_number</code>, <code>Section_identifier</code>, <code>Grade</code>.</td></tr><tr><td><code>PREREQUISITE</code></td><td>Mô tả quan hệ môn học và môn học tiên quyết (hai mã môn).</td></tr></tbody></table></div>
+<div class="diagram"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 215" role="img" aria-label="Liên hệ các nhóm dữ liệu trong UNIVERSITY qua mã định danh">
+<defs><marker id="arrRel" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0 L7 3.5 L0 7" fill="none" stroke="#8398aa" stroke-width="1.3"/></marker></defs>
+<rect x="16" y="11" width="200" height="78" rx="5" fill="#f0f5f8" stroke="#bfcfdb"/>
+<text x="116" y="35" text-anchor="middle" font-size="13" font-weight="700" fill="#345873">STUDENT</text>
+<text x="116" y="61" text-anchor="middle" font-size="12" fill="#627889">Student_number</text>
+<rect x="330" y="11" width="200" height="78" rx="5" fill="#f0f5f8" stroke="#bfcfdb"/>
+<text x="430" y="35" text-anchor="middle" font-size="13" font-weight="700" fill="#345873">GRADE_REPORT</text>
+<text x="430" y="57" text-anchor="middle" font-size="12" fill="#627889">Student_number</text>
+<text x="430" y="77" text-anchor="middle" font-size="12" fill="#627889">+ Section_id</text>
+<rect x="643" y="11" width="200" height="78" rx="5" fill="#f0f5f8" stroke="#bfcfdb"/>
+<text x="743" y="35" text-anchor="middle" font-size="13" font-weight="700" fill="#345873">SECTION</text>
+<text x="743" y="57" text-anchor="middle" font-size="12" fill="#627889">Section_id</text>
+<text x="743" y="77" text-anchor="middle" font-size="12" fill="#627889">+ Course_number</text>
+<rect x="643" y="143" width="200" height="62" rx="5" fill="#f7f8fa" stroke="#ced7de"/>
+<text x="743" y="169" text-anchor="middle" font-size="13" font-weight="700" fill="#345873">COURSE</text>
+<text x="743" y="191" text-anchor="middle" font-size="12" fill="#627889">Course_number</text>
+<rect x="330" y="143" width="200" height="62" rx="5" fill="#f7f8fa" stroke="#ced7de"/>
+<text x="430" y="169" text-anchor="middle" font-size="13" font-weight="700" fill="#345873">PREREQUISITE</text>
+<text x="430" y="191" text-anchor="middle" font-size="12" fill="#627889">Hai mã môn liên hệ</text>
+<path d="M216 50 H325" fill="none" stroke="#92a5b3" stroke-width="1.8" marker-end="url(#arrRel)"/>
+<path d="M530 50 H638" fill="none" stroke="#92a5b3" stroke-width="1.8" marker-end="url(#arrRel)"/>
+<path d="M743 90 V137" fill="none" stroke="#92a5b3" stroke-width="1.8" marker-end="url(#arrRel)"/>
+<path d="M638 174 H535" fill="none" stroke="#92a5b3" stroke-width="1.8" marker-end="url(#arrRel)"/>
+</svg><div class="figcap">Đường đọc bảng điểm: STUDENT → GRADE_REPORT → SECTION → COURSE. PREREQUISITE gắn môn học với môn tiên quyết; mũi tên là đường tra cứu minh họa, không phải ký pháp khóa ngoại hay bản ERD chính thức.</div></div>
+<p><strong>Ví dụ truy vấn về mặt ý tưởng:</strong> muốn biết sinh viên A đạt điểm gì ở môn B, lấy bản ghi của A trong STUDENT, nối với GRADE_REPORT qua mã sinh viên, rồi dùng mã lớp học phần để tìm SECTION và mã môn để xác định COURSE.</p>
+</section><section class="sec" id="s03"><h2>3. Vì sao dùng DBMS thay vì các file riêng?</h2>
+<p>Trong <strong>file processing</strong>, mỗi ứng dụng thường tự lưu trữ và tự xử lý cấu trúc file của mình. Khi nhiều ứng dụng cùng cần một dữ liệu, dễ hình thành nhiều bản sao không được cập nhật đồng bộ. <strong>Database approach</strong> tổ chức dữ liệu dùng chung và để DBMS quản lý cấu trúc, truy cập, ràng buộc và nhiều thao tác đọc/ghi.</p>
+<div class="tbl"><table><thead><tr><th>Vấn đề khi dùng file riêng</th><th>Cách tiếp cận CSDL giảm nhẹ</th></tr></thead><tbody><tr><td><strong>Dư thừa (redundancy):</strong> cùng email sinh viên xuất hiện ở ba file</td><td>Thiết kế dữ liệu sinh viên chung, hạn chế lặp không cần thiết.</td></tr><tr><td><strong>Không nhất quán (inconsistency):</strong> một file có email mới, file khác có email cũ</td><td>Dùng nguồn dữ liệu chung và quy tắc cập nhật có kiểm soát.</td></tr><tr><td><strong>Phụ thuộc chương trình–dữ liệu:</strong> đổi cấu trúc file kéo theo sửa code</td><td>Cấu trúc và metadata được DBMS quản lý, ứng dụng ít lệ thuộc lưu trữ hơn.</td></tr><tr><td><strong>Khó chia sẻ/bảo mật/đồng thời:</strong> tự viết cơ chế truy cập, khóa, phục hồi</td><td>DBMS hỗ trợ phân quyền, giao dịch, kiểm soát đồng thời và khôi phục.</td></tr></tbody></table></div>
+<div class="key"><strong>Không tuyệt đối hóa:</strong> dùng DBMS <em>không tự động</em> loại bỏ mọi dư thừa hay lỗi dữ liệu. Thiết kế schema và sử dụng giao dịch/ràng buộc vẫn phải đúng. Một số dư thừa có chủ đích có thể được dùng để tối ưu hiệu năng.</div>
+</section><section class="sec" id="s04"><h2>4. DBMS, hệ CSDL và các chức năng</h2>
+<div class="def"><strong>Database Management System (DBMS)</strong> là hệ thống phần mềm cho phép <strong>định nghĩa (define)</strong>, <strong>xây dựng (construct)</strong>, <strong>thao tác (manipulate)</strong> và <strong>chia sẻ (share)</strong> CSDL; đồng thời hỗ trợ bảo vệ, duy trì và khôi phục.</div>
+<div class="tbl"><table><thead><tr><th>Chức năng</th><th>Hiểu đúng</th></tr></thead><tbody><tr><td>Define</td><td>Khai báo schema, kiểu dữ liệu, cấu trúc và ràng buộc.</td></tr><tr><td>Construct</td><td>Tổ chức và lưu dữ liệu trên thiết bị do DBMS kiểm soát.</td></tr><tr><td>Manipulate</td><td>Truy vấn, thêm, sửa, xóa, tổng hợp/báo cáo dữ liệu.</td></tr><tr><td>Share</td><td>Nhiều người dùng/ứng dụng truy cập, có điều phối và kiểm soát.</td></tr><tr><td>Protect &amp; maintain</td><td>Phân quyền, ràng buộc, sao lưu, khôi phục, bảo trì.</td></tr></tbody></table></div>
+<p><strong>Hệ CSDL (database system)</strong> có phần lõi là <strong>database + DBMS software</strong>; môi trường thực tế còn bao gồm ứng dụng/truy vấn, người dùng, phần cứng và quy trình.</p>
+<h3>DBMS xử lý một yêu cầu ra sao?</h3>
+<div class="flow"><div><b>① Nhận lệnh</b><small>DDL, DML, query hoặc transaction</small></div><div><b>② Phân tích</b><small>Cú pháp, kiểu, quyền truy cập</small></div><div><b>③ Tra catalog</b><small>Schema, ràng buộc, metadata</small></div><div><b>④ Tối ưu / thực thi</b><small>Chọn đường truy cập, đọc/ghi</small></div><div><b>⑤ Trả kết quả</b><small>Dữ liệu, trạng thái hoặc lỗi</small></div></div>
+<p>Các thành phần thực hiện gồm <strong>DDL compiler</strong> (xử lý định nghĩa), <strong>query compiler/optimizer</strong> (phân tích, lập kế hoạch), <strong>DML compiler/precompiler</strong> (thao tác/truy vấn trong ứng dụng), <strong>runtime database processor</strong> (thực thi), <strong>stored data manager</strong> (truy cập dữ liệu), <strong>catalog/data dictionary</strong> (metadata) và <strong>concurrency/recovery subsystem</strong> (đồng thời/khôi phục).</p>
+<div class="key"><strong>Phân biệt hay hỏi:</strong> <em>query optimizer</em> quyết định <strong>cách</strong> truy vấn hiệu quả; <em>stored data manager</em> phụ trách truy cập dữ liệu lưu trữ. Catalog chứa <strong>mô tả cấu trúc</strong>, không phải toàn bộ bản ghi dữ liệu.</div>
+</section><section class="sec" id="s05"><h2>5. Metadata, catalog và tính tự mô tả</h2>
+<p><strong>Metadata</strong> là dữ liệu mô tả dữ liệu: tên bảng/cột, kiểu, cách lưu, ràng buộc…; thường được quản lý trong <strong>DBMS catalog (data dictionary)</strong>. Đây là nền tảng của <strong>self-describing nature</strong>: hệ CSDL chứa cả dữ liệu thực tế lẫn thông tin mô tả cách hiểu và kiểm soát nó.</p>
+<div class="tbl"><table><thead><tr><th>Dữ liệu thực (instance)</th><th>Metadata tương ứng</th></tr></thead><tbody><tr><td><code>STUDENT(17, "Smith", 1, "CS")</code></td><td>Có bảng <code>STUDENT</code>; cột <code>Student_number</code> mang kiểu số / mã sinh viên.</td></tr><tr><td><code>GRADE_REPORT(..., "A")</code></td><td>Có thuộc tính <code>Grade</code>; miền cho phép do schema/ràng buộc xác định.</td></tr></tbody></table></div>
+<p>Khác với chương trình xử lý file có cấu trúc bản ghi <em>hard-code</em> trong mã nguồn, DBMS đọc metadata để biết schema đang có những gì. Vì vậy có thể thay đổi một số khía cạnh của tổ chức dữ liệu mà không phải sửa mọi ứng dụng đang dùng nó.</p>
+<div class="key"><strong>Metadata ≠ constraint:</strong> metadata là <em>mô tả</em> (chẳng hạn thuộc tính Grade có kiểu và miền nào); constraint là <em>điều kiện hợp lệ</em> mà dữ liệu phải thỏa. Ràng buộc có thể được ghi trong metadata.</div>
+</section><section class="sec" id="s06"><h2>6. Data model, schema và instance</h2>
+<div class="def"><strong>Data model (mô hình dữ liệu)</strong> là tập khái niệm để mô tả <strong>cấu trúc</strong>, <strong>ràng buộc</strong> và <strong>phép toán</strong> trên dữ liệu.</div>
+<div class="tbl"><table><thead><tr><th>Nhóm mô hình</th><th>Bản chất</th><th>Ví dụ</th></tr></thead><tbody><tr><td>Conceptual / high-level</td><td>Diễn đạt đối tượng và quan hệ của miniworld; gần yêu cầu người dùng.</td><td>ER/EER</td></tr><tr><td>Representational / logical</td><td>Mô tả dữ liệu theo cấu trúc logic được DBMS hỗ trợ.</td><td>Mô hình quan hệ</td></tr><tr><td>Physical / low-level</td><td>Mô tả lưu trữ vật lý, bản ghi, chỉ mục, đường truy cập.</td><td>Tổ chức file, index</td></tr></tbody></table></div>
+<p><strong>Schema</strong> là phần mô tả cấu trúc (ít thay đổi), còn <strong>database instance/state</strong> là tập giá trị dữ liệu thực có <em>tại một thời điểm</em> (thay đổi khi thêm/sửa/xóa). Một bảng hoặc cột là <strong>schema construct</strong>. Trạng thái là <strong>valid state</strong> khi thỏa mọi ràng buộc đã định nghĩa.</p>
+<div class="tbl"><table><thead><tr><th>Schema</th><th>Instance ở thời điểm hiện tại</th></tr></thead><tbody><tr><td><code>STUDENT(Name, Student_number, Class, Major)</code></td><td><code>(Smith, 17, 1, CS)</code><br/><code>(Brown, 8, 2, CS)</code></td></tr></tbody></table></div>
+<div class="key"><strong>Câu hỏi thi:</strong> thêm một sinh viên → <em>instance</em> thay đổi; thêm thuộc tính <code>Email</code> vào định nghĩa STUDENT → <em>schema</em> thay đổi.</div>
+</section><section class="sec" id="s07"><h2>7. Kiến trúc ba mức và hai loại độc lập dữ liệu</h2>
+<p>Kiến trúc <strong>three-schema architecture</strong> tách cách người dùng nhìn CSDL khỏi cấu trúc logic chung và lưu trữ vật lý. Điều này hỗ trợ <strong>trừu tượng hóa</strong> và <strong>độc lập dữ liệu</strong>.</p>
+<div class="diagram"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 320" role="img" aria-label="External views ánh xạ vào conceptual schema rồi internal schema và dữ liệu vật lý">
+<defs><marker id="arr3" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0 L7 3.5 L0 7" fill="none" stroke="#728ca0" stroke-width="1.3"/></marker></defs>
+<g font-family="Space Grotesk,Arial" text-anchor="middle">
+<text x="102" y="55" font-size="13" font-weight="700" fill="#4b6477">EXTERNAL</text>
+<text x="102" y="180" font-size="13" font-weight="700" fill="#4b6477">CONCEPTUAL</text>
+<text x="102" y="271" font-size="13" font-weight="700" fill="#4b6477">INTERNAL</text>
+<rect x="232" y="18" width="206" height="65" rx="5" fill="#f2f6f9" stroke="#c7d5df"/>
+<text x="335" y="45" font-size="13" font-weight="700" fill="#365773">View sinh viên</text>
+<text x="335" y="68" font-size="12" fill="#607789">TRANSCRIPT</text>
+<rect x="499" y="18" width="206" height="65" rx="5" fill="#f2f6f9" stroke="#c7d5df"/>
+<text x="602" y="45" font-size="13" font-weight="700" fill="#365773">View đào tạo</text>
+<text x="602" y="68" font-size="12" fill="#607789">PREREQUISITES</text>
+<rect x="344" y="146" width="290" height="68" rx="5" fill="#edf3f8" stroke="#bed0dd"/>
+<text x="489" y="174" font-size="13" font-weight="700" fill="#365773">Conceptual schema</text>
+<text x="489" y="198" font-size="12" fill="#607789">Cấu trúc logic toàn CSDL</text>
+<rect x="344" y="248" width="290" height="64" rx="5" fill="#f7f8fa" stroke="#cbd5dd"/>
+<text x="489" y="274" font-size="13" font-weight="700" fill="#365773">Internal schema</text>
+<text x="489" y="297" font-size="12" fill="#607789">File · index · access path</text>
+</g>
+<path d="M335 84 V111 H489 V140" fill="none" stroke="#728ca0" stroke-width="1.7" marker-end="url(#arr3)"/>
+<path d="M602 84 V111 H489" fill="none" stroke="#728ca0" stroke-width="1.7"/>
+<path d="M489 215 V243" fill="none" stroke="#728ca0" stroke-width="1.7" marker-end="url(#arr3)"/>
+</svg><div class="figcap">External: nhiều view cho các nhóm người dùng. Conceptual: toàn bộ cấu trúc logic. Internal: tổ chức lưu trữ. Các mức liên hệ qua phép ánh xạ (mapping).</div></div>
+<div class="tbl"><table><thead><tr><th>Loại độc lập</th><th>Thay đổi ở đâu?</th><th>Mức nào có thể giữ nguyên?</th><th>Ví dụ</th></tr></thead><tbody><tr><td><strong>Physical data independence</strong></td><td>Internal schema</td><td>Conceptual schema và ứng dụng ở trên</td><td>Thêm index, đổi file organization, đổi access path.</td></tr><tr><td><strong>Logical data independence</strong></td><td>Conceptual schema</td><td>External views / chương trình hiện có</td><td>Thêm cột hoặc tách bảng nhưng vẫn giữ view cũ bằng ánh xạ phù hợp.</td></tr></tbody></table></div>
+<p><strong>Physical independence thường dễ đạt hơn logical independence</strong> vì thay đổi tổ chức lưu trữ ít tác động tới ý nghĩa dữ liệu hơn thay đổi cấu trúc logic.</p>
+<div class="key"><strong>Cách nhớ không nhầm:</strong> <em>physical</em> = thay đổi <strong>cách lưu</strong> nhưng giữ logic; <em>logical</em> = thay đổi <strong>cấu trúc logic</strong> nhưng cố giữ cách ứng dụng nhìn dữ liệu. Không có nghĩa mọi thay đổi schema đều tự động tương thích.</div>
+<h3>View và data abstraction</h3>
+<p><strong>View</strong> là phần dữ liệu hoặc dữ liệu dẫn xuất được trình bày phù hợp một nhóm người dùng. Chẳng hạn sinh viên cần <code>TRANSCRIPT</code> còn bộ phận đào tạo cần <code>COURSE_PREREQUISITES</code>. View giúp che chi tiết không cần thiết và hỗ trợ giới hạn thông tin hiển thị theo quyền.</p>
+</section><section class="sec" id="s08"><h2>8. Transaction và kiểm soát đồng thời</h2>
+<p><strong>Transaction (giao dịch)</strong> là một đơn vị thực thi gồm một hoặc nhiều thao tác đọc/ghi CSDL. Trong bài này cần đặc biệt hiểu <strong>atomicity</strong> và <strong>isolation</strong>:</p>
+<div class="tbl"><table><thead><tr><th>Khái niệm</th><th>Ý nghĩa thực tế</th></tr></thead><tbody><tr><td><strong>Atomicity — tính nguyên tử</strong></td><td>Các thay đổi của một giao dịch hoặc cùng thành công, hoặc được hoàn tác khi giao dịch thất bại.</td></tr><tr><td><strong>Isolation — tính cô lập</strong></td><td>Các giao dịch đồng thời phải được điều phối để tránh tương tác làm sai kết quả; mức bảo đảm cụ thể phụ thuộc cơ chế/mức cô lập.</td></tr><tr><td><strong>Concurrency control</strong></td><td>Cơ chế kiểm soát nhiều thao tác/giao dịch chạy đồng thời.</td></tr><tr><td><strong>Rollback / recovery</strong></td><td>Hoàn tác giao dịch lỗi hoặc phục hồi CSDL sau sự cố.</td></tr></tbody></table></div>
+<h3>Ví dụ trọng tâm: hai sinh viên tranh chỗ cuối</h3>
+<p>Một lớp học phần còn <strong>1 chỗ</strong>. A và B đăng ký gần như cùng lúc.</p>
+<div class="tbl"><table><thead><tr><th>Bước</th><th>Không kiểm soát đồng thời</th><th>Có kiểm soát hợp lệ</th></tr></thead><tbody><tr><td>1</td><td>A và B đều đọc “còn 1 chỗ”.</td><td>Đảm bảo thao tác kiểm tra chỗ và cấp chỗ không tranh chấp sai.</td></tr><tr><td>2</td><td>A và B đều được chấp nhận; có thể vượt giới hạn hoặc mất cập nhật.</td><td>Chỉ một đăng ký được chấp nhận; người còn lại thấy hết chỗ.</td></tr><tr><td>3</td><td>Lỗi giữa chừng có thể để lại đăng ký nhưng không cập nhật sĩ số.</td><td>Giao dịch thành công toàn phần hoặc được hoàn tác.</td></tr></tbody></table></div>
+<div class="key"><strong>Hai lỗi không giống nhau:</strong> <em>isolation/concurrency</em> giải quyết tranh chấp giữa <strong>nhiều giao dịch</strong>; <em>atomicity</em> ngăn một <strong>giao dịch riêng lẻ</strong> chỉ ghi xong một phần. Mục tiêu chung là giữ CSDL ở các trạng thái hợp lệ.</div>
+</section><section class="sec" id="s09"><h2>9. Ràng buộc toàn vẹn, an toàn và dư thừa</h2>
+<p><strong>Integrity constraints</strong> xác định những trạng thái dữ liệu được chấp nhận. DBMS kiểm tra và từ chối thao tác làm vi phạm các ràng buộc được khai báo/hỗ trợ.</p>
+<div class="tbl"><table><thead><tr><th>Loại ràng buộc</th><th>Cần nhớ</th><th>Ví dụ</th></tr></thead><tbody><tr><td><strong>Domain constraint</strong></td><td>Giá trị phải thuộc miền cho phép.</td><td><code>Grade ∈ {A,B,C,D,F,I}</code>, lương ≥ 0.</td></tr><tr><td><strong>Key constraint</strong></td><td>Định danh của các bản ghi không được trùng.</td><td>Hai sinh viên không cùng <code>Student_number</code>.</td></tr><tr><td><strong>Referential integrity</strong></td><td>Giá trị tham chiếu phải trỏ tới đối tượng hợp lệ trong relation được tham chiếu.</td><td>Mã sinh viên trong GRADE_REPORT phải tồn tại ở STUDENT.</td></tr><tr><td><strong>Business rule</strong></td><td>Quy tắc đặc thù của miniworld.</td><td>Đăng ký học phần phải thỏa môn tiên quyết.</td></tr></tbody></table></div>
+<p><strong>Security/authorization</strong> giới hạn ai được đọc và cập nhật dữ liệu nào; <strong>backup &amp; recovery</strong> phục hồi khi hỏng hóc/lỗi; <strong>concurrency control</strong> hỗ trợ truy cập đồng thời đúng; <strong>standards/enforcement</strong> áp dụng quy tắc nhất quán.</p>
+<h3>Dư thừa khác không nhất quán</h3>
+<p><strong>Redundancy:</strong> một thông tin được lưu lặp ở nhiều nơi. <strong>Inconsistency:</strong> các bản biểu diễn cùng thông tin lại mâu thuẫn, như hai email khác nhau của cùng sinh viên. Dư thừa <em>có nguy cơ</em> gây không nhất quán, nhưng hai khái niệm không đồng nghĩa. <strong>Normalization</strong> hỗ trợ hạn chế dư thừa không cần thiết; đôi khi hệ thống chấp nhận dư thừa có kiểm soát để cải thiện hiệu năng.</p>
+</section><section class="sec" id="s10"><h2>10. Ai tham gia hệ CSDL?</h2>
+<p>Cần phân biệt <strong>vai trò phụ trách hệ thống</strong> với <strong>kiểu người dùng cuối</strong>.</p>
+<div class="tbl"><table><thead><tr><th>Vai trò</th><th>Trách nhiệm</th></tr></thead><tbody><tr><td>DBA</td><td>Quản trị DBMS: quyền, backup, monitoring, tuning.</td></tr><tr><td>Database designer</td><td>Phân tích yêu cầu dữ liệu, thiết kế cấu trúc và ràng buộc.</td></tr><tr><td>Application programmer</td><td>Viết ứng dụng, các lệnh truy vấn/giao dịch.</td></tr><tr><td>End user</td><td>Khai thác CSDL thông qua biểu mẫu, báo cáo, query.</td></tr><tr><td>DBMS designer/operator</td><td>Phát triển/vận hành phần mềm và hạ tầng DBMS.</td></tr></tbody></table></div><div class="tbl"><table><thead><tr><th>Kiểu người dùng / programmer</th><th>Dấu hiệu nhận diện</th></tr></thead><tbody><tr><td>Casual users</td><td>Sử dụng không thường xuyên, yêu cầu truy vấn có thể thay đổi.</td></tr><tr><td>Parametric users</td><td>Thao tác lặp đi lặp lại qua chức năng/biểu mẫu định sẵn.</td></tr><tr><td>Sophisticated users</td><td>Tự tạo truy vấn hoặc phân tích phức tạp.</td></tr><tr><td>Standalone users</td><td>Dùng phần mềm CSDL cá nhân/ứng dụng đóng gói.</td></tr><tr><td>Application programmers</td><td>Viết chương trình chứa query và transaction.</td></tr></tbody></table></div>
+<div class="key"><strong>Ví dụ phân biệt:</strong> nhân viên nhập điểm qua form hằng ngày → <em>parametric user</em>; DBA thiết lập quyền và sao lưu → <em>database administrator</em>. Đây là hai trục phân loại khác nhau.</div>
+</section><section class="sec" id="s11"><h2>11. Pipeline thiết kế CSDL</h2>
+<p>Trọng tâm học phần là <strong>thiết kế đúng cấu trúc dữ liệu trước khi viết SQL</strong>. Bắt đầu từ yêu cầu nghiệp vụ, mô hình hóa miniworld, rồi chuyển thành lược đồ có thể cài đặt.</p>
+<div class="tbl"><table><thead><tr><th>Giai đoạn</th><th>Câu hỏi cần trả lời / đầu ra</th></tr></thead><tbody><tr><td><strong>1. Phân tích yêu cầu</strong></td><td>Hệ thống quản lý gì? Những dữ liệu và quy tắc nào cần lưu? → requirements/miniworld.</td></tr><tr><td><strong>2. Thiết kế quan niệm</strong></td><td>Có thực thể, thuộc tính, liên kết nào? → ER/EER (có thể dùng ERDPlus).</td></tr><tr><td><strong>3. Thiết kế logic</strong></td><td>Chuyển mô hình thành quan hệ, khóa, ràng buộc thế nào? → relational schema.</td></tr><tr><td><strong>4. Thiết kế vật lý</strong></td><td>Lưu dữ liệu, đặt index, chọn access path ra sao? → cấu trúc lưu trữ/hiệu năng.</td></tr><tr><td><strong>5. Cài đặt và thao tác</strong></td><td>Tạo database/schema; truy vấn và cập nhật. → SQL DDL/DML.</td></tr><tr><td><strong>6. Đánh giá/tinh chỉnh</strong></td><td>Có dư thừa, dị thường, bất hợp lý? → xem xét FD, normalization và điều chỉnh thiết kế.</td></tr></tbody></table></div>
+<p>Thiết kế một <strong>information system</strong> còn có nhánh <strong>functional requirements</strong> dẫn tới thiết kế ứng dụng/chương trình, bên cạnh nhánh <strong>data requirements</strong> dẫn tới thiết kế database. Hai nhánh liên quan nhưng không đồng nhất.</p>
+<div class="key"><strong>Đừng nhầm:</strong> ER/EER thuộc <em>thiết kế quan niệm</em>; lược đồ quan hệ với primary/foreign keys thuộc <em>thiết kế logic</em>; index/đường truy cập thuộc <em>thiết kế vật lý</em>.</div>
+</section><section class="sec" id="s12"><h2>12. SQL và giao diện truy cập DBMS</h2>
+<p>Cần phân biệt mục đích của các nhóm lệnh, <strong>chưa yêu cầu học sâu cú pháp truy vấn</strong>.</p>
+<div class="tbl"><table><thead><tr><th>Nhóm</th><th>Mục đích</th><th>Ví dụ</th></tr></thead><tbody><tr><td><strong>DDL</strong></td><td>Định nghĩa/chỉnh sửa schema và ràng buộc.</td><td><code>CREATE TABLE</code>, <code>ALTER TABLE</code></td></tr><tr><td><strong>DML</strong></td><td>Truy vấn và cập nhật dữ liệu.</td><td><code>SELECT</code>, <code>INSERT</code>, <code>UPDATE</code>, <code>DELETE</code></td></tr><tr><td><strong>DCL</strong></td><td>Phân quyền.</td><td><code>GRANT</code></td></tr><tr><td><strong>TCL</strong></td><td>Điều khiển giao dịch.</td><td><code>COMMIT</code>, <code>ROLLBACK</code></td></tr></tbody></table></div>
+<p><strong>Query language</strong> biểu diễn yêu cầu truy xuất, ví dụ <code>SELECT … FROM … WHERE …</code>. <code>SELECT</code> vừa thuộc nhóm DML, vừa là lệnh truy vấn: một cách gọi nhấn mạnh <em>nhóm thao tác</em>, cách còn lại nhấn mạnh <em>mục đích truy xuất</em>.</p>
+<div class="tbl"><table><thead><tr><th>Giao diện</th><th>Ai dùng / ví dụ</th></tr></thead><tbody><tr><td>Command-line/query interface</td><td>Người biết SQL/DBA — mysql client, SQL console.</td></tr><tr><td>Form/menu-based</td><td>Người dùng cuối — biểu mẫu nhập điểm, đăng ký.</td></tr><tr><td>Graphical interface</td><td>Thiết kế/khai thác trực quan — Workbench, ERDPlus.</td></tr><tr><td>Application API</td><td>Ứng dụng truy cập DBMS — JDBC, ODBC, ORM, backend.</td></tr></tbody></table></div>
+</section><section class="sec" id="s13"><h2>13. Hai bài tập trọng tâm và Lab 01</h2>
+<h3>Bài 1 — nhận diện đúng loại khái niệm</h3>
+<div class="tbl"><table><thead><tr><th>Phát biểu</th><th>Phân loại</th><th>Vì sao</th></tr></thead><tbody><tr><td>“CS3380” trong COURSE</td><td>Data</td><td>Một giá trị dữ liệu.</td></tr><tr><td>“CS3380 là môn Database, 3 tín chỉ…”</td><td>Information</td><td>Giá trị đã được gắn ngữ nghĩa.</td></tr><tr><td>“Grade chỉ nhận {A, B, C, D, F, I}”</td><td>Constraint</td><td>Điều kiện giới hạn giá trị hợp lệ.</td></tr><tr><td>“GRADE_REPORT có Student_number, Section_identifier, Grade”</td><td>Metadata</td><td>Mô tả cấu trúc của một relation.</td></tr><tr><td>“Nhập điểm A cho Smith ở section Database kỳ trước”</td><td>Transaction (thao tác nghiệp vụ)</td><td>Mô tả một hành động cập nhật dữ liệu; việc triển khai giao dịch cụ thể tùy ứng dụng.</td></tr></tbody></table></div>
+<h3>Bài 2 — ba file Excel dùng chung thông tin sinh viên</h3>
+<p><code>student_registration.xlsx</code>, <code>student_fee.xlsx</code>, <code>student_advising.xlsx</code> đều lưu mã, họ tên, ngày sinh, lớp, email. Khi phòng đào tạo đổi email còn phòng tài chính chưa đổi: <strong>(1) dư thừa</strong> vì cùng dữ liệu bị lặp; <strong>(2) không nhất quán</strong> vì email mâu thuẫn; <strong>(3) khó đồng bộ/bảo trì</strong> do cập nhật phân tán. Thiết kế database approach tạo dữ liệu sinh viên chung, tổ chức ứng dụng truy cập qua DBMS, khai báo quyền và kiểm soát cập nhật; <em>không đảm bảo tự động đúng nếu người dùng/thiết kế vẫn lưu các bản sao không đồng bộ.</em></p>
+<h3>Lab 01 — phạm vi cần làm được</h3>
+<p>Cài <strong>MySQL Server</strong> và <strong>MySQL Workbench</strong>, kiểm tra server chạy/kết nối được và lưu ảnh/log theo yêu cầu lớp. Nhớ bốn thao tác database-level:</p>
+<pre>SHOW DATABASES;
+CREATE DATABASE university_demo;
+USE university_demo;
+DROP DATABASE university_demo;</pre>
+<p class="mini">Lệnh <code>DROP DATABASE</code> xóa database được chỉ định; chỉ chạy với database thử nghiệm, không chạy trên dữ liệu cần giữ.</p>
+</section><section class="sec" id="s14"><h2>14. Tự kiểm tra trước khi thi</h2>
+<p>Hãy thử tự giải thích các câu hỏi sau mà không xem đáp án để kiểm tra mức độ nắm vững kiến thức.</p>
+<details class="q"><summary>1. Database, DBMS và database system khác nhau thế nào?</summary><div>Database là tập dữ liệu liên quan có ý nghĩa và mục đích; DBMS là phần mềm định nghĩa/xây dựng/thao tác/chia sẻ, bảo vệ CSDL; database system có lõi database + DBMS, và môi trường thực tế có thêm users, applications, hardware, procedures.</div></details>
+<details class="q"><summary>2. Tại sao metadata làm hệ CSDL có tính tự mô tả?</summary><div>Vì DBMS lưu tên bảng, cột, kiểu, ràng buộc… trong catalog, rồi tham chiếu chúng khi xử lý lệnh; ứng dụng không phải tự mang toàn bộ mô tả cấu trúc file vật lý.</div></details>
+<details class="q"><summary>3. Schema khác instance ở điểm nào?</summary><div>Schema là định nghĩa cấu trúc; instance là giá trị dữ liệu hiện có tại một thời điểm. INSERT thay đổi instance; ALTER TABLE có thể thay đổi schema.</div></details>
+<details class="q"><summary>4. Hai loại độc lập dữ liệu: thay đổi mức nào và giữ mức nào?</summary><div>Vật lý: thay đổi internal, cố giữ conceptual và ứng dụng; logic: thay đổi conceptual, cố giữ external views và chương trình. Vật lý thường dễ đạt hơn logic.</div></details>
+<details class="q"><summary>5. Hai sinh viên cùng đăng ký chỗ cuối: cần cơ chế nào?</summary><div>Concurrency control/isolation để tránh cả hai cùng được chấp nhận; atomicity và rollback để tránh chỉ một phần thao tác đăng ký được ghi khi có lỗi.</div></details>
+<details class="q"><summary>6. ER/EER, relational schema, index thuộc các giai đoạn nào?</summary><div>ER/EER: thiết kế quan niệm; relational schema, keys, constraints: thiết kế logic; index/access path: thiết kế vật lý.</div></details>
+<div class="review"><p><strong>Trình tự nhớ ngắn:</strong> miniworld → database → DBMS → metadata/schema → kiến trúc ba mức → transaction và constraints → thiết kế ER/EER → quan hệ → SQL. Nếu một mắt xích chưa giải thích được bằng ví dụ UNIVERSITY, nên đọc lại đúng mục ấy thay vì học thuộc rời rạc.</p></div>
+</section></main></body></html>
