@@ -1,0 +1,291 @@
+<!doctype html><html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="color-scheme" content="light"><title>Database W3 · Liên kết và ràng buộc ER</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet"><style>
+:root{--ink:#253340;--sub:#435263;--muted:#718194;--line:#dfe5eb;--accent:#315d7d;--soft:#f6f8fa;--blue:#eef4f9}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{max-width:1032px;margin:0 auto;padding:34px 16px 80px;background:#fff;color:var(--ink);font:400 16px/1.68 'Space Grotesk',Arial,Helvetica,sans-serif}
+main{max-width:1000px;margin:0 auto}
+h1,h2,h3,h4,p{margin-top:0}
+h1{font-size:30px;line-height:1.3;letter-spacing:-.55px;margin:8px 0 0}
+h2{font-size:24px;line-height:1.35;letter-spacing:-.28px;margin:0 0 13px}
+h3{font-size:18px;line-height:1.5;margin:22px 0 9px}
+h4{font-size:17px;line-height:1.45;margin:17px 0 7px}
+p,li{font-size:16px;line-height:1.68;color:var(--sub)}
+p{margin:0 0 13px}ul,ol{margin:8px 0 15px;padding-left:25px}li{margin:0 0 6px}
+strong{color:#2e4558}a{color:var(--accent)}a:hover{text-decoration-thickness:2px}
+code,pre,.formula{font-family:'JetBrains Mono',Consolas,monospace;font-size:16px;line-height:1.65}
+code{background:#f1f3f6;border:1px solid #e4e8ee;border-radius:3px;padding:1px 4px;overflow-wrap:anywhere}
+pre{background:#f7f8fa;border:1px solid var(--line);padding:14px 17px;border-radius:5px;overflow:auto;margin:12px 0 16px;color:#34475a}
+.head{padding:19px 0 24px;border-top:3px solid var(--accent);border-bottom:1px solid var(--line)}
+.kicker{color:var(--accent);font:600 11px/1.6 'JetBrains Mono',monospace;letter-spacing:.08em}
+.toc{padding:19px 0 18px;border-bottom:1px solid var(--line);margin-bottom:8px}
+.toc>strong{display:block;margin:0 0 11px}.toc-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 23px}
+.toc a{text-decoration:none;font-size:16px;line-height:1.55;display:flex;align-items:baseline;gap:8px}.toc a:hover{text-decoration:underline}
+.toc a span{font:500 11px 'JetBrains Mono',monospace;color:#8da0af;min-width:24px}
+.sec{padding:27px 0 29px;border-bottom:1px solid #e9edf1}.sec:last-child{border-bottom:0}
+.def{background:#f4f7fa;border-left:3px solid #7396b4;padding:13px 16px;margin:14px 0 17px;color:#435a70;font-size:16px;line-height:1.7}
+.key{border-left:2px solid #9eacb9;padding:5px 14px;margin:14px 0 17px;color:#465c6f;line-height:1.68}.key strong{color:#2d526e}
+.tbl{overflow:auto;margin:14px 0 18px;border:1px solid var(--line);border-radius:5px}.tbl table{border-collapse:collapse;width:100%;min-width:690px;font-size:16px;line-height:1.58}
+.tbl th{background:#eef2f5;color:#30485d;text-align:left;padding:10px 13px;font-size:16px;vertical-align:top;font-weight:700;border-bottom:1px solid #d9e2e9}
+.tbl td{padding:11px 13px;vertical-align:top;color:#48596a;font-size:16px;border-bottom:1px solid #edf0f3}.tbl tr:last-child td{border-bottom:0}.tbl tbody tr:nth-child(even){background:#fcfcfd}
+.tbl td strong{white-space:normal}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:12px 0 18px}.plainbox{border:1px solid var(--line);padding:13px 16px;border-radius:5px}.plainbox h3{margin:0 0 8px}.plainbox p:last-child{margin-bottom:0}
+.diagram{border:1px solid var(--line);border-radius:5px;background:#fff;overflow-x:auto;margin:14px 0 17px;padding:12px 10px}
+.diagram svg{display:block;width:100%;min-width:760px;height:auto;margin:0 auto}.figcap{font-size:16px;color:#64798b;line-height:1.6;margin:10px 7px 2px}
+.label{color:#6f8495;font-size:11.5px;font-family:'JetBrains Mono',monospace;letter-spacing:.035em}
+.formula{background:#f7f8fa;border:1px solid #e1e7eb;border-radius:5px;padding:12px 14px;margin:13px 0 16px;overflow-x:auto;white-space:nowrap;text-align:center;color:#36526b}
+.note{font-size:16px;color:#66788a}.answer{padding:10px 15px;border-left:2px solid #d8e0e7;color:#465b6c;line-height:1.7;margin-top:10px}
+.q{padding:13px 0;border-bottom:1px solid #e7ecf0}.q:last-child{border-bottom:0}.q summary{font-size:16px;line-height:1.6;font-weight:600;color:#30485e;cursor:pointer}
+.q summary::marker{color:#7891a6}
+.review{background:#f7f9fa;border:1px solid #e3e8ed;border-radius:4px;padding:14px 17px;margin:15px 0}.review p{margin:0}
+.ascii{white-space:pre;line-height:1.7}
+@media(max-width:720px){body{padding:22px 12px 68px}h1{font-size:25px}h2{font-size:21px}h3{font-size:18px}h4{font-size:17px}.toc-grid,.two{grid-template-columns:1fr}.sec{padding:24px 0}.diagram{padding:8px 5px}.diagram svg{min-width:810px;width:810px}.tbl table{min-width:700px}}
+@media print{body{padding:0;font-size:16px}.sec{break-inside:auto}.diagram{break-inside:avoid}details .answer{display:block}a{text-decoration:none;color:inherit}}
+
+.svg-sm{font:12px 'Space Grotesk',Arial,sans-serif;fill:#344e62}
+.svg-md{font:600 13px 'Space Grotesk',Arial,sans-serif;fill:#294d67}
+.svg-muted{font:12px 'Space Grotesk',Arial,sans-serif;fill:#627c8f}
+.tiny{font:11.5px 'JetBrains Mono',monospace;color:#74899a}
+.mark{color:#1b5a7c;font-weight:700}
+.warn{border-left:3px solid #d4a173;background:#fffcf7;padding:10px 15px;margin:12px 0 16px;color:#5e554c}
+.flag{display:inline-block;background:#f1f5f8;border:1px solid #e0e8ee;border-radius:3px;padding:2px 7px;font-size:12px;color:#607b8d}
+.diagram svg{max-width:980px}
+@media(max-width:720px){.diagram svg{width:880px;min-width:880px}}
+</style></head><body><main><header class="head"><div class="kicker">DATABASE SYSTEMS · WEEK 03 · ÔN THI</div><h1>Mô hình ER: Liên kết,<br>Ràng buộc và Thiết kế</h1></header><nav class="toc" aria-label="Mục lục"><strong>Nội dung</strong><div class="toc-grid"><a href="#s01"><span>01</span>Kiểu liên kết, tập liên kết và thể hiện liên kết</a><a href="#s02"><span>02</span>Bậc liên kết, vai trò và liên kết đệ quy</a><a href="#s03"><span>03</span>Thuộc tính của liên kết</a><a href="#s04"><span>04</span>Hai thành phần của ràng buộc cấu trúc</a><a href="#s05"><span>05</span>Ký hiệu min–max và cách đọc theo từng phía</a><a href="#s06"><span>06</span>Ví dụ COMPANY: MANAGES, WORKS_ON và SUPERVISION</a><a href="#s07"><span>07</span>Liên kết tam phân và lý do không thể luôn phân rã</a><a href="#s08"><span>08</span>Thực thể yếu, chủ sở hữu và khóa bộ phận</a><a href="#s09"><span>09</span>Chọn mô hình: thực thể, thuộc tính hay thực thể yếu?</a><a href="#s10"><span>10</span>Ký hiệu ER chuẩn Chen và cách kiểm tra sơ đồ</a><a href="#s11"><span>11</span>COMPANY: đọc lược đồ ER hoàn chỉnh</a><a href="#s12"><span>12</span>Bài giải đọc ngược ERD: BANK</a><a href="#s13"><span>13</span>Bài tập điền min–max: COMPANY và COURSES</a><a href="#s14"><span>14</span>Đọc ngược ERD: AIRLINE và MOVIES</a><a href="#s15"><span>15</span>Bài tập thiết kế: trường học, thư viện và bán hàng</a><a href="#s16"><span>16</span>Tự kiểm tra trước khi thi</a></div></nav><section class="sec" id="s01"><h2>1. Kiểu liên kết, tập liên kết và thể hiện liên kết</h2>
+<div class="def"><strong>Relationship (liên kết)</strong> biểu diễn một sự kiện hoặc mối quan hệ nghiệp vụ có ý nghĩa giữa các thực thể. Trong ER, <em>relationship</em> không đồng nghĩa với <em>relation</em> (bảng/quan hệ của mô hình quan hệ).</div>
+<div class="tbl"><table><thead><tr><th>Khái niệm</th><th>Bản chất</th><th>Ví dụ WORKS_FOR</th></tr></thead><tbody>
+<tr><td><strong>Relationship type</strong> (kiểu liên kết)</td><td>Định nghĩa chung của một loại liên hệ giữa các <em>kiểu thực thể</em>; thuộc về schema.</td><td><code>WORKS_FOR(EMPLOYEE, DEPARTMENT)</code></td></tr>
+<tr><td><strong>Relationship instance</strong> (thể hiện liên kết)</td><td>Một tổ hợp thực thể cụ thể đang có liên hệ; với nhị phân là một cặp.</td><td><code>(e₁, d₁)</code>: nhân viên e₁ làm cho phòng d₁.</td></tr>
+<tr><td><strong>Relationship set</strong> (tập liên kết)</td><td>Tập hợp <strong>mọi thể hiện liên kết</strong> thuộc cùng kiểu tại một thời điểm; thay đổi theo trạng thái CSDL.</td><td><code>{(e₁,d₁), (e₂,d₂), (e₃,d₁)}</code></td></tr>
+</tbody></table></div>
+<p>Nếu <code>E₁,…,Eₙ</code> là các tập thực thể tham gia, tập liên kết <code>R</code> thỏa:</p>
+<div class="formula">R ⊆ E₁ × E₂ × … × Eₙ</div>
+<p>Mỗi <code>r ∈ R</code> là một bộ <code>(e₁,…,eₙ)</code>. <strong>Không phải mọi tổ hợp</strong> trong tích Đề-các đều có quan hệ nghiệp vụ thực tế; <code>R</code> chỉ gồm các bộ thỏa điều kiện của miniworld.</p>
+<div class="diagram"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 235" role="img" aria-label="Mô hình tập liên kết WORKS_FOR: ba nhân viên e1 e2 e3, hai phòng d1 d2, các cặp e1 d1, e2 d2, e3 d1">
+<g fill="#f0f5f9" stroke="#b2c6d5"><rect x="30" y="35" width="208" height="165" rx="8"/><rect x="654" y="35" width="216" height="165" rx="8"/></g><g fill="#eef4f8" stroke="#a5bed0"><ellipse cx="432" cy="116" rx="93" ry="68"/></g>
+<g class="svg-md" text-anchor="middle"><text x="134" y="21">EMPLOYEE</text><text x="760" y="21">DEPARTMENT</text><text x="432" y="19">WORKS_FOR</text></g>
+<g class="svg-sm" text-anchor="middle"><text x="131" y="77">e₁</text><text x="131" y="118">e₂</text><text x="131" y="160">e₃</text><text x="760" y="93">d₁</text><text x="760" y="158">d₂</text><text x="431" y="69">(e₁, d₁)</text><text x="431" y="116">(e₂, d₂)</text><text x="431" y="163">(e₃, d₁)</text></g>
+<g stroke="#8aa4b8" stroke-width="1.7" fill="none"><path d="M150 76 L341 69"/><path d="M523 69 L744 90"/><path d="M150 117 L337 116"/><path d="M524 116 L743 155"/><path d="M150 158 L340 163"/><path d="M523 163 L739 91"/></g></svg><div class="figcap">Mỗi bộ trong WORKS_FOR nối một nhân viên với đúng phòng ban mà người đó thực sự làm việc cho. Hình chỉ minh họa trạng thái, chưa đủ để kết luận các ràng buộc chung.</div></div>
+<div class="key"><strong>Cách đọc đúng:</strong> chuyển ký hiệu thành câu nghiệp vụ, không xem đường nối là bằng chứng rằng hai thực thể có liên hệ tùy ý.</div>
+</section><section class="sec" id="s02"><h2>2. Bậc liên kết, vai trò và liên kết đệ quy</h2>
+<p><strong>Degree (bậc của kiểu liên kết)</strong> là số <em>kiểu thực thể</em> tham gia vào kiểu liên kết; không phải số bản ghi, cũng không phải số đường nối trên hình.</p>
+<div class="tbl"><table><thead><tr><th>Bậc</th><th>Ý nghĩa</th><th>Ví dụ</th></tr></thead><tbody>
+<tr><td><strong>Unary / recursive</strong> (bậc 1)</td><td>Một kiểu thực thể tham gia nhiều lần trong những <strong>vai trò khác nhau</strong>.</td><td><code>EMPLOYEE — SUPERVISION — EMPLOYEE</code>.</td></tr>
+<tr><td><strong>Binary</strong> (bậc 2)</td><td>Liên hệ giữa hai kiểu thực thể; phổ biến trong ER.</td><td><code>EMPLOYEE — WORKS_FOR — DEPARTMENT</code>.</td></tr>
+<tr><td><strong>Ternary</strong> (bậc 3)</td><td>Một sự kiện gắn <strong>đồng thời ba</strong> kiểu thực thể.</td><td><code>SUPPLY(SUPPLIER, PART, PROJECT)</code>.</td></tr>
+<tr><td><strong>N-ary</strong> (bậc n)</td><td>Một sự kiện cần n kiểu thực thể tham gia.</td><td>Chỉ dùng khi ngữ nghĩa thật sự đòi hỏi.</td></tr>
+</tbody></table></div>
+<h3>Vai trò (participation role) trong liên kết đệ quy</h3>
+<p>Với <code>SUPERVISION</code>, cả người giám sát và người được giám sát đều thuộc <code>EMPLOYEE</code>, nhưng hai vai trò <strong>Supervisor</strong> và <strong>Supervisee</strong> khác nhau. Vì thế bậc vẫn là <strong>1</strong>, dù một thể hiện gồm hai nhân viên.</p>
+<div class="diagram"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 183" role="img" aria-label="Liên kết đệ quy SUPERVISION với hai vai trò Supervisor và Supervisee trên cùng kiểu thực thể EMPLOYEE">
+<rect x="70" y="70" width="190" height="52" rx="3" fill="#ecf3f8" stroke="#83a3ba" stroke-width="1.7"/><text x="165" y="101" class="svg-md" text-anchor="middle">EMPLOYEE</text><path d="M500 51 L581 94 L500 137 L419 94 Z" fill="#f7f8fa" stroke="#83a3ba" stroke-width="1.7"/><text x="500" y="99" class="svg-md" text-anchor="middle">SUPERVISION</text><path d="M260 80 Q330 24 442 71" stroke="#91abbf" stroke-width="2" fill="none"/><path d="M260 113 Q345 165 438 116" stroke="#91abbf" stroke-width="2" fill="none"/><text x="320" y="28" class="svg-muted">Supervisor</text><text x="317" y="162" class="svg-muted">Supervisee</text><text x="710" y="92" class="svg-sm" text-anchor="middle">e₁ giám sát e₂</text><text x="710" y="116" class="svg-muted" text-anchor="middle">Một entity type, hai vai trò</text></svg></div>
+<p><strong>Khi nào cần đặt tên vai trò?</strong> Khi một kiểu thực thể xuất hiện nhiều lần trong cùng liên kết hoặc khi nhìn vào sơ đồ không phân biệt được chức năng của từng phía. Tên kiểu liên kết không thay thế được tên vai trò.</p>
+</section><section class="sec" id="s03"><h2>3. Thuộc tính của liên kết</h2>
+<div class="def"><strong>Relationship attribute</strong> mô tả một đặc trưng của <strong>chính sự tham gia giữa các thực thể</strong>, khi không thể quy về một phía mà vẫn giữ đúng ý nghĩa.</div>
+<p>Ví dụ, <code>WORKS_ON(EMPLOYEE, PROJECT)</code> có thuộc tính <code>Hours</code> = số giờ một nhân viên dành cho <em>một dự án nhất định</em> trong tuần.</p>
+<div class="tbl"><table><thead><tr><th>Thử đặt Hours vào…</th><th>Tại sao sai?</th></tr></thead><tbody><tr><td><code>EMPLOYEE</code></td><td>Một nhân viên có thể làm nhiều dự án với số giờ khác nhau → không xác định dự án nào.</td></tr><tr><td><code>PROJECT</code></td><td>Một dự án có nhiều nhân viên với số giờ khác nhau → không xác định nhân viên nào.</td></tr><tr><td><strong>WORKS_ON</strong></td><td><strong>Đúng:</strong> <code>Hours(e,p)</code> phụ thuộc vào cặp <code>(employee, project)</code>.</td></tr></tbody></table></div>
+<pre>WORKS_ON
+(e₁, p₁) → 12 giờ/tuần
+(e₁, p₂) →  8 giờ/tuần
+(e₂, p₁) → 20 giờ/tuần</pre>
+<p>Tương tự, <code>Start_date</code> của <code>MANAGES</code> biểu diễn thời điểm một nhân viên bắt đầu quản lý một phòng ban cụ thể. Với liên kết tam phân <code>SUPPLY</code>, <code>Quantity</code> có thể phụ thuộc vào <em>toàn bộ bộ ba</em> nhà cung cấp–linh kiện–dự án.</p>
+<div class="key"><strong>Câu hỏi quyết định:</strong> “Giá trị này mô tả riêng đối tượng A, riêng đối tượng B, hay mô tả <em>A có quan hệ với B</em>?” Nếu phụ thuộc vào cặp/bộ thực thể, xem xét đặt tại liên kết.</div>
+<h3>Khi nào có thể chuyển thuộc tính của liên kết về thực thể?</h3>
+<p>Trong một quan hệ nhị phân <strong>1:N</strong>, nếu mỗi thực thể ở phía N chỉ có <em>tối đa một</em> thực thể đối tác, thông tin của <strong>lần liên kết hiện tại</strong> đôi khi có thể lưu cùng thực thể phía N mà không mất khả năng xác định đối tác. Ví dụ, nếu mỗi nhân viên thuộc đúng một phòng và chỉ cần lưu ngày bắt đầu <em>làm việc cho phòng hiện tại</em>, thuộc tính ngày bắt đầu có thể đặt với EMPLOYEE trong một biểu diễn cài đặt. Nhưng nếu cần <strong>lịch sử chuyển phòng</strong> hay nhiều quan hệ đồng thời, cách này không còn đủ.</p>
+<p>Với <strong>M:N</strong> như WORKS_ON, <code>Hours</code> nói chung <strong>không chuyển được</strong> về riêng EMPLOYEE hoặc PROJECT vì một entity có nhiều đối tác. Đây là phân tích điều kiện chứ không phải quy tắc mọi thuộc tính 1:N đều nên chuyển.</p>
+<h3>Góc nhìn hình thức: liên kết như một thuộc tính</h3>
+<p>Với liên kết nhị phân <code>R ⊆ E × F</code>, ta có thể xem các đối tác của một entity <code>e</code> như một thuộc tính đa trị có <strong>miền giá trị là các thực thể của F</strong>:</p>
+<div class="formula">A<sub>R</sub> : E → P(F),　A<sub>R</sub>(e) = { f ∈ F | (e,f) ∈ R }</div>
+<p>Nếu mỗi <code>e</code> liên hệ tối đa một <code>f</code>, tập kết quả có tối đa một phần tử. Cách nhìn này giúp trả lời câu hỏi về <em>value set</em>, nhưng không thay thế hoàn toàn kiểu liên kết ER khi cần vai trò, thuộc tính riêng hoặc ràng buộc ở cả hai phía.</p>
+</section><section class="sec" id="s04"><h2>4. Hai thành phần của ràng buộc cấu trúc</h2>
+<p>Ràng buộc cấu trúc của một kiểu liên kết nhị phân gồm <strong>tỉ số lực lượng (cardinality ratio)</strong> và <strong>ràng buộc tham gia (participation constraint)</strong>. Hai thông tin trả lời hai câu hỏi <em>khác nhau</em>.</p>
+<div class="tbl"><table><thead><tr><th>Thông tin</th><th>Câu hỏi</th><th>Kết quả</th></tr></thead><tbody>
+<tr><td><strong>Cardinality ratio</strong></td><td>Một thực thể của phía này có thể liên hệ với <strong>tối đa bao nhiêu</strong> thực thể phía kia?</td><td><code>1:1</code>, <code>1:N</code>, <code>M:N</code></td></tr>
+<tr><td><strong>Participation</strong></td><td>Có bắt buộc mỗi thực thể phải tham gia <strong>ít nhất một</strong> liên kết không?</td><td><strong>Total</strong> (đường đôi) / <strong>Partial</strong> (đường đơn)</td></tr>
+</tbody></table></div>
+<h3>1:1 — 1:N — M:N</h3>
+<div class="tbl"><table><thead><tr><th>Kiểu</th><th>Diễn giải đúng</th><th>Ví dụ trong COMPANY</th></tr></thead><tbody>
+<tr><td><strong>1:1</strong></td><td>Mỗi phía liên hệ với <strong>tối đa một</strong> thực thể phía còn lại.</td><td><code>EMPLOYEE — MANAGES — DEPARTMENT</code> nếu một người quản lý tối đa một phòng.</td></tr>
+<tr><td><strong>1:N</strong></td><td>Một A có thể liên hệ nhiều B; mỗi B có <strong>tối đa một</strong> A.</td><td><code>DEPARTMENT — CONTROLS — PROJECT</code>.</td></tr>
+<tr><td><strong>M:N</strong></td><td>Mỗi phía đều có thể liên hệ với nhiều thực thể phía kia.</td><td><code>EMPLOYEE — WORKS_ON — PROJECT</code>.</td></tr>
+</tbody></table></div>
+<h3>Total / partial là điều kiện độc lập với lực lượng tối đa</h3>
+<p>Với MANAGES, nếu <em>mọi phòng ban phải có người quản lý</em>, DEPARTMENT tham gia <strong>toàn bộ</strong>; nếu <em>nhân viên không nhất thiết là quản lý</em>, EMPLOYEE tham gia <strong>một phần</strong>. Dù vậy tỉ số vẫn có thể là 1:1.</p>
+<div class="key"><strong>Không được suy diễn:</strong> 1:N <strong>không có nghĩa</strong> mọi A phải có ít nhất một B. “Có thể không tham gia” chỉ nói <code>min = 0</code>, hoàn toàn không cho biết <code>max</code>.</div>
+</section><section class="sec" id="s05"><h2>5. Ký hiệu min–max và cách đọc theo từng phía</h2>
+<div class="def">Với <em>mỗi thực thể riêng lẻ</em> thuộc một kiểu E tham gia R, cặp <strong>(min, max)</strong> giới hạn số <strong>thể hiện liên kết R</strong> có chứa thực thể đó.</div>
+<div class="tbl"><table><thead><tr><th>Ký hiệu</th><th>Ý nghĩa</th></tr></thead><tbody><tr><td><code>(0,1)</code></td><td>Có thể không tham gia; nếu tham gia thì tối đa một lần.</td></tr><tr><td><code>(1,1)</code></td><td>Bắt buộc đúng một lần.</td></tr><tr><td><code>(0,N)</code></td><td>Có thể không tham gia hoặc tham gia nhiều lần.</td></tr><tr><td><code>(1,N)</code></td><td>Phải tham gia ít nhất một lần và có thể nhiều lần.</td></tr><tr><td><code>(2,4)</code></td><td>Tham gia ít nhất 2, nhiều nhất 4 lần.</td></tr></tbody></table></div>
+<h3>Ví dụ WORKS_FOR — 1 phòng có thể có nhiều nhân viên</h3>
+<div class="diagram"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 910 226" role="img" aria-label="Ký pháp min max phía EMPLOYEE (1,1) và DEPARTMENT (0,N) trong WORKS_FOR">
+<rect x="43" y="84" width="213" height="60" rx="3" fill="#edf3f8" stroke="#799bb2" stroke-width="1.7"/><text x="149" y="120" text-anchor="middle" class="svg-md">EMPLOYEE</text><path d="M454 67 L537 114 L454 161 L371 114 Z" fill="#f6f8fa" stroke="#799bb2" stroke-width="1.7"/><text x="454" y="119" text-anchor="middle" class="svg-md">WORKS_FOR</text><rect x="664" y="84" width="211" height="60" rx="3" fill="#edf3f8" stroke="#799bb2" stroke-width="1.7"/><text x="770" y="120" text-anchor="middle" class="svg-md">DEPARTMENT</text>
+<path d="M256 114 H371 M537 114 H664" stroke="#8da7b9" stroke-width="1.9"/><text x="313" y="100" text-anchor="middle" class="svg-md">(1,1)</text><text x="602" y="100" text-anchor="middle" class="svg-md">(0,N)</text><text x="156" y="183" text-anchor="middle" class="svg-muted">Mỗi NV thuộc đúng 1 phòng</text><text x="749" y="183" text-anchor="middle" class="svg-muted">Một phòng có thể chưa có NV</text></svg><div class="figcap">Cặp (1,1) ở gần EMPLOYEE nói về số lần tham gia của <em>một nhân viên</em>; (0,N) gần DEPARTMENT nói về <em>một phòng ban</em>. Hai cặp này không phải tự suy ra từ ký hiệu 1:N.</div></div>
+<p><strong>Quy trình đọc đề:</strong> xác định kiểu liên kết → xét một entity ở phía A có thể ghép với bao nhiêu ở B → làm tương tự cho phía B → xác định mỗi phía có được tồn tại độc lập chưa liên kết hay không → ghi ràng buộc và <strong>những giả định chưa được đề xác nhận</strong>.</p>
+<div class="warn"><strong>Chú ý quy ước ký pháp:</strong> cặp (min,max) đặt <em>cạnh kiểu thực thể đang được ràng buộc</em> trong sơ đồ Chen của bài học. Không máy móc áp dụng chiều đọc này cho Crow's Foot hoặc UML, vốn có cách đặt nhãn khác.</div>
+</section><section class="sec" id="s06"><h2>6. Ví dụ COMPANY: MANAGES, WORKS_ON và SUPERVISION</h2>
+<p>Những trường hợp sau cho thấy cùng một cặp thực thể có thể xuất hiện trong <strong>nhiều kiểu liên kết khác nhau</strong>, với ý nghĩa và ràng buộc khác nhau.</p>
+<div class="tbl"><table><thead><tr><th>Liên kết</th><th>Phía 1</th><th>Phía 2</th><th>Đọc thành quy tắc</th></tr></thead><tbody>
+<tr><td><code>MANAGES</code></td><td>EMPLOYEE <code>(0,1)</code></td><td>DEPARTMENT <code>(1,1)</code></td><td>Một NV quản lý tối đa một phòng; mọi phòng có đúng một quản lý.</td></tr>
+<tr><td><code>WORKS_ON</code></td><td>EMPLOYEE <code>(1,N)</code></td><td>PROJECT <code>(1,N)</code></td><td><strong>Trong sơ đồ COMPANY đầy đủ:</strong> NV và dự án đều có ít nhất một lần tham gia.</td></tr>
+<tr><td><code>SUPERVISION</code></td><td>Supervisor <code>(0,N)</code></td><td>Supervisee <code>(0,1)</code></td><td>Một NV có thể giám sát nhiều người; mỗi NV có nhiều nhất một người giám sát trực tiếp.</td></tr>
+</tbody></table></div>
+<p>Đây là <strong>các ràng buộc của sơ đồ COMPANY mẫu</strong>. Nếu một bài toán khác nói nhân viên có thể chưa nhận dự án nào, khi đó min phía EMPLOYEE của WORKS_ON phải đổi thành <code>0</code>. <strong>Không biến đặc tả của một mô hình ví dụ thành quy tắc áp dụng chung.</strong></p>
+<p>Đối với <code>MANAGES</code>, <code>Start_date</code> thuộc liên kết quản lý. Đối với <code>WORKS_ON</code>, <code>Hours</code> thuộc liên kết tham gia dự án.</p>
+</section><section class="sec" id="s07"><h2>7. Liên kết tam phân và lý do không thể luôn phân rã</h2>
+<div class="def"><strong>Ternary relationship</strong> mô tả một sự kiện có ý nghĩa liên quan <em>đồng thời ba thực thể</em>. Ví dụ <code>SUPPLY(supplier, part, project)</code> có nghĩa: nhà cung cấp s cung cấp linh kiện p cho dự án j.</div>
+<p>Ba liên kết nhị phân riêng <code>SUPPLIER–PART</code>, <code>SUPPLIER–PROJECT</code>, <code>PART–PROJECT</code> có thể ghi lại các <em>cặp</em> xuất hiện, nhưng không nhất thiết xác định <strong>đúng các bộ ba</strong>. Khi ghép lại, có thể tạo một giao dịch cung ứng vốn không có thật.</p>
+<h3>Phản ví dụ: phân rã làm xuất hiện bộ ba giả</h3>
+<p>Giả sử quan hệ SUPPLY chỉ có ba giao dịch thật sau:</p>
+<div class="tbl"><table><thead><tr><th>Supplier</th><th>Part</th><th>Project</th><th>Trạng thái</th></tr></thead><tbody><tr><td>S₁</td><td>P₁</td><td>J₁</td><td>Thực tế</td></tr><tr><td>S₁</td><td>P₂</td><td>J₂</td><td>Thực tế</td></tr><tr><td>S₂</td><td>P₁</td><td>J₂</td><td>Thực tế</td></tr><tr style="background:#fff8ed"><td><strong>S₁</strong></td><td><strong>P₁</strong></td><td><strong>J₂</strong></td><td><strong>Không có thật!</strong></td></tr></tbody></table></div>
+<div class="diagram"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 238" role="img" aria-label="Ba phép chiếu nhị phân SP, SJ, PJ đều chứa cặp của bộ giả S1 P1 J2, nhưng bộ S1 P1 J2 không có trong SUPPLY gốc">
+<g font-family="Space Grotesk,Arial" text-anchor="middle">
+<rect x="22" y="35" width="264" height="113" rx="5" fill="#f0f5f9" stroke="#bed0df"/><rect x="318" y="35" width="264" height="113" rx="5" fill="#f0f5f9" stroke="#bed0df"/><rect x="614" y="35" width="264" height="113" rx="5" fill="#f0f5f9" stroke="#bed0df"/>
+<g class="svg-md"><text x="154" y="65">Supplier – Part</text><text x="450" y="65">Supplier – Project</text><text x="746" y="65">Part – Project</text></g>
+<g class="svg-sm"><text x="154" y="105">(S₁, P₁) ✓</text><text x="450" y="105">(S₁, J₂) ✓</text><text x="746" y="105">(P₁, J₂) ✓</text></g>
+<path d="M154 151 L350 194 L450 194" stroke="#8aa4b8" stroke-width="1.6" fill="none"/><path d="M450 151 L450 194" stroke="#8aa4b8" stroke-width="1.6" fill="none"/><path d="M746 151 L548 194 L450 194" stroke="#8aa4b8" stroke-width="1.6" fill="none"/>
+<rect x="290" y="192" width="320" height="34" rx="4" fill="#fff7ea" stroke="#d9ad7a"/><text x="450" y="214" class="svg-md" fill="#8a5938">(S₁, P₁, J₂) — tổ hợp sai</text></g></svg><div class="figcap">Cả ba cặp của bộ giả đều tồn tại ở các phép chiếu, nhưng bộ ba (S₁,P₁,J₂) không nằm trong SUPPLY ban đầu. Tách bộ ba thành ba cặp đã làm mất thông tin “ai cung cấp cái gì <em>cho dự án nào</em>”.</div></div>
+<p><code>Quantity</code> cũng có thể phụ thuộc vào đúng bộ ba ấy. Vì vậy <strong>không thay liên kết tam phân bằng ba liên kết nhị phân</strong> chỉ vì vẽ tam phân khó. Việc thay thế chỉ hợp lệ khi yêu cầu nghiệp vụ chứng minh rằng các quan hệ cặp là độc lập hoặc có mô hình khác bảo toàn đầy đủ ngữ nghĩa.</p>
+<div class="key"><strong>Lưu ý khi thi:</strong> những quy tắc 1:N quen thuộc của liên kết <em>nhị phân</em> không được áp thẳng cho tam phân. Trong ternary, cần xét một cặp thực thể ở hai vai trò để ràng buộc số thực thể có thể tham gia ở vai trò thứ ba, tùy quy ước ký pháp.</div>
+</section><section class="sec" id="s08"><h2>8. Thực thể yếu, chủ sở hữu và khóa bộ phận</h2>
+<div class="def"><strong>Weak entity type (kiểu thực thể yếu)</strong> không có đủ thuộc tính để nhận dạng một cách độc lập; nó được định danh nhờ <strong>chủ sở hữu (owner)</strong> thông qua <strong>identifying relationship</strong> và <strong>partial key</strong> (khóa bộ phận).</div>
+<p>Ví dụ <code>DEPENDENT</code> là người phụ thuộc của <code>EMPLOYEE</code> trong COMPANY. Nếu tên người phụ thuộc chỉ duy nhất <em>trong phạm vi từng nhân viên</em>, thì:</p>
+<div class="formula">Key(DEPENDENT) = (EMPLOYEE.Ssn, DEPENDENT.Name)</div>
+<p>Hai người phụ thuộc thuộc <strong>hai nhân viên khác nhau</strong> được phép cùng tên. Tên là <em>khóa bộ phận</em>, không phải một khóa độc lập duy nhất trên toàn bộ tập DEPENDENT.</p>
+<div class="diagram"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 270" role="img" aria-label="Sơ đồ Chen: EMPLOYEE thực thể mạnh, DEPENDENTS_OF liên kết xác định hình thoi kép, DEPENDENT thực thể yếu chữ nhật kép, Name thuộc tính khóa bộ phận gạch chân nét đứt">
+<rect x="45" y="92" width="240" height="68" fill="#edf3f8" stroke="#809fb4" stroke-width="2"/><text x="165" y="133" text-anchor="middle" class="svg-md">EMPLOYEE</text><path d="M464 69 L579 126 L464 183 L349 126 Z" fill="#f5f8fb" stroke="#809fb4" stroke-width="2"/><path d="M464 78 L563 126 L464 174 L365 126 Z" fill="none" stroke="#809fb4" stroke-width="1.4"/><text x="464" y="130" text-anchor="middle" class="svg-md">DEPENDENTS_OF</text><rect x="653" y="92" width="232" height="68" fill="#edf3f8" stroke="#809fb4" stroke-width="2"/><rect x="659" y="98" width="220" height="56" fill="none" stroke="#809fb4" stroke-width="1.25"/><text x="769" y="133" text-anchor="middle" class="svg-md">DEPENDENT</text>
+<path d="M285 126 H349" stroke="#809fb4" stroke-width="2"/><path d="M579 121 H653 M579 131 H653" stroke="#809fb4" stroke-width="2"/>
+<text x="320" y="112" text-anchor="middle" class="svg-sm">(0,N)</text><text x="618" y="110" text-anchor="middle" class="svg-sm">(1,1)</text>
+<path d="M769 160 V200" stroke="#9db1c2" stroke-width="1.5"/><ellipse cx="769" cy="226" rx="80" ry="24" stroke="#94abbb" fill="white" stroke-width="1.5"/><text x="769" y="230" text-anchor="middle" class="svg-sm">Name</text><path d="M745 237 H793" stroke="#66869d" stroke-width="1.5" stroke-dasharray="4 3"/>
+<text x="165" y="192" text-anchor="middle" class="svg-muted">Owner: Ssn</text><text x="464" y="221" text-anchor="middle" class="svg-muted">Liên kết xác định</text></svg><div class="figcap">Hình chữ nhật kép = thực thể yếu; hình thoi kép = liên kết xác định; gạch dưới nét đứt = khóa bộ phận (Chen). Ràng buộc (0,N) ở EMPLOYEE chỉ là ví dụ phù hợp khi một nhân viên có thể không có người phụ thuộc.</div></div>
+<p><strong>Existence dependency:</strong> mỗi DEPENDENT thuộc đúng một owner theo mô hình ví dụ, nên nó phải tham gia toàn bộ liên kết xác định <code>(1,1)</code>. Owner có thể có 0, 1 hoặc nhiều dependents nếu quy tắc nghiệp vụ cho phép.</p>
+<div class="key"><strong>Phân biệt:</strong> khóa bộ phận chỉ phân biệt các weak entities <em>trong một owner</em>; khi ánh xạ sang bảng, cần kết hợp khóa owner với khóa bộ phận. “Có quan hệ phụ thuộc” theo lời nói thường ngày không tự động khiến một kiểu thực thể là weak: phải xét <strong>cách định danh</strong>.</div>
+</section><section class="sec" id="s09"><h2>9. Chọn mô hình: thực thể, thuộc tính hay thực thể yếu?</h2>
+<p>Việc chọn biểu diễn phụ thuộc ngữ nghĩa và yêu cầu xử lý, không phụ thuộc vào số lượng giá trị nhìn thấy.</p>
+<div class="tbl"><table><thead><tr><th>Tình huống</th><th>Biểu diễn phù hợp</th><th>Vì sao?</th></tr></thead><tbody>
+<tr><td>Nhân viên có nhiều số điện thoại, chỉ cần lưu dãy số.</td><td><strong>Multivalued attribute</strong> <code>Phone</code>.</td><td>Mỗi giá trị đơn giản, không cần các liên kết khác.</td></tr>
+<tr><td>Mỗi số điện thoại có loại, ngày kích hoạt, nhà cung cấp và liên kết với người sử dụng.</td><td><strong>Entity</strong> PHONE hoặc cấu trúc riêng tương đương.</td><td>Mỗi số có đặc trưng, vai trò và ràng buộc riêng.</td></tr>
+<tr><td>Người phụ thuộc chỉ có định danh trong một nhân viên.</td><td><strong>Weak entity</strong> DEPENDENT.</td><td>Phải ghép khóa owner để định danh.</td></tr>
+<tr><td>Địa chỉ chỉ cần in nguyên văn.</td><td><strong>Attribute</strong> / composite attribute.</td><td>Chưa cần quản lý địa chỉ như đối tượng độc lập.</td></tr>
+<tr><td>Địa chỉ có vùng giao hàng, định danh chuẩn hóa và lịch sử cư trú.</td><td>Cân nhắc <strong>entity</strong> ADDRESS.</td><td>Có vòng đời và mối quan hệ riêng.</td></tr>
+</tbody></table></div>
+<div class="warn"><strong>Cần tránh hai suy luận sai:</strong> “có nhiều giá trị ⇒ chắc chắn là thuộc tính đa trị” và “phải tham chiếu chủ sở hữu ⇒ chắc chắn là weak”. Một entity có khóa riêng vẫn có thể thuộc về một entity khác; đó không phải điều kiện đủ để gọi weak.</div>
+</section><section class="sec" id="s10"><h2>10. Ký hiệu ER chuẩn Chen và cách kiểm tra sơ đồ</h2>
+<p>Sơ đồ ER trong bài dùng ký hiệu Chen. Những ký hiệu sau phải nhận diện được ngay, đặc biệt <strong>đường đôi biểu diễn total participation</strong> và <strong>viền đôi của weak entity / identifying relationship</strong>.</p>
+<div class="diagram"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 405" role="img" aria-label="Bảng các ký hiệu Chen: thực thể thường và yếu, quan hệ thường và định danh, thuộc tính, khóa, đa trị, suy diễn, phức hợp, ràng buộc đường đôi">
+<g class="svg-md" text-anchor="middle">
+<rect x="45" y="24" width="158" height="43" fill="#eef4f8" stroke="#819eb4" stroke-width="1.7"/><text x="124" y="51">EMPLOYEE</text>
+<rect x="259" y="24" width="158" height="43" fill="#eef4f8" stroke="#819eb4" stroke-width="1.7"/><rect x="264" y="29" width="148" height="33" fill="none" stroke="#819eb4"/><text x="338" y="51">DEPENDENT</text>
+<path d="M547 16 L615 46 L547 76 L479 46 Z" fill="#f8fafb" stroke="#819eb4" stroke-width="1.7"/><text x="547" y="51">WORKS_ON</text>
+<path d="M761 13 L832 46 L761 79 L690 46 Z" fill="#f8fafb" stroke="#819eb4" stroke-width="1.4"/><path d="M761 20 L818 46 L761 72 L704 46 Z" fill="none" stroke="#819eb4"/><text x="761" y="50" font-size="12">IDENTIFIES</text>
+</g><g class="svg-muted" text-anchor="middle"><text x="124" y="99">Entity</text><text x="338" y="99">Weak entity</text><text x="547" y="99">Relationship</text><text x="761" y="99">Identifying relation</text></g>
+<g fill="#fff" stroke="#91a8b9" stroke-width="1.7"><ellipse cx="124" cy="155" rx="68" ry="25"/><ellipse cx="338" cy="155" rx="68" ry="25"/><ellipse cx="547" cy="155" rx="68" ry="25"/><ellipse cx="547" cy="155" rx="62" ry="19" fill="none" stroke-width="1.2"/><ellipse cx="761" cy="155" rx="68" ry="25" stroke-dasharray="5 4"/></g>
+<g class="svg-sm" text-anchor="middle"><text x="124" y="160">Name</text><text x="338" y="160">Ssn</text><text x="547" y="160">Locations</text><text x="761" y="160">Age</text></g><path d="M325 170 H351" stroke="#55768e" stroke-width="1.6"/>
+<g class="svg-muted" text-anchor="middle"><text x="124" y="207">Attribute</text><text x="338" y="207">Key</text><text x="547" y="207">Multivalued</text><text x="761" y="207">Derived</text></g>
+<g stroke="#9fb4c5" stroke-width="1.6" fill="none"><path d="M430 289 L276 357 M450 293 L450 354 M471 289 L627 357"/></g>
+<ellipse cx="450" cy="267" rx="72" ry="25" fill="#edf3f8" stroke="#829fb4" stroke-width="1.7"/><text x="450" y="271" text-anchor="middle" class="svg-md">Name</text>
+<g stroke="#91a8b9" fill="white" stroke-width="1.5"><ellipse cx="250" cy="374" rx="72" ry="20"/><ellipse cx="450" cy="374" rx="72" ry="20"/><ellipse cx="650" cy="374" rx="72" ry="20"/></g>
+<g class="svg-sm" text-anchor="middle"><text x="250" y="379">Fname</text><text x="450" y="379">Minit</text><text x="650" y="379">Lname</text></g><text x="105" y="274" class="svg-md">Composite attribute</text><text x="105" y="292" class="svg-muted">Các thành phần</text><text x="105" y="309" class="svg-muted">có ý nghĩa riêng</text>
+</svg><div class="figcap">Đối chiếu hình dạng trước khi đọc các nhãn: oval thuộc tính, rectangle kiểu thực thể, diamond kiểu liên kết; ký hiệu viền đôi/nét đứt/gạch chân mang ý nghĩa riêng.</div></div>
+<div class="tbl"><table><thead><tr><th>Ký hiệu ở liên kết</th><th>Cách đọc</th></tr></thead><tbody>
+<tr><td><strong>Đường đơn</strong> từ entity đến diamond</td><td>Tham gia một phần (optional) theo Chen cổ điển.</td></tr>
+<tr><td><strong>Đường đôi</strong> từ entity đến diamond</td><td>Tham gia toàn bộ (min ≥ 1).</td></tr>
+<tr><td><code>1 / N / M</code> cạnh các phía</td><td>Tỷ số lực lượng; không cho biết mức tối thiểu.</td></tr>
+<tr><td><code>(min,max)</code> cạnh mỗi phía</td><td>Số lần tham gia tối thiểu/tối đa của một entity phía ấy.</td></tr>
+<tr><td><strong>Gạch chân nét đứt</strong> ở weak entity</td><td>Khóa bộ phận; khác khóa độc lập có gạch chân liền.</td></tr>
+</tbody></table></div>
+<p><strong>Quy ước tên:</strong> entity dùng danh từ rõ nghĩa (<code>EMPLOYEE</code>); relationship dùng cụm quan hệ (<code>WORKS_FOR</code>); role dùng khi cần phân biệt hướng; attribute đặt tên cụ thể (<code>Order_status</code>, không phải <code>Data</code>). Tránh ký hiệu hoặc tên gắn với màn hình UI tạm thời.</p>
+</section><section class="sec" id="s11"><h2>11. COMPANY: đọc lược đồ ER hoàn chỉnh</h2>
+<p>Lược đồ COMPANY hoàn chỉnh dùng bốn kiểu thực thể chính: <code>EMPLOYEE</code>, <code>DEPARTMENT</code>, <code>PROJECT</code>, <code>DEPENDENT</code>. Những trường ban đầu như <code>Manager</code>, <code>Controlling_department</code>, <code>Supervisor</code> được mô hình hóa bằng <strong>liên kết</strong>; <code>Hours</code> và <code>Start_date</code> được gắn ở liên kết thích hợp.</p>
+<div class="tbl"><table><thead><tr><th>Relationship</th><th>Kiểu và ràng buộc trong sơ đồ mẫu</th><th>Thuộc tính / lưu ý</th></tr></thead><tbody>
+<tr><td><code>WORKS_FOR</code></td><td>EMPLOYEE <code>(1,1)</code> — DEPARTMENT <code>(4,N)</code></td><td>Sơ đồ mẫu yêu cầu mỗi phòng có ít nhất 4 nhân viên; đây là quy tắc <em>riêng của ví dụ</em>.</td></tr>
+<tr><td><code>MANAGES</code></td><td>EMPLOYEE <code>(0,1)</code> — DEPARTMENT <code>(1,1)</code></td><td><code>Start_date</code> là thuộc tính liên kết.</td></tr>
+<tr><td><code>CONTROLS</code></td><td>DEPARTMENT <code>(0,N)</code> — PROJECT <code>(1,1)</code></td><td>Mỗi dự án do đúng một phòng phụ trách.</td></tr>
+<tr><td><code>WORKS_ON</code></td><td>EMPLOYEE <code>(1,N)</code> — PROJECT <code>(1,N)</code></td><td><code>Hours</code> thuộc liên kết M:N.</td></tr>
+<tr><td><code>SUPERVISION</code></td><td>Supervisor <code>(0,N)</code> — Supervisee <code>(0,1)</code></td><td>Recursive trên EMPLOYEE; phải phân biệt vai trò.</td></tr>
+<tr><td><code>DEPENDENTS_OF</code></td><td>EMPLOYEE <code>(0,N)</code> — DEPENDENT <code>(1,1)</code></td><td>Identifying relation, DEPENDENT là weak entity.</td></tr>
+</tbody></table></div>
+<p><strong>Thêm thông tin về thuộc tính:</strong> EMPLOYEE có thuộc tính <code>Name</code> phức hợp; DEPARTMENT có <code>Locations</code> đa trị; <code>Number_of_employees</code> là thuộc tính suy diễn; DEPENDENT có khóa bộ phận <code>Name</code>.</p>
+<div class="key"><strong>Trọng tâm đọc hình:</strong> một nhân viên có thể tham gia WORKS_FOR, MANAGES, SUPERVISION, WORKS_ON, DEPENDENTS_OF theo <strong>những vai trò khác nhau</strong>. Không trộn chúng thành một liên kết duy nhất chỉ vì cùng nhắc đến EMPLOYEE.</div>
+</section><section class="sec" id="s12"><h2>12. Bài giải đọc ngược ERD: BANK</h2>
+<p>Sơ đồ BANK gồm bốn kiểu thực thể mạnh <code>BANK</code>, <code>ACCOUNT</code>, <code>LOAN</code>, <code>CUSTOMER</code> và một kiểu thực thể yếu <code>BANK_BRANCH</code>. Định danh của chi nhánh được xác lập thông qua ngân hàng chủ sở hữu.</p>
+<div class="def"><strong>BANK_BRANCH</strong> có khóa bộ phận <code>Branch_no</code>, quan hệ định danh <code>BRANCHES</code> với owner <code>BANK</code>. Định danh đầy đủ của chi nhánh là <code>(BANK.Code, Branch_no)</code> theo sơ đồ mẫu.</div>
+<h3>Ràng buộc min–max đọc từ hình BANK</h3>
+<div class="tbl"><table><thead><tr><th>Relationship</th><th>Phía 1</th><th>Phía 2</th><th>Giải thích</th></tr></thead><tbody>
+<tr><td><code>BRANCHES</code></td><td>BANK <code>(1,N)</code></td><td>BANK_BRANCH <code>(1,1)</code></td><td>Hai phía đều có đường đôi trong hình; mỗi chi nhánh thuộc đúng một ngân hàng.</td></tr>
+<tr><td><code>ACCTS</code></td><td>BANK_BRANCH <code>(0,N)</code></td><td>ACCOUNT <code>(1,1)</code></td><td>Chi nhánh có thể chưa có tài khoản; mỗi tài khoản gắn đúng một chi nhánh.</td></tr>
+<tr><td><code>LOANS</code></td><td>BANK_BRANCH <code>(0,N)</code></td><td>LOAN <code>(1,1)</code></td><td>Tương tự cho khoản vay.</td></tr>
+<tr><td><code>A_C</code></td><td>ACCOUNT <code>(1,N)</code></td><td>CUSTOMER <code>(0,N)</code></td><td>Một tài khoản phải có ít nhất một khách hàng; có thể đồng sở hữu.</td></tr>
+<tr><td><code>L_C</code></td><td>LOAN <code>(1,N)</code></td><td>CUSTOMER <code>(0,N)</code></td><td>Một khoản vay có ít nhất một khách hàng liên quan; khách hàng có thể chưa vay.</td></tr>
+</tbody></table></div>
+<div class="key"><strong>Cách suy ra min:</strong> đường đôi → min = 1; đường đơn → min = 0. <strong>Cách suy ra max:</strong> 1/N ghi gần các phía cho biết tỷ số lực lượng. Riêng <code>BANK_BRANCH</code> là yếu do phụ thuộc định danh, <strong>không phải</strong> vì nó “nhỏ hơn ngân hàng”.</div>
+</section><section class="sec" id="s13"><h2>13. Bài tập điền min–max: COMPANY và COURSES</h2>
+<h3>Bài A — EMPLOYEE, DEPARTMENT, PHONE</h3>
+<p><strong>Dữ kiện:</strong> Một nhân viên làm việc trong tối đa hai phòng, có thể chưa thuộc phòng nào; mỗi phòng phải có từ một đến ba số điện thoại. Sơ đồ gồm <code>WORKS_IN</code>, <code>HAS_PHONE</code>, <code>CONTAINS</code>.</p>
+<div class="tbl"><table><thead><tr><th>Phía</th><th>Min–max</th><th>Căn cứ</th></tr></thead><tbody>
+<tr><td>EMPLOYEE trong <code>WORKS_IN</code></td><td><code>(0,2)</code></td><td>Chưa có phòng hoặc làm tối đa 2 phòng.</td></tr>
+<tr><td>DEPARTMENT trong <code>WORKS_IN</code></td><td><strong>Chưa đủ dữ kiện</strong></td><td>Đề chưa cho một phòng có tối thiểu/tối đa bao nhiêu nhân viên.</td></tr>
+<tr><td>DEPARTMENT trong <code>CONTAINS</code></td><td><code>(1,3)</code></td><td>Mỗi phòng có 1–3 số điện thoại.</td></tr>
+<tr><td>PHONE trong <code>CONTAINS</code></td><td><strong>Chưa đủ dữ kiện</strong></td><td>Phải hỏi số điện thoại có thể thuộc nhiều phòng hay không; có số chưa gán phòng không?</td></tr>
+<tr><td><code>HAS_PHONE</code></td><td><strong>Chưa đủ dữ kiện</strong></td><td>Đề chưa cho nhân viên có mấy số, số thuộc cá nhân hay phòng, chia sẻ được không.</td></tr>
+</tbody></table></div>
+<p><strong>Khi nào HAS_PHONE dư thừa?</strong> Chỉ khi quan hệ nhân viên–điện thoại được xác định hoàn toàn, chính xác qua <code>WORKS_IN</code> và <code>CONTAINS</code> theo yêu cầu, nghĩa là không có số cá nhân, không có lựa chọn số điện thoại phòng của từng nhân viên, và không phát sinh liên hệ khác. Nếu chỉ <em>làm cùng phòng có số điện thoại</em> mà không nhất thiết <em>dùng số ấy</em>, xóa HAS_PHONE sẽ làm mất ý nghĩa.</p>
+<h3>Bài B — INSTRUCTOR, COURSE, TEXT</h3>
+<p><strong>Dữ kiện:</strong> mỗi COURSE dùng 0–5 TEXT; mỗi TEXT được dùng trong ≥1 COURSE; mỗi INSTRUCTOR dạy 2–4 COURSE.</p>
+<div class="tbl"><table><thead><tr><th>Kiểu tham gia</th><th>Min–max</th></tr></thead><tbody>
+<tr><td>COURSE trong <code>USES</code></td><td><code>(0,5)</code></td></tr>
+<tr><td>TEXT trong <code>USES</code></td><td><code>(1,N)</code></td></tr>
+<tr><td>INSTRUCTOR trong <code>TEACHES</code></td><td><code>(2,4)</code></td></tr>
+<tr><td>COURSE trong <code>TEACHES</code></td><td><strong>Chưa đủ dữ kiện</strong> — chưa biết khóa học có bao nhiêu người dạy.</td></tr>
+</tbody></table></div>
+<p><strong>ADOPTS nên là binary hay ternary?</strong> Phải hỏi <em>ai chọn giáo trình cho môn học</em>. Nếu việc chọn TEXT chỉ do COURSE quyết định, <code>COURSE—USES—TEXT</code> (binary) có thể đủ. Nếu cùng COURSE nhưng <em>từng INSTRUCTOR</em> chọn TEXT khác nhau, một sự kiện <code>ADOPTS(INSTRUCTOR, COURSE, TEXT)</code> (ternary) bảo toàn ngữ nghĩa tốt hơn.</p>
+</section><section class="sec" id="s14"><h2>14. Đọc ngược ERD: AIRLINE và MOVIES</h2>
+<h3>AIRLINE — chuyển sơ đồ thành câu nghiệp vụ</h3>
+<p>Sơ đồ AIRLINE trong bài tập bao gồm <code>AIRPORT</code>, <code>FLIGHT</code>, <code>FLIGHT_LEG</code>, <code>LEG_INSTANCE</code>, <code>AIRPLANE</code>, <code>AIRPLANE_TYPE</code>, <code>SEAT</code> và <code>FARE</code>. Các phát biểu có thể đọc được theo cấu trúc:</p>
+<div class="tbl"><table><thead><tr><th>Cấu trúc</th><th>Ý nghĩa nghiệp vụ</th></tr></thead><tbody>
+<tr><td><code>FLIGHT — LEGS — FLIGHT_LEG</code></td><td>Một chuyến bay theo lịch có các <em>chặng</em> theo thứ tự; chặng thuộc chuyến bay.</td></tr>
+<tr><td><code>FLIGHT_LEG — INSTANCE_OF — LEG_INSTANCE</code></td><td>Một chặng theo lịch có các lần thực hiện trên những ngày cụ thể.</td></tr>
+<tr><td><code>DEPARTS / ARRIVES</code> với AIRPORT</td><td>Điểm đi và điểm đến phải đọc đúng theo vai trò; không gộp thành một “airport” không hướng.</td></tr>
+<tr><td><code>ASSIGNED</code>, <code>RESERVATION</code></td><td>Lần bay cụ thể có máy bay phân công và dữ liệu đặt chỗ; cần kiểm tra cách ràng buộc theo sơ đồ.</td></tr>
+</tbody></table></div>
+<p><strong>Lưu ý:</strong> tên <code>FLIGHT_LEG</code> và <code>LEG_INSTANCE</code> không đồng nghĩa: cái thứ nhất là chặng theo lịch, cái thứ hai là lần thực hiện cụ thể của chặng. Khi không đọc rõ min–max hoặc thiếu giả thiết, ghi <em>chưa đủ xác định</em>, không tự bịa ra con số.</p>
+<h3>MOVIES — ba mức phán đoán True / False / Maybe</h3>
+<div class="tbl"><table><thead><tr><th>Đáp án</th><th>Tiêu chí</th></tr></thead><tbody>
+<tr><td><strong>True</strong></td><td>Mệnh đề bắt buộc đúng với <strong>mọi trạng thái hợp lệ</strong> của sơ đồ.</td></tr>
+<tr><td><strong>False</strong></td><td>Mệnh đề mâu thuẫn với ràng buộc trong sơ đồ, nên không thể đúng với trạng thái hợp lệ.</td></tr>
+<tr><td><strong>Maybe</strong></td><td>Sơ đồ không khẳng định cũng không bác bỏ; có trạng thái hợp lệ thỏa và trạng thái hợp lệ không thỏa.</td></tr>
+</tbody></table></div>
+<p>Ví dụ, từ tên <code>ACTOR</code> hay <code>DIRECTOR</code> không thể kết luận một đạo diễn đã từng đóng phim nếu sơ đồ không bắt buộc. Các đường tham gia và số <code>1, M, N</code> mới là cơ sở để kết luận, không phải kinh nghiệm đời thực về điện ảnh.</p>
+</section><section class="sec" id="s15"><h2>15. Bài tập thiết kế: trường học, thư viện và bán hàng</h2>
+<p>Ba bài cuối mở rộng khả năng biến mô tả tự nhiên thành các kiểu thực thể và liên kết. Đây là <strong>phác thảo định hướng theo yêu cầu</strong>; những ràng buộc chưa được đề cho phải xác nhận trước khi chốt ERD.</p>
+<h3>A. CSDL TRƯỜNG</h3>
+<div class="tbl"><table><thead><tr><th>Đối tượng / quan hệ</th><th>Đề bài hỗ trợ kết luận</th></tr></thead><tbody>
+<tr><td><code>SCHOOL — HAS — FACULTY</code></td><td>Một trường có nhiều khoa; mỗi khoa thuộc đúng một trường.</td></tr>
+<tr><td><code>FACULTY — OFFERS — COURSE</code></td><td>Mỗi khoa quản lý các môn; COURSE có mã, tên, tín chỉ và khoa quản lý.</td></tr>
+<tr><td><code>COURSE — HAS — SECTION</code></td><td>Một môn có thể có nhiều học phần; phải phân biệt môn học với lớp học phần.</td></tr>
+<tr><td><code>TEACHER — TEACHES — SECTION</code></td><td>Giáo viên dạy <strong>0–4 học phần</strong>; phía SECTION cần làm rõ nếu chưa có định lượng.</td></tr>
+<tr><td><code>STUDENT — ENROLLS — SECTION</code></td><td>Sinh viên học nhiều học phần; cần hỏi có cần lưu điểm, lần học lại và học kỳ hay không.</td></tr>
+<tr><td><code>MANAGES</code>, <code>HEADS</code></td><td>Mỗi trường có hiệu trưởng, mỗi khoa có chủ nhiệm khoa là giáo viên; cần làm rõ có giới hạn kiêm nhiệm hay không.</td></tr>
+</tbody></table></div>
+<h3>B. CSDL THƯ VIỆN</h3>
+<p>Khởi đầu từ <code>BRANCH, BOOK, COPY, AUTHOR, PUBLISHER, BORROWER, LOAN</code>. Quan hệ <code>AUTHOR—WRITES—BOOK</code> là M:N theo đề; <code>PUBLISHER—PUBLISHES—BOOK</code> có phía BOOK tối đa một nhà xuất bản. <code>BOOK</code> có nhiều bản sao; COPY phải được định danh đủ rõ để phân biệt từng cuốn vật lý.</p>
+<p><strong>Chỗ cần hỏi:</strong> một bản sao có mã toàn thư viện hay chỉ số thứ tự trong mỗi BOOK/BRANCH? Một phiếu mượn có nhiều bản sao không? Ngày trả là <em>hạn trả</em> hay <em>ngày thực trả</em>? Nếu một cuốn được mượn nhiều lần, không thể dùng riêng cặp (người mượn, bản sao) để định danh mọi lượt mượn.</p>
+<h3>C. CSDL BÁN_HÀNG</h3>
+<p>Ban đầu cần <code>ITEM, SUPPLIER, SALESPERSON</code> và một kiểu sự kiện bán <code>SALE</code> hoặc <code>SALE_LINE</code> tùy yêu cầu hóa đơn. Mỗi mặt hàng do một nhà cung cấp, nhà cung cấp có thể cung cấp nhiều mặt hàng. SUPPLIER có nhiều điện thoại. Thông tin <code>Quantity</code> và <code>Sale_date</code> mô tả <strong>lượt bán</strong>, không phải thuộc tính cố định của ITEM.</p>
+<p>Liên kết trưởng nhóm là <strong>recursive relationship</strong> trên SALESPERSON, có hai vai trò Leader/Member. Cụm từ “cứ năm nhân viên bán hàng có một nhóm trưởng” cần làm rõ nhóm có tính người trưởng nhóm trong số năm hay không, và một trưởng nhóm quản lý một hay nhiều nhóm.</p>
+<div class="key"><strong>Kỹ năng cốt lõi:</strong> xác định sự kiện nghiệp vụ → các entity bắt buộc → gán thuộc tính có đúng chủ thể → xác định max từng phía → hỏi min và các ngoại lệ → phân biệt thông tin có thể suy diễn với thông tin phải lưu lịch sử.</div>
+</section><section class="sec" id="s16"><h2>16. Tự kiểm tra trước khi thi</h2>
+<p>Trả lời trước khi mở đáp án. Các câu hỏi tập trung vào khả năng suy luận từ schema và quy tắc nghiệp vụ.</p>
+<details class="q"><summary>1. Relationship type, instance và set khác nhau như thế nào?</summary><div class="answer">Type là định nghĩa chung ở schema; instance là một bộ thực thể đang có liên kết; relationship set là tập tất cả instances tại một trạng thái CSDL. Về mặt hình thức, R ⊆ E₁×…×Eₙ.</div></details>
+<details class="q"><summary>2. SUPERVISION có hai vai trò Supervisor, Supervisee. Tại sao degree vẫn là 1?</summary><div class="answer">Vì cả hai vai trò đều thuộc cùng một entity type EMPLOYEE. Degree đếm kiểu thực thể tham gia, không đếm vai trò/đường nối.</div></details>
+<details class="q"><summary>3. Vì sao Hours nên thuộc WORKS_ON mà không thuộc EMPLOYEE?</summary><div class="answer">Vì cùng nhân viên có thể làm hai dự án với số giờ khác nhau. Hours phụ thuộc vào đúng cặp (employee,project).</div></details>
+<details class="q"><summary>4. Mỗi phòng có nhiều nhân viên có tự suy ra mọi phòng phải có ít nhất một nhân viên không?</summary><div class="answer">Không. Tỷ số lực lượng chỉ giới hạn max. Có bắt buộc ít nhất một hay không phụ thuộc min/participation được đề quy định; nếu không rõ phải hỏi.</div></details>
+<details class="q"><summary>5. Min–max (0,1), (1,1), (0,N), (1,N) khác nhau ở đâu?</summary><div class="answer">0/1 đầu biểu thị tùy chọn/bắt buộc; 1/N cuối là tối đa một/nhiều. (0,1) tùy chọn–tối đa một; (1,1) đúng một; (0,N) tùy chọn–nhiều; (1,N) bắt buộc–nhiều.</div></details>
+<details class="q"><summary>6. Đường đôi và số N trong Chen nói về những gì?</summary><div class="answer">Đường đôi: tham gia toàn bộ, tức min≥1. Số N trong cardinality ratio: có thể liên hệ với nhiều thực thể ở phía còn lại theo quy ước sơ đồ; không tự suy ra min.</div></details>
+<details class="q"><summary>7. Vì sao phân rã SUPPLY(supplier,part,project) thành ba cặp có thể sai?</summary><div class="answer">Các cặp tồn tại rời rạc không bảo toàn sự kiện đồng thời giữa cả ba phía. Khi ghép có thể tạo ra bộ ba supplier–part–project giả; Quantity thường phụ thuộc vào chính bộ ba.</div></details>
+<details class="q"><summary>8. Partial key có phân biệt được mọi thực thể yếu trong toàn hệ thống không?</summary><div class="answer">Không. Nó chỉ phân biệt những weak instances cùng owner. Cần kết hợp khóa owner và khóa bộ phận để có định danh đầy đủ.</div></details>
+<details class="q"><summary>9. BANK_BRANCH có Branch_no. Vì sao Branch_no có thể không là khóa độc lập?</summary><div class="answer">Số chi nhánh có thể trùng giữa các BANK. Khóa của BANK_BRANCH trong mô hình này là (BANK.Code, Branch_no) thông qua identifying relationship BRANCHES.</div></details>
+<details class="q"><summary>10. Một DEPARTMENT có 1–3 PHONE. Suy ra được PHONE thuộc đúng một DEPARTMENT không?</summary><div class="answer">Chưa. Chỉ biết mỗi phòng tham gia 1–3 lần trong CONTAINS. Số phòng mà một PHONE có thể thuộc phải được quy định độc lập.</div></details>
+<details class="q"><summary>11. Vì sao từ “INSTRUCTOR dạy 2–4 COURSE” không suy ra COURSE có đúng một INSTRUCTOR?</summary><div class="answer">Đó chỉ là số lượng COURSE trên mỗi INSTRUCTOR. Số người dạy mỗi COURSE là min–max của phía COURSE, đề chưa nêu.</div></details>
+<details class="q"><summary>12. True, False và Maybe trong bài đọc MOVIES khác nhau như thế nào?</summary><div class="answer">True: suy ra trong mọi trạng thái hợp lệ. False: mâu thuẫn constraints. Maybe: schema không buộc đúng cũng không loại trừ; cần trạng thái mẫu hoặc dữ kiện bổ sung.</div></details>
+<details class="q"><summary>13. Một SALESPERSON làm trưởng nhóm của nhân viên khác: có cần thêm entity LEADER riêng không?</summary><div class="answer">Không bắt buộc. Vì trưởng nhóm vẫn là SALESPERSON, có thể dùng recursive relationship với vai trò Leader và Member. Chỉ tách entity nếu nghiệp vụ cần thêm đối tượng có định danh/vòng đời riêng.</div></details>
+<details class="q"><summary>14. Nếu xem R giữa E và F như một thuộc tính đa trị của E, miền giá trị là gì?</summary><div class="answer">Là F (các entity F làm giá trị), hoặc chính xác hơn mỗi e ánh xạ tới một tập con F: A_R(e)={f ∈ F | (e,f)∈R}. Khi max=1, tập con này có nhiều nhất một phần tử. Đây là cách nhìn hình thức; ràng buộc/thuộc tính của R vẫn cần bảo toàn.</div></details>
+<div class="review"><p><strong>Checklist để làm đề ER:</strong> (1) nhận diện type, role và relationship; (2) xác định degree; (3) đặt thuộc tính đúng entity/relationship; (4) suy max từng phía; (5) suy min từ yêu cầu hoặc đường tham gia; (6) nhận diện weak entity và partial key; (7) kiểm tra ternary không mất ngữ nghĩa; (8) nêu giả định khi dữ kiện thiếu.</p></div>
+</section></main></body></html>
