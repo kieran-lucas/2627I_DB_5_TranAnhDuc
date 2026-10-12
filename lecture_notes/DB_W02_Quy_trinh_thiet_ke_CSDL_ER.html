@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light">
+<title>Database W2 · Quy trình thiết kế CSDL &amp; Nhập môn ER</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#253340;--sub:#435263;--muted:#718194;--line:#dfe5eb;--accent:#315d7d;--soft:#f6f8fa;--blue:#eef4f9}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{max-width:1032px;margin:0 auto;padding:34px 16px 80px;background:#fff;color:var(--ink);font:400 16px/1.68 'Space Grotesk',Arial,Helvetica,sans-serif}
+main{max-width:1000px;margin:0 auto}
+h1,h2,h3,h4,p{margin-top:0}
+h1{font-size:30px;line-height:1.3;letter-spacing:-.55px;margin:8px 0 0}
+h2{font-size:24px;line-height:1.35;letter-spacing:-.28px;margin:0 0 13px}
+h3{font-size:18px;line-height:1.5;margin:22px 0 9px}
+h4{font-size:17px;line-height:1.45;margin:17px 0 7px}
+p,li{font-size:16px;line-height:1.68;color:var(--sub)}
+p{margin:0 0 13px}ul,ol{margin:8px 0 15px;padding-left:25px}li{margin:0 0 6px}
+strong{color:#2e4558}a{color:var(--accent)}a:hover{text-decoration-thickness:2px}
+code,pre,.formula{font-family:'JetBrains Mono',Consolas,monospace;font-size:16px;line-height:1.65}
+code{background:#f1f3f6;border:1px solid #e4e8ee;border-radius:3px;padding:1px 4px;overflow-wrap:anywhere}
+pre{background:#f7f8fa;border:1px solid var(--line);padding:14px 17px;border-radius:5px;overflow:auto;margin:12px 0 16px;color:#34475a}
+.head{padding:19px 0 24px;border-top:3px solid var(--accent);border-bottom:1px solid var(--line)}
+.kicker{color:var(--accent);font:600 11px/1.6 'JetBrains Mono',monospace;letter-spacing:.08em}
+.toc{padding:19px 0 18px;border-bottom:1px solid var(--line);margin-bottom:8px}
+.toc>strong{display:block;margin:0 0 11px}.toc-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 23px}
+.toc a{text-decoration:none;font-size:16px;line-height:1.55;display:flex;align-items:baseline;gap:8px}.toc a:hover{text-decoration:underline}
+.toc a span{font:500 11px 'JetBrains Mono',monospace;color:#8da0af;min-width:24px}
+.sec{padding:27px 0 29px;border-bottom:1px solid #e9edf1}.sec:last-child{border-bottom:0}
+.def{background:#f4f7fa;border-left:3px solid #7396b4;padding:13px 16px;margin:14px 0 17px;color:#435a70;font-size:16px;line-height:1.7}
+.key{border-left:2px solid #9eacb9;padding:5px 14px;margin:14px 0 17px;color:#465c6f;line-height:1.68}.key strong{color:#2d526e}
+.tbl{overflow:auto;margin:14px 0 18px;border:1px solid var(--line);border-radius:5px}.tbl table{border-collapse:collapse;width:100%;min-width:690px;font-size:16px;line-height:1.58}
+.tbl th{background:#eef2f5;color:#30485d;text-align:left;padding:10px 13px;font-size:16px;vertical-align:top;font-weight:700;border-bottom:1px solid #d9e2e9}
+.tbl td{padding:11px 13px;vertical-align:top;color:#48596a;font-size:16px;border-bottom:1px solid #edf0f3}.tbl tr:last-child td{border-bottom:0}.tbl tbody tr:nth-child(even){background:#fcfcfd}
+.tbl td strong{white-space:normal}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:12px 0 18px}.plainbox{border:1px solid var(--line);padding:13px 16px;border-radius:5px}.plainbox h3{margin:0 0 8px}.plainbox p:last-child{margin-bottom:0}
+.diagram{border:1px solid var(--line);border-radius:5px;background:#fff;overflow-x:auto;margin:14px 0 17px;padding:12px 10px}
+.diagram svg{display:block;width:100%;min-width:760px;height:auto;margin:0 auto}.figcap{font-size:16px;color:#64798b;line-height:1.6;margin:10px 7px 2px}
+.label{color:#6f8495;font-size:11.5px;font-family:'JetBrains Mono',monospace;letter-spacing:.035em}
+.formula{background:#f7f8fa;border:1px solid #e1e7eb;border-radius:5px;padding:12px 14px;margin:13px 0 16px;overflow-x:auto;white-space:nowrap;text-align:center;color:#36526b}
+.note{font-size:16px;color:#66788a}.answer{padding:10px 15px;border-left:2px solid #d8e0e7;color:#465b6c;line-height:1.7;margin-top:10px}
+.q{padding:13px 0;border-bottom:1px solid #e7ecf0}.q:last-child{border-bottom:0}.q summary{font-size:16px;line-height:1.6;font-weight:600;color:#30485e;cursor:pointer}
+.q summary::marker{color:#7891a6}
+.review{background:#f7f9fa;border:1px solid #e3e8ed;border-radius:4px;padding:14px 17px;margin:15px 0}.review p{margin:0}
+.ascii{white-space:pre;line-height:1.7}
+@media(max-width:720px){body{padding:22px 12px 68px}h1{font-size:25px}h2{font-size:21px}h3{font-size:18px}h4{font-size:17px}.toc-grid,.two{grid-template-columns:1fr}.sec{padding:24px 0}.diagram{padding:8px 5px}.diagram svg{min-width:810px;width:810px}.tbl table{min-width:700px}}
+@media print{body{padding:0;font-size:16px}.sec{break-inside:auto}.diagram{break-inside:avoid}details .answer{display:block}a{text-decoration:none;color:inherit}}
+</style>
+</head>
+<body><main>
+<header class="head"><div class="kicker">DATABASE SYSTEMS · WEEK 02 · ÔN THI</div><h1>Quy trình thiết kế Cơ sở dữ liệu<br>và nhập môn mô hình ER</h1></header>
+<nav class="toc" aria-label="Mục lục"><strong>Nội dung</strong><div class="toc-grid">
+<a href="#s01"><span>01</span>Thiết kế CSDL là gì?</a><a href="#s02"><span>02</span>Các pha và hai luồng thiết kế</a>
+<a href="#s03"><span>03</span>Phân loại yêu cầu</a><a href="#s04"><span>04</span>Phạm vi, giả định và yêu cầu rõ ràng</a>
+<a href="#s05"><span>05</span>Nguyên tắc thiết kế quan niệm</a><a href="#s06"><span>06</span>Khái niệm cơ bản của ER</a>
+<a href="#s07"><span>07</span>Phân loại thuộc tính</a><a href="#s08"><span>08</span>Miền giá trị và mô hình ánh xạ</a>
+<a href="#s09"><span>09</span>Khóa và tính duy nhất</a><a href="#s10"><span>10</span>Ký pháp ER cơ bản</a>
+<a href="#s11"><span>11</span>Case study COMPANY</a><a href="#s12"><span>12</span>Bài tập có lời giải</a>
+<a href="#s13"><span>13</span>Tự kiểm tra trước khi thi</a>
+</div></nav>
+
+<section class="sec" id="s01"><h2>1. Thiết kế CSDL là gì?</h2>
+<div class="def"><strong>Thiết kế cơ sở dữ liệu (database design)</strong> là quá trình chuyển mô tả của một môi trường nghiệp vụ (<strong>miniworld</strong>) thành cấu trúc dữ liệu, mối liên hệ và ràng buộc có thể triển khai, kiểm soát và sử dụng lâu dài.</div>
+<div class="tbl"><table><thead><tr><th>Đầu vào cần làm rõ</th><th>Đầu ra cần có</th></tr></thead><tbody><tr><td>Miniworld, yêu cầu dữ liệu, yêu cầu chức năng, quy tắc nghiệp vụ, khung nhìn của người dùng.</td><td>Lược đồ quan niệm; lược đồ logic và ràng buộc; thiết kế vật lý; script cài đặt, truy vấn và giao dịch.</td></tr></tbody></table></div>
+<p>Thiết kế đúng giúp giảm dư thừa, tránh dị thường cập nhật, hỗ trợ truy vấn và bảo trì. Một sai lệch về <strong>ngữ nghĩa</strong> ở mức quan niệm có thể truyền sang lược đồ quan hệ, SQL và ứng dụng, dù câu lệnh SQL vẫn chạy đúng cú pháp.</p>
+<div class="key"><strong>Nguyên tắc mở đầu:</strong> Thiết kế CSDL bắt đầu bằng việc hiểu dữ liệu <em>có ý nghĩa gì và cần tuân theo quy tắc nào</em>, không bắt đầu từ việc viết <code>CREATE TABLE</code>.</div>
+</section>
+
+<section class="sec" id="s02"><h2>2. Các pha của quy trình thiết kế CSDL</h2>
+<div class="tbl"><table><thead><tr><th>Pha</th><th>Mục tiêu / đầu ra kiểm tra</th><th>Ví dụ</th></tr></thead><tbody>
+<tr><td><strong>1. Phân tích yêu cầu</strong></td><td>Xác định phạm vi, yêu cầu dữ liệu, yêu cầu chức năng, business rules, giả định.</td><td>SV, môn học; cần đăng ký học phần; lớp có sĩ số tối đa.</td></tr>
+<tr><td><strong>2. Thiết kế quan niệm</strong></td><td>Lược đồ ER/EER biểu diễn đối tượng, đặc trưng, liên kết, ràng buộc theo ngữ nghĩa nghiệp vụ.</td><td><code>STUDENT</code>, <code>COURSE</code> và quan hệ đăng ký.</td></tr>
+<tr><td><strong>3. Thiết kế logic</strong></td><td>Ánh xạ sang mô hình dữ liệu đích: relation, khóa, ràng buộc.</td><td>Chuyển ER thành bảng với khóa chính/khóa ngoại.</td></tr>
+<tr><td><strong>4. Thiết kế vật lý</strong></td><td>Quyết định biểu diễn và truy cập vật lý: kiểu dữ liệu cài đặt, index, storage, access path.</td><td>Index hỗ trợ tra cứu đăng ký theo mã sinh viên.</td></tr>
+<tr><td><strong>5. Cài đặt, kiểm thử</strong></td><td>Viết SQL/script, chuẩn bị dữ liệu kiểm thử, xác minh query và transaction đúng yêu cầu.</td><td>Thử đăng ký khi lớp đã đủ sĩ số.</td></tr>
+</tbody></table></div>
+<h3>Hai luồng song song: dữ liệu và chức năng</h3>
+<div class="diagram"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 310" role="img" aria-label="Quy trình thiết kế database tách luồng dữ liệu và chức năng từ phân tích yêu cầu rồi kết hợp khi triển khai">
+<defs><marker id="aW2" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8" fill="none" stroke="#7b94a7" stroke-width="1.3"/></marker></defs>
+<g font-family="Space Grotesk,Arial" text-anchor="middle"><rect x="355" y="12" width="210" height="44" rx="5" fill="#eaf2f8" stroke="#b7cada"/><text x="460" y="40" font-size="13" font-weight="700" fill="#305772">Phân tích yêu cầu</text>
+
+<rect x="97" y="106" width="241" height="48" rx="5" fill="#f1f5f8" stroke="#cad7e0"/><text x="217" y="126" font-size="13" font-weight="600" fill="#385a72">Thiết kế quan niệm</text><text x="217" y="143" font-size="12" fill="#688092">ER / EER schema</text>
+<rect x="97" y="174" width="241" height="48" rx="5" fill="#f1f5f8" stroke="#cad7e0"/><text x="217" y="194" font-size="13" font-weight="600" fill="#385a72">Thiết kế logic</text><text x="217" y="211" font-size="12" fill="#688092">Relational schema</text>
+<rect x="97" y="242" width="241" height="48" rx="5" fill="#f7f8fa" stroke="#d5dfe6"/><text x="217" y="262" font-size="13" font-weight="600" fill="#385a72">Thiết kế vật lý</text><text x="217" y="279" font-size="12" fill="#688092">Index · lưu trữ · truy cập</text>
+<rect x="576" y="106" width="241" height="48" rx="5" fill="#f1f5f8" stroke="#cad7e0"/><text x="696" y="126" font-size="13" font-weight="600" fill="#385a72">Đặc tả giao dịch</text><text x="696" y="143" font-size="12" fill="#688092">Yêu cầu xử lý mức cao</text>
+<rect x="576" y="174" width="241" height="48" rx="5" fill="#f1f5f8" stroke="#cad7e0"/><text x="696" y="194" font-size="13" font-weight="600" fill="#385a72">Thiết kế ứng dụng</text><text x="696" y="211" font-size="12" fill="#688092">Chương trình / UI</text>
+<rect x="576" y="242" width="241" height="48" rx="5" fill="#f7f8fa" stroke="#d5dfe6"/><text x="696" y="262" font-size="13" font-weight="600" fill="#385a72">Cài đặt giao dịch</text><text x="696" y="279" font-size="12" fill="#688092">Query / transaction</text></g>
+<g stroke="#8199aa" stroke-width="1.7" fill="none" marker-end="url(#aW2)"><path d="M417 57 V76 H217 V101"/><path d="M503 57 V76 H696 V101"/><path d="M217 154 V168"/><path d="M217 222 V236"/><path d="M696 154 V168"/><path d="M696 222 V236"/><path d="M343 266 H569"/></g>
+<text x="458" y="255" font-family="Space Grotesk,Arial" font-size="12" fill="#6e8294" text-anchor="middle">phối hợp</text></svg><div class="figcap">Yêu cầu dữ liệu dẫn tới thiết kế schema; yêu cầu chức năng dẫn tới giao dịch và ứng dụng. Hai luồng phải kiểm chứng lẫn nhau.</div></div>
+<p><strong>Độc lập với DBMS:</strong> phân tích yêu cầu, thiết kế quan niệm, ý nghĩa đối tượng và luật nghiệp vụ. <strong>Phụ thuộc vào DBMS/mô hình đích:</strong> ánh xạ logic cụ thể, kiểu dữ liệu cài đặt, index, lưu trữ, tối ưu và triển khai.</p>
+<div class="key"><strong>Điểm dễ nhầm:</strong> “Thiết kế logic” không phải thiết kế vật lý. ER/EER chưa phải tập lệnh SQL; index không thuộc mô hình ER. Thiết kế dữ liệu cũng không nên phụ thuộc vào cách bố trí một màn hình nhập liệu nhất thời.</div>
+</section>
+
+<section class="sec" id="s03"><h2>3. Phân tích và phân loại yêu cầu</h2>
+<p><strong>Phân tích yêu cầu (requirements analysis)</strong> là quá trình hiểu miniworld, tách thông tin và làm rõ điều kiện trước khi quyết định kiểu thực thể hay vẽ liên kết. Không phải mọi danh từ đều trở thành entity; cũng không phải mọi động từ đều là relationship.</p>
+<div class="tbl"><table><thead><tr><th>Thành phần</th><th>Trả lời câu hỏi nào?</th><th>Ví dụ UNIVERSITY</th></tr></thead><tbody>
+<tr><td><strong>Data requirements</strong></td><td>Cần lưu những đối tượng, thuộc tính, sự kiện và mối liên hệ nào?</td><td>Thông tin sinh viên, môn học, lớp học phần, đăng ký, điểm.</td></tr>
+<tr><td><strong>Functional requirements</strong></td><td>Hệ thống cần làm những thao tác gì với dữ liệu?</td><td>Đăng ký lớp, nhập điểm, in bảng điểm, báo cáo sĩ số.</td></tr>
+<tr><td><strong>Business rules</strong></td><td>Dữ liệu và thao tác phải thỏa điều kiện nào?</td><td>Mỗi lớp có giới hạn chỗ; chỉ đăng ký nếu thỏa môn tiên quyết.</td></tr>
+<tr><td><strong>User views</strong></td><td>Mỗi nhóm người dùng cần xem/xử lý phần thông tin nào?</td><td>SV xem bảng điểm; GV nhập điểm; phòng đào tạo xem sĩ số.</td></tr>
+<tr><td><strong>Assumptions / unresolved questions</strong></td><td>Điều gì chưa rõ hoặc đang tạm giả định?</td><td>Sinh viên được đăng ký lại cùng lớp khi đã hủy? Có giữ lịch sử không?</td></tr>
+</tbody></table></div>
+<p><strong>Yêu cầu chức năng không thay thế yêu cầu dữ liệu:</strong> “xem bảng điểm” là một thao tác, nhưng để thực hiện được phải có dữ liệu về sinh viên, lớp học phần, môn học và kết quả. Ngược lại, chỉ liệt kê các đối tượng tĩnh có thể bỏ sót dữ liệu phục vụ một giao dịch quan trọng.</p>
+<h3>Khung nhìn người dùng phải được hợp nhất</h3>
+<p>Cùng một miniworld có thể được mô tả khác nhau bởi <strong>phòng đào tạo</strong> (lớp, sĩ số, điểm), <strong>sinh viên</strong> (đăng ký, bảng điểm, điều kiện tiên quyết) và <strong>giảng viên</strong> (danh sách lớp, nhập điểm). Bản thiết kế quan niệm cần nhất quán và vẫn tạo được những view này.</p>
+</section>
+
+<section class="sec" id="s04"><h2>4. Phạm vi, giả định và chất lượng yêu cầu</h2>
+<p><strong>Phạm vi CSDL (scope)</strong> quyết định dữ liệu nào thuộc hệ thống, dữ liệu nào nằm ngoài, cần lưu chi tiết tới mức nào và có cần lưu lịch sử hay không. Ví dụ quản lý UNIVERSITY có thể cần lịch sử thay đổi điểm, nhưng không nhất thiết cần học phí hoặc địa chỉ cũ nếu nằm ngoài mục đích.</p>
+<h3>Biến câu mơ hồ thành câu kiểm chứng được</h3>
+<div class="tbl"><table><thead><tr><th>Phát biểu chưa đủ rõ</th><th>Những câu phải làm rõ trước khi vẽ ER</th></tr></thead><tbody>
+<tr><td>“Mỗi nhân viên làm việc cho phòng ban.”</td><td>Mỗi người thuộc đúng một hay nhiều phòng? Người mới tuyển có thể chưa thuộc phòng nào? Có theo dõi chuyển phòng theo thời gian?</td></tr>
+<tr><td>“Mỗi phòng có trưởng phòng.”</td><td>Bắt buộc luôn có trưởng phòng? Một nhân viên có thể quản lý nhiều phòng? Có lưu ngày bắt đầu và lịch sử quản lý không?</td></tr>
+<tr><td>“Nhân viên tham gia nhiều dự án.”</td><td>“Nhiều” có cho phép 0? Có giới hạn số dự án? Có cần ghi số giờ làm việc từng dự án trong mỗi tuần?</td></tr>
+</tbody></table></div>
+<p>Với những chỗ chưa được xác nhận, ghi rõ <strong>giả định</strong> và <strong>câu hỏi chờ làm rõ</strong>; không tự biến giả định thành ràng buộc nghiệp vụ chắc chắn.</p>
+<div class="two"><div class="plainbox"><h3>Business rule tốt</h3><p>Chỉ rõ <strong>chủ thể, điều kiện, số lượng, ngoại lệ và thời điểm áp dụng</strong> khi chúng có ý nghĩa. Ví dụ: “Mỗi lớp học phần có tối đa <em>N</em> sinh viên đăng ký hợp lệ tại cùng một thời điểm”.</p></div><div class="plainbox"><h3>Bản yêu cầu chất lượng</h3><p>Cần <strong>đầy đủ, nhất quán, không mơ hồ, chính xác, kiểm chứng được và đúng mức chi tiết</strong>. Tránh các từ “nhiều”, “đầy đủ”, “liên quan” nếu không giải thích cụ thể.</p></div></div>
+<div class="key"><strong>Đầu ra của phân tích yêu cầu:</strong> phạm vi + danh sách yêu cầu dữ liệu + danh sách chức năng + business rules + user views + các giả định/câu hỏi chưa rõ. Chỉ từ đó mới xây dựng lược đồ ER.</div>
+</section>
+
+<section class="sec" id="s05"><h2>5. Nguyên tắc thiết kế quan niệm</h2>
+<div class="tbl"><table><thead><tr><th>Nguyên tắc</th><th>Áp dụng thực tế</th></tr></thead><tbody>
+<tr><td><strong>Đúng ngữ nghĩa</strong></td><td>Mỗi entity/attribute/relationship phản ánh đúng một ý nghĩa nghiệp vụ được xác định.</td></tr>
+<tr><td><strong>Tránh trùng lặp vô cớ</strong></td><td>Không lưu lặp cùng một thông tin khi có thể suy ra đáng tin cậy; mọi dư thừa chủ động phải có lý do.</td></tr>
+<tr><td><strong>Dễ hiểu, nhất quán tên gọi</strong></td><td>Dùng <code>Order_status</code> thay <code>Status</code> mơ hồ; định nghĩa rõ phạm vi duy nhất của <code>Student_id</code>.</td></tr>
+<tr><td><strong>Chọn đúng thuộc tính</strong></td><td>Thuộc tính mô tả đúng đối tượng và mức chi tiết: cần lọc theo thành phố thì địa chỉ nên có thành phần <code>City</code>.</td></tr>
+<tr><td><strong>Chọn đúng liên kết</strong></td><td>Các quan hệ nghiệp vụ giữa các đối tượng phải được biểu diễn như mối liên hệ khi thích hợp, thay vì nhét toàn bộ vào thuộc tính.</td></tr>
+</tbody></table></div>
+<h3>Đừng đưa cài đặt vật lý vào ER quá sớm</h3>
+<p>Ở mức <strong>quan niệm</strong>, điều quan trọng là “mã sinh viên phân biệt các sinh viên”, “điểm nằm trong miền 0–10”, “một người có thể có nhiều số điện thoại”. Chi tiết như <code>VARCHAR(12)</code>, <code>DECIMAL(4,2)</code> hoặc cấu trúc bảng điện thoại sẽ được quyết định khi ánh xạ và cài đặt.</p>
+<div class="key"><strong>Trường hợp suy diễn:</strong> lưu đồng thời <code>Age</code> và <code>Birth_date</code> dễ gây lệch dữ liệu vì tuổi thay đổi theo ngày; lưu <code>Age</code> có thể hợp lý nếu có yêu cầu lưu tuổi tại một thời điểm lịch sử. Tương tự, lưu tổng tiền đơn hàng có thể phục vụ hiệu năng/audit nhưng cần cơ chế giữ nhất quán.</div>
+</section>
+
+<section class="sec" id="s06"><h2>6. Những khái niệm nền tảng của mô hình ER</h2>
+<div class="def"><strong>Mô hình Entity–Relationship (ER)</strong> là mô hình dữ liệu <strong>quan niệm mức cao</strong> biểu diễn một miniworld bằng <strong>thực thể (entity)</strong>, <strong>thuộc tính (attribute)</strong> và <strong>liên kết (relationship)</strong>. ER diagram (ERD) là sơ đồ trực quan biểu diễn lược đồ ER.</div>
+<div class="tbl"><table><thead><tr><th>Khái niệm</th><th>Ý nghĩa</th><th>Ví dụ</th></tr></thead><tbody>
+<tr><td><strong>Entity</strong></td><td>Một đối tượng cụ thể có thể phân biệt trong miniworld.</td><td>Nhân viên có mã <code>E17</code>.</td></tr>
+<tr><td><strong>Entity type</strong></td><td>Mô tả <em>kiểu/cấu trúc chung</em> của các thực thể cùng loại: thuộc tính, miền giá trị, ràng buộc.</td><td><code>EMPLOYEE(Ssn, Name, Salary)</code>.</td></tr>
+<tr><td><strong>Entity set</strong></td><td>Tập các thực thể cụ thể thuộc một entity type tại <em>một thời điểm</em>.</td><td>Tất cả nhân viên hiện đang được lưu.</td></tr>
+<tr><td><strong>Attribute</strong></td><td>Một đặc trưng có ý nghĩa của thực thể (ở một số mô hình còn mô tả liên kết).</td><td><code>Name</code>, <code>Salary</code>, <code>Address</code>.</td></tr>
+<tr><td><strong>Attribute value</strong></td><td>Giá trị của một thuộc tính trên một thực thể cụ thể.</td><td><code>Salary(E17) = 20000</code>.</td></tr>
+<tr><td><strong>Relationship</strong></td><td>Mối liên hệ nghiệp vụ giữa các thực thể.</td><td>Nhân viên <em>làm việc cho</em> phòng ban.</td></tr>
+</tbody></table></div>
+<p>Hình dung: <strong>entity type</strong> tương ứng định nghĩa chung (gần với <em>schema</em>), còn <strong>entity set</strong> tương ứng những phần tử hiện có (gần với <em>instance/state</em>). Hai cái không đồng nghĩa: tuyển thêm một nhân viên thay đổi entity set, nhưng thường không làm đổi entity type.</p>
+<div class="key"><strong>Phân biệt thêm:</strong> <em>entity</em> là “người A cụ thể”, <em>entity type</em> là “NHÂN_VIÊN”, <em>attribute</em> là “Ngày_sinh”, và <em>attribute value</em> là “2007-05-12”.</div>
+</section>
+
+<section class="sec" id="s07"><h2>7. Phân loại thuộc tính: hiểu qua cách dùng</h2>
+<div class="tbl"><table><thead><tr><th>Loại</th><th>Bản chất</th><th>Ví dụ / hệ quả thiết kế</th></tr></thead><tbody>
+<tr><td><strong>Simple / atomic</strong><br>Đơn</td><td>Không phân rã thêm trong phạm vi bài toán đang xét.</td><td><code>Sex</code>; một chuỗi <code>Address</code> vẫn có thể được xem là đơn nếu hệ thống không cần thành phần nhỏ.</td></tr>
+<tr><td><strong>Composite</strong><br>Phức hợp</td><td>Gồm các thành phần con có ý nghĩa độc lập.</td><td><code>Name = (Fname, Minit, Lname)</code>; <code>Address = (Street, City, State, Zip)</code>.</td></tr>
+<tr><td><strong>Single-valued</strong><br>Đơn trị</td><td>Mỗi entity có tối đa một giá trị tại một thời điểm xét.</td><td>Mỗi nhân viên có một ngày sinh ghi nhận.</td></tr>
+<tr><td><strong>Multivalued</strong><br>Đa trị</td><td>Một entity có thể có nhiều giá trị cho cùng thuộc tính.</td><td>Nhiều số điện thoại của một nhân viên; nhiều địa điểm của một phòng ban.</td></tr>
+<tr><td><strong>Stored</strong><br>Lưu trữ</td><td>Giá trị được ghi trực tiếp.</td><td><code>Birth_date</code>, <code>Quantity</code>, <code>Unit_price</code>.</td></tr>
+<tr><td><strong>Derived</strong><br>Suy diễn</td><td>Tính được từ giá trị khác.</td><td><code>Age</code> từ ngày sinh và ngày xét; <code>Total</code> từ số lượng × đơn giá.</td></tr>
+<tr><td><strong>NULL / missing</strong></td><td>Chưa có giá trị được ghi nhận: chưa biết, không áp dụng hoặc chưa nhập.</td><td>Chưa biết ngày kết thúc hợp đồng; chưa có số điện thoại.</td></tr>
+</tbody></table></div>
+<p>Các cách phân loại này là <strong>những chiều khác nhau</strong>, không loại trừ nhau. Ví dụ, <code>Address</code> có thể vừa <em>phức hợp</em> vừa <em>đơn trị</em>; <code>Phone_numbers</code> có thể vừa <em>đa trị</em> vừa chứa các thành phần <code>(Area_code, Number)</code>.</p>
+<div class="diagram"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 910 255" role="img" aria-label="Cấu trúc địa chỉ là thuộc tính phức hợp, bao gồm Street_address, City, State, Zip, trong đó Street_address tiếp tục phân rã thành Number, Street và Apartment_number">
+<g font-family="Space Grotesk,Arial" text-anchor="middle" font-size="12" fill="#3e5d72">
+<ellipse cx="455" cy="35" rx="90" ry="23" fill="#edf3f7" stroke="#9eb5c5" stroke-width="1.4"/><text x="455" y="40" font-size="13" font-weight="700">Address</text>
+<ellipse cx="200" cy="112" rx="106" ry="23" fill="#f7f9fb" stroke="#afc0cc"/><text x="200" y="117">Street_address</text>
+<ellipse cx="433" cy="112" rx="64" ry="23" fill="#f7f9fb" stroke="#afc0cc"/><text x="433" y="117">City</text>
+<ellipse cx="615" cy="112" rx="64" ry="23" fill="#f7f9fb" stroke="#afc0cc"/><text x="615" y="117">State</text>
+<ellipse cx="798" cy="112" rx="64" ry="23" fill="#f7f9fb" stroke="#afc0cc"/><text x="798" y="117">Zip</text>
+<ellipse cx="58" cy="215" rx="55" ry="22" fill="#fff" stroke="#c1cdd6"/><text x="58" y="220">Number</text>
+<ellipse cx="205" cy="215" rx="55" ry="22" fill="#fff" stroke="#c1cdd6"/><text x="205" y="220">Street</text>
+<ellipse cx="369" cy="215" rx="92" ry="22" fill="#fff" stroke="#c1cdd6"/><text x="369" y="220">Apartment_no</text></g>
+<g stroke="#9bb0bf" stroke-width="1.6" fill="none"><path d="M410 55 L242 91"/><path d="M449 58 L434 88"/><path d="M485 54 L598 91"/><path d="M502 47 L785 98"/><path d="M155 127 L66 193"/><path d="M200 135 V193"/><path d="M244 128 L347 193"/></g></svg><div class="figcap">Một thuộc tính phức hợp có thể phân rã nhiều tầng. Mức phân rã phù hợp phụ thuộc yêu cầu truy vấn: lọc theo thành phố cần <code>City</code>, vận chuyển theo ZIP cần <code>Zip</code>.</div></div>
+<h3>Complex attribute: vừa phức hợp, vừa đa trị</h3>
+<p>Thuộc tính <strong>phức tạp (complex)</strong> có thể kết hợp <em>composite</em> và <em>multivalued</em>, gồm cả cấu trúc lồng nhau. Ví dụ một người có nhiều địa chỉ; mỗi địa chỉ gồm <code>(Street, City, Zip)</code>. Khi thiết kế, phải phân biệt <strong>một giá trị gồm nhiều bộ phận</strong> với <strong>một thuộc tính có nhiều giá trị</strong>.</p>
+<div class="key"><strong>NULL không đồng nghĩa số 0 hoặc chuỗi rỗng.</strong> “Chưa biết”, “chưa nhập” và “không áp dụng” có thể cùng dẫn đến thiếu giá trị nhưng mang ngữ nghĩa nghiệp vụ khác nhau; cần biết trường hợp nào cho phép thiếu.</div>
+</section>
+
+<section class="sec" id="s08"><h2>8. Miền giá trị và biểu diễn thuộc tính bằng ánh xạ</h2>
+<div class="def"><strong>Miền giá trị (domain / value set)</strong> là tập các giá trị <strong>hợp lệ về mặt ngữ nghĩa</strong> mà một thuộc tính có thể nhận. Miền giá trị khác kiểu lưu trữ: <code>INTEGER</code> không tự diễn đạt quy tắc <code>Age ∈ [16,70]</code>.</div>
+<div class="tbl"><table><thead><tr><th>Thuộc tính</th><th>Ví dụ miền logic</th><th>Điểm cần nhớ</th></tr></thead><tbody>
+<tr><td><code>Age</code></td><td>Các số nguyên từ 16 đến 70, <em>nếu nghiệp vụ đặt giới hạn đó</em>.</td><td>Giới hạn là quy tắc của bài toán, không phải tính chất vốn có của tuổi.</td></tr>
+<tr><td><code>Grade</code></td><td><code>[0,10]</code> hoặc <code>{A,B,C,D,F}</code> tùy hệ thống chấm điểm.</td><td>Mỗi cách chấm có domain riêng.</td></tr>
+<tr><td><code>Salary</code></td><td>Số không âm.</td><td>Không nhận giá trị âm nếu đây là quy tắc được xác nhận.</td></tr>
+</tbody></table></div>
+<h3>Một cách biểu diễn hình thức</h3>
+<p>Giả sử <strong>E</strong> là tập thực thể và <strong>V</strong> là miền giá trị của thuộc tính <strong>A</strong>. Một cách biểu diễn tổng quát giá trị thuộc tính là:</p>
+<div class="formula">A: E → 𝒫(V) &nbsp;&nbsp;&nbsp; 𝒫(V) = tập tất cả tập con của V</div>
+<p>Với thực thể <code>e ∈ E</code>, kết quả <code>A(e)</code> được xem như một <strong>tập các giá trị</strong>. Do đó, thuộc tính đơn trị được biểu diễn bằng tập một phần tử, còn đa trị có thể có nhiều phần tử.</p>
+<div class="tbl"><table><thead><tr><th>Trường hợp</th><th>Biểu diễn minh họa</th></tr></thead><tbody>
+<tr><td>Đơn trị</td><td><code>Birth_date(e) = {2007-05-12}</code> (một phần tử).</td></tr>
+<tr><td>Đa trị</td><td><code>Phone(e) = {"091...", "098..."}</code> (nhiều phần tử).</td></tr>
+<tr><td>Chưa ghi nhận giá trị</td><td>Trong mô hình tập hợp có thể biểu diễn bằng <code>∅</code>; cần xét riêng ý nghĩa <code>NULL</code> trong CSDL cụ thể.</td></tr>
+</tbody></table></div>
+<h3>Thuộc tính phức hợp có nhiều thành phần</h3>
+<p>Nếu thuộc tính phức hợp có các thành phần với miền <code>V₁, V₂, …, Vₙ</code>, một giá trị phức hợp <em>đơn trị, các thành phần đơn trị</em> có thể hiểu như một bộ tích Đề-các:</p>
+<div class="formula">(v₁, v₂, …, vₙ) ∈ V₁ × V₂ × … × Vₙ</div>
+<p>Với cấu trúc phức tạp cho phép các <em>thành phần đa trị</em> và <em>nhiều giá trị phức hợp</em>, có thể dùng biểu thức tổng quát hơn:</p>
+<div class="formula">V = 𝒫(𝒫(V₁) × 𝒫(V₂) × … × 𝒫(Vₙ))</div>
+<p>Đọc theo từng lớp: mỗi <code>𝒫(Vᵢ)</code> cho phép thành phần thứ <code>i</code> có nhiều giá trị; tích Đề-các ghép các thành phần thành một cấu trúc; <code>𝒫(…)</code> bên ngoài cho phép nhiều cấu trúc như vậy. Đây là cách <strong>mô tả miền về mặt tập hợp</strong>, không phải công thức bắt buộc khi vẽ ERD.</p>
+<div class="key"><strong>Ưu tiên khi làm bài:</strong> xác định chính xác thuộc tính <em>đơn trị hay đa trị, đơn hay phức hợp</em> trước; dùng ký pháp tập hợp để giải thích nếu đề yêu cầu. Không đồng nhất “thiếu giá trị” với cách DBMS xử lý <code>NULL</code> về mặt logic truy vấn.</div>
+</section>
+
+<section class="sec" id="s09"><h2>9. Thuộc tính khóa và ràng buộc tính duy nhất</h2>
+<p><strong>Khóa (key)</strong> nhận diện duy nhất một thực thể. Điểm quyết định là tính duy nhất phải đúng trong <strong>mọi trạng thái hợp lệ</strong> của tập thực thể, chứ không chỉ vì dữ liệu mẫu hiện tại tình cờ không trùng.</p>
+<div class="formula">∀ e₁,e₂ ∈ E: &nbsp; e₁ ≠ e₂ ⇒ K(e₁) ≠ K(e₂)</div>
+<div class="tbl"><table><thead><tr><th>Loại</th><th>Định nghĩa chính xác</th><th>Ví dụ</th></tr></thead><tbody>
+<tr><td><strong>Superkey — siêu khóa</strong></td><td>Một tập thuộc tính luôn phân biệt duy nhất các thực thể; <strong>có thể có thuộc tính thừa</strong>.</td><td>Nếu <code>Vehicle_id</code> duy nhất thì <code>{Vehicle_id, Make}</code> vẫn là siêu khóa.</td></tr>
+<tr><td><strong>Candidate key — khóa ứng viên</strong></td><td><strong>Siêu khóa tối thiểu</strong>: bỏ bất kỳ thuộc tính thành phần nào sẽ không còn được bảo đảm duy nhất.</td><td><code>{Vehicle_id}</code> hoặc <code>{State, Number}</code> nếu cả hai đáp ứng ràng buộc nghiệp vụ.</td></tr>
+<tr><td><strong>Primary key — khóa chính</strong></td><td>Một <strong>khóa ứng viên được chọn</strong> làm định danh chính trong thiết kế.</td><td>Chọn <code>Vehicle_id</code> làm khóa chính cho <code>CAR</code>.</td></tr>
+<tr><td><strong>Composite key — khóa ghép</strong></td><td>Khóa gồm từ hai thuộc tính thành phần cùng xác định duy nhất thực thể.</td><td><code>Registration = (Number, State)</code>.</td></tr>
+</tbody></table></div>
+<h3>Ví dụ CAR</h3>
+<p>Ví dụ CAR xét hai cách định danh xe: <code>Vehicle_id</code> và <code>Registration(Number, State)</code>. Trong đó, chỉ <code>Number</code> có thể trùng giữa các bang; cần ghép thêm <code>State</code> để nhận diện đăng ký theo quy tắc ví dụ. Nếu cả hai là khóa ứng viên, người thiết kế có thể chọn một khóa chính.</p>
+<div class="key"><strong>Hai khái niệm không trùng nhau:</strong> <em>composite attribute</em> có nhiều thành phần để mô tả <strong>một đặc trưng</strong> (ví dụ Address); <em>composite key</em> kết hợp thuộc tính để bảo đảm <strong>nhận dạng duy nhất</strong>. Một khóa ghép cũng phải thỏa tính tối thiểu nếu gọi là khóa ứng viên.</div>
+<p><strong>Cách kiểm tra khóa khi làm bài:</strong> xác định phạm vi định danh → kiểm tra tính duy nhất theo business rule → bỏ từng thành phần để kiểm tra tính tối thiểu → liệt kê các khóa ứng viên → chọn khóa chính. Không suy ra khóa chỉ vì cột không trùng trong vài dòng mẫu.</p>
+</section>
+
+<section class="sec" id="s10"><h2>10. Ký hiệu ER cơ bản (Chen notation)</h2>
+<p>Ở bài này, sơ đồ ER dùng ký pháp <strong>hình chữ nhật cho entity type, hình thoi cho relationship, hình bầu dục cho attribute</strong>. Kiểu đường viền cho biết ý nghĩa đặc biệt.</p>
+<div class="diagram"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 402" role="img" aria-label="Bảng ký hiệu ER: thực thể chữ nhật, thực thể yếu viền kép, liên kết hình thoi, liên kết định danh hình thoi kép, thuộc tính oval, khóa gạch chân, đa trị viền kép, suy diễn nét đứt, phức hợp có các nhánh">
+<g font-family="Space Grotesk,Arial" font-size="12" text-anchor="middle" fill="#365571">
+<rect x="60" y="30" width="155" height="50" fill="#edf3f7" stroke="#7997ad" stroke-width="1.6"/><text x="137" y="60" font-size="13" font-weight="700">EMPLOYEE</text>
+<rect x="279" y="30" width="155" height="50" fill="#edf3f7" stroke="#7997ad" stroke-width="1.6"/><rect x="284" y="35" width="145" height="40" fill="none" stroke="#7997ad" stroke-width="1.1"/><text x="356" y="60" font-size="13" font-weight="700">DEPENDENT</text>
+<path d="M556 30 L627 55 L556 80 L485 55 Z" fill="#f5f7fa" stroke="#7997ad" stroke-width="1.6"/><text x="556" y="59" font-size="12" font-weight="700">WORKS_FOR</text>
+<path d="M766 26 L840 55 L766 84 L692 55 Z" fill="#f5f7fa" stroke="#7997ad" stroke-width="1.3"/><path d="M766 32 L831 55 L766 78 L701 55 Z" fill="none" stroke="#7997ad" stroke-width="1.2"/><text x="766" y="59" font-size="12" font-weight="700">IDENTIFIES</text>
+<text x="137" y="107" fill="#516c81">Entity</text><text x="356" y="107" fill="#516c81">Weak entity</text><text x="556" y="107" fill="#516c81">Relationship</text><text x="766" y="107" fill="#516c81">Identifying relationship</text>
+<ellipse cx="137" cy="186" rx="72" ry="24" fill="#fff" stroke="#7997ad" stroke-width="1.6"/><text x="137" y="191" font-size="13">Name</text>
+<ellipse cx="356" cy="186" rx="72" ry="24" fill="#fff" stroke="#7997ad" stroke-width="1.6"/><text x="356" y="191" font-size="13">Ssn</text><path d="M342 196 H371" fill="none" stroke="#365571" stroke-width="1.1"/>
+<ellipse cx="556" cy="186" rx="72" ry="24" fill="#fff" stroke="#7997ad" stroke-width="1.6"/><ellipse cx="556" cy="186" rx="66" ry="19" fill="none" stroke="#7997ad" stroke-width="1.1"/><text x="556" y="191" font-size="13">Locations</text>
+<ellipse cx="766" cy="186" rx="72" ry="24" fill="#fff" stroke="#7997ad" stroke-dasharray="5 4" stroke-width="1.6"/><text x="766" y="191" font-size="13">Age</text>
+<text x="137" y="238" fill="#516c81">Attribute</text><text x="356" y="238" fill="#516c81">Key attribute</text><text x="556" y="238" fill="#516c81">Multivalued</text><text x="766" y="238" fill="#516c81">Derived</text>
+<ellipse cx="450" cy="290" rx="70" ry="24" fill="#edf3f7" stroke="#7997ad" stroke-width="1.5"/><text x="450" y="295" font-size="13" font-weight="600">Name</text>
+<ellipse cx="270" cy="365" rx="60" ry="22" fill="#fff" stroke="#9fb5c5"/><text x="270" y="370">Fname</text>
+<ellipse cx="450" cy="365" rx="60" ry="22" fill="#fff" stroke="#9fb5c5"/><text x="450" y="370">Minit</text>
+<ellipse cx="630" cy="365" rx="60" ry="22" fill="#fff" stroke="#9fb5c5"/><text x="630" y="370">Lname</text>
+<text x="117" y="304" fill="#516c81" font-size="13">Composite</text><text x="117" y="324" fill="#516c81" font-size="13">attribute</text></g>
+<g fill="none" stroke="#a4b5c2" stroke-width="1.5"><path d="M416 311 L288 343"/><path d="M450 314 V342"/><path d="M484 311 L612 343"/></g>
+</svg><div class="figcap">Hình sử dụng quy ước ký hiệu trong tài liệu: gạch chân tên thuộc tính khóa; hai đường viền cho thực thể yếu hoặc thuộc tính đa trị; nét đứt cho thuộc tính suy diễn; đường nhánh cho thuộc tính phức hợp.</div></div>
+<div class="tbl"><table><thead><tr><th>Ký hiệu</th><th>Cách đọc khi gặp trong đề</th></tr></thead><tbody>
+<tr><td>Chữ nhật / chữ nhật kép</td><td>Kiểu thực thể / kiểu thực thể yếu.</td></tr>
+<tr><td>Hình thoi / hình thoi kép</td><td>Kiểu liên kết / liên kết định danh của thực thể yếu.</td></tr>
+<tr><td>Oval / oval kép / oval nét đứt</td><td>Thuộc tính thường / đa trị / suy diễn.</td></tr>
+<tr><td>Tên thuộc tính gạch chân</td><td>Thuộc tính khóa hoặc thành phần khóa theo quy ước sơ đồ.</td></tr>
+<tr><td>Oval tỏa ra các oval con</td><td>Thuộc tính phức hợp; thành phần có thể tiếp tục phân rã.</td></tr>
+</tbody></table></div>
+<div class="key"><strong>Lưu ý:</strong> một sơ đồ ER <strong>không chỉ là hình có các ô được nối</strong>. Muốn xác định chính xác tính bắt buộc hay số lượng tham gia một liên kết còn phải làm rõ quy tắc nghiệp vụ. Các ký hiệu thực thể yếu và liên kết định danh được nhận diện ở mức nhập môn này; cơ chế phụ thuộc định danh sẽ học sâu sau.</div>
+</section>
+
+<section class="sec" id="s11"><h2>11. Case study COMPANY: từ mô tả đến ER sơ bộ</h2>
+<p>Miniworld COMPANY trong bài gồm nhân viên, phòng ban, dự án và người phụ thuộc; cần lưu nhân viên thuộc phòng nào, tham gia dự án nào và số giờ mỗi tuần, cũng như thông tin người phụ thuộc.</p>
+<div class="tbl"><table><thead><tr><th>Kiểu thực thể ban đầu</th><th>Thuộc tính / đặc trưng theo mô tả</th><th>Điều cần làm rõ</th></tr></thead><tbody>
+<tr><td><strong>EMPLOYEE</strong></td><td><code>Ssn, Name, Birth_date, Address, Sex, Salary</code>.</td><td><code>Name</code> có thể là phức hợp; mã <code>Ssn</code> là ứng viên định danh theo ví dụ.</td></tr>
+<tr><td><strong>DEPARTMENT</strong></td><td><code>Number, Name, Locations, Manager, Manager_start_date</code>.</td><td><code>Locations</code> có thể đa trị; <code>Manager</code> có thể là liên kết với EMPLOYEE; ngày nhận chức có thể thuộc liên kết quản lý.</td></tr>
+<tr><td><strong>PROJECT</strong></td><td><code>Number, Name, Location, Controlling_department</code>.</td><td>Phòng phụ trách dự án có thể mô hình hóa bằng liên kết với DEPARTMENT.</td></tr>
+<tr><td><strong>DEPENDENT</strong></td><td><code>Dependent_name, Sex, Birth_date, Relationship, Employee</code>.</td><td><code>Employee</code> có thể là liên kết với EMPLOYEE; cần xác nhận DEPENDENT có định danh độc lập hay phụ thuộc nhân viên.</td></tr>
+</tbody></table></div>
+<h3>Tinh chỉnh: những “thuộc tính” có thể thực ra là liên kết</h3>
+<p>Ở bước nhận diện sơ bộ, ta có thể tạm ghi <code>Manager</code>, <code>Controlling_department</code> hay <code>Employee</code> như thông tin mô tả. Khi hiểu rõ rằng các giá trị này <em>trỏ tới những thực thể đã được quản lý riêng</em>, cần cân nhắc biểu diễn chúng bằng <strong>relationship</strong> thay vì một chuỗi văn bản tự do.</p>
+<div class="tbl"><table><thead><tr><th>Thông tin nghiệp vụ</th><th>Hướng tinh chỉnh ER</th></tr></thead><tbody>
+<tr><td>Nhân viên làm việc cho phòng</td><td><code>EMPLOYEE — WORKS_FOR — DEPARTMENT</code></td></tr>
+<tr><td>Nhân viên quản lý phòng; lưu ngày bắt đầu</td><td><code>EMPLOYEE — MANAGES — DEPARTMENT</code>, với <code>Start_date</code> của mối quan hệ quản lý nếu nghiệp vụ yêu cầu.</td></tr>
+<tr><td>Phòng ban phụ trách dự án</td><td><code>DEPARTMENT — CONTROLS — PROJECT</code></td></tr>
+<tr><td>Nhân viên làm trên dự án; ghi số giờ/tuần</td><td><code>EMPLOYEE — WORKS_ON — PROJECT</code>, với <code>Hours</code> mô tả một lần tham gia.</td></tr>
+<tr><td>Người phụ thuộc gắn với nhân viên</td><td><code>EMPLOYEE — DEPENDENTS_OF — DEPENDENT</code> (quan hệ gắn định danh cần xác minh).</td></tr>
+</tbody></table></div>
+<p>Chú ý <code>Hours</code> trong ví dụ mô tả <strong>số giờ một nhân viên làm ở một dự án</strong>; nếu gắn nó vào EMPLOYEE độc lập với PROJECT, ta không biết số giờ đó thuộc dự án nào. Tương tự, <code>Manager_start_date</code> có thể mô tả <em>thời điểm một nhân viên bắt đầu quản lý một phòng cụ thể</em>, không nhất thiết là thông tin thường trực của riêng nhân viên.</p>
+<div class="key"><strong>Không vội chốt lực lượng tham gia:</strong> từ mô tả hiện có không thể suy ra tất cả quan hệ là 1:1, 1:N hay M:N, có bắt buộc tham gia hay không, hoặc DEPENDENT chắc chắn là thực thể yếu. Cần đối chiếu với business rules chi tiết.</div>
+</section>
+
+<section class="sec" id="s12"><h2>12. Bài tập áp dụng có lời giải</h2>
+<h3>Bài 1. Phân loại yêu cầu UNIVERSITY</h3>
+<p><strong>Đề:</strong> “SV đăng ký lớp học phần. Mỗi lớp có sĩ số tối đa. SV phải thỏa điều kiện tiên quyết. Giảng viên nhập điểm cuối kỳ. Phòng đào tạo xem báo cáo sĩ số theo môn.”</p>
+<div class="tbl"><table><thead><tr><th>Mệnh đề</th><th>Phân loại và suy luận</th></tr></thead><tbody>
+<tr><td>SV đăng ký lớp học phần</td><td>Gợi ý <strong>chức năng đăng ký</strong> và <strong>dữ liệu liên kết</strong> sinh viên–lớp học phần.</td></tr>
+<tr><td>Mỗi lớp có sĩ số tối đa</td><td><strong>Business rule</strong> về sức chứa; phải xác định cách tính “đã đăng ký hợp lệ”.</td></tr>
+<tr><td>SV phải thỏa prerequisite</td><td><strong>Business rule</strong> cần được kiểm tra khi thực hiện chức năng đăng ký.</td></tr>
+<tr><td>Giảng viên nhập điểm cuối kỳ</td><td><strong>Chức năng</strong>; gợi ý <strong>dữ liệu điểm</strong> cần lưu.</td></tr>
+<tr><td>Báo cáo sĩ số theo môn</td><td><strong>Chức năng báo cáo</strong>; kiểm tra xem thiết kế có liên kết đúng môn học, lớp học phần và đăng ký.</td></tr>
+</tbody></table></div>
+<h3>Bài 2. Thư viện: nhận diện thực thể, khóa và câu hỏi còn thiếu</h3>
+<p><strong>Đề:</strong> Một thư viện quản lý sách, bản sao sách, độc giả, phiếu mượn và ngày trả. Sách có ISBN, tên, tác giả, năm xuất bản; một sách có nhiều bản sao. Độc giả có mã, họ tên, email, loại độc giả.</p>
+<div class="tbl"><table><thead><tr><th>Kiểu thực thể gợi ý</th><th>Thuộc tính ban đầu</th><th>Khóa dự kiến / điểm chưa rõ</th></tr></thead><tbody>
+<tr><td><strong>BOOK</strong></td><td>ISBN, Title, Author, Publication_year</td><td><code>ISBN</code> có thể là khóa nếu granularity của “sách” và phạm vi ISBN đã xác nhận.</td></tr>
+<tr><td><strong>BOOK_COPY</strong></td><td>Thông tin phân biệt từng bản sao của BOOK.</td><td>Chưa được cho <code>Copy_id</code>; cần hỏi thư viện có mã bản sao riêng hay chỉ đánh số trong từng ISBN.</td></tr>
+<tr><td><strong>READER</strong></td><td>Reader_id, Name, Email, Reader_type</td><td><code>Reader_id</code> là khóa dự kiến theo “mã độc giả”.</td></tr>
+<tr><td><strong>LOAN</strong></td><td>Borrow_date, Return_date (và liên kết tới độc giả, bản sao).</td><td>Chưa rõ <code>Loan_id</code> hay tổ hợp thuộc tính dùng làm khóa; cần làm rõ một bản sao được mượn lặp nhiều lần.</td></tr>
+</tbody></table></div>
+<p><strong>Các câu hỏi cần hỏi lại:</strong> mỗi bản sao có mã riêng không? Mỗi lần mượn có phiếu riêng hay một phiếu gồm nhiều bản sao? “Ngày trả” là hạn trả hay ngày trả thực tế (hay cả hai)? Có cần lưu lịch sử mượn nhiều lần và thông tin nhiều tác giả không? Những quyết định này ảnh hưởng trực tiếp đến thuộc tính và liên kết.</p>
+<h3>Bài 3. COMPANY: xác định đối tượng và luật nghiệp vụ</h3>
+<p>Bốn kiểu thực thể ban đầu là <code>EMPLOYEE, DEPARTMENT, PROJECT, DEPENDENT</code>. Cần chú ý <code>Locations</code> là ứng viên đa trị; <code>Name</code> của nhân viên là ứng viên phức hợp; và <code>Manager</code>, <code>Controlling_department</code>, <code>Employee</code> gợi ý các liên kết cần tinh chỉnh.</p>
+<p><strong>Những dữ kiện nghiệp vụ đã có:</strong> công ty có nhiều phòng ban, có các dự án và người phụ thuộc; nhân viên tham gia dự án có số giờ theo tuần; các dự án có phòng phụ trách theo mô tả sơ bộ. Riêng các chi tiết như “mỗi phòng bắt buộc đúng một trưởng phòng” hoặc “một nhân viên chỉ thuộc một phòng” <strong>phải xác nhận thêm</strong>, không tự mặc định.</p>
+<h3>Bài 4. Thiết kế thuộc tính phức hợp/đa trị cho lịch sử học đại học</h3>
+<p>Một phương án hợp lý cho thuộc tính <code>Previous_university_history</code> của STUDENT là <strong>đa trị</strong>, trong đó mỗi lần học là một giá trị <strong>phức hợp</strong>. Đây là một thiết kế đề xuất từ yêu cầu bài tập, không phải danh sách trường được đề cung cấp sẵn.</p>
+<pre>STUDENT
+└── Previous_university_history { đa trị }
+    └── Previous_study { phức hợp }
+        ├── University_name
+        ├── Start_date
+        ├── End_date
+        ├── Major
+        └── Degree</pre>
+<p>Chọn một bản ghi phức hợp cho <strong>mỗi giai đoạn học</strong>, thay vì tách nhiều danh sách trường, ngày bắt đầu và ngày kết thúc không liên hệ theo từng lần học. Cần hỏi thêm một sinh viên có thể học nhiều đợt tại cùng trường hay không; câu trả lời ảnh hưởng cách nhận diện từng giá trị.</p>
+</section>
+
+<section class="sec" id="s13"><h2>13. Tự kiểm tra trước khi thi</h2>
+<p>Tự trả lời trước rồi mở phần giải thích. Các câu nhắm vào ranh giới khái niệm và khả năng phân tích mô tả nghiệp vụ.</p>
+<details class="q"><summary>1. Vì sao không nên bắt đầu thiết kế CSDL bằng các lệnh CREATE TABLE?</summary><div class="answer">Vì chưa xác định rõ miniworld, đối tượng, ngữ nghĩa liên kết, phạm vi và ràng buộc. SQL chỉ hiện thực quyết định đã được phân tích; lỗi mô hình hóa vẫn tồn tại dù SQL đúng cú pháp.</div></details>
+<details class="q"><summary>2. Phân biệt yêu cầu dữ liệu, yêu cầu chức năng và business rule qua việc “đăng ký học phần”.</summary><div class="answer">Dữ liệu: sinh viên, học phần và bản ghi đăng ký. Chức năng: thực hiện đăng ký. Quy tắc: không vượt sĩ số và phải đáp ứng điều kiện tiên quyết.</div></details>
+<details class="q"><summary>3. Phân tích yêu cầu và thiết kế quan niệm khác nhau ở đâu?</summary><div class="answer">Phân tích yêu cầu làm rõ phạm vi, dữ liệu, chức năng, luật và giả định. Thiết kế quan niệm chuyển những yêu cầu đã làm rõ thành mô hình ER/EER độc lập DBMS. Không nên vẽ mô hình quá sớm khi ràng buộc còn mơ hồ.</div></details>
+<details class="q"><summary>4. Entity, entity type và entity set khác nhau như thế nào?</summary><div class="answer">Entity là một đối tượng cụ thể; entity type là cấu trúc và quy tắc chung; entity set là tập các entity đang tồn tại thuộc type đó tại một thời điểm. Entity type gần schema, entity set gần instance.</div></details>
+<details class="q"><summary>5. Vì sao thuộc tính Address có thể là đơn trong hệ thống A nhưng phức hợp trong hệ thống B?</summary><div class="answer">Độ chi tiết phụ thuộc nhu cầu. Nếu chỉ hiển thị/in địa chỉ, chuỗi nguyên vẹn có thể đủ; nếu lọc theo City hoặc tính vận chuyển theo Zip thì cần tách các thành phần.</div></details>
+<details class="q"><summary>6. Thuộc tính phức hợp khác thuộc tính đa trị ở điểm nào?</summary><div class="answer">Phức hợp: một giá trị có nhiều thành phần (Name gồm họ/tên). Đa trị: một thực thể có nhiều giá trị của cùng thuộc tính (nhiều số điện thoại). Một thuộc tính có thể đồng thời phức hợp và đa trị.</div></details>
+<details class="q"><summary>7. NULL có đồng nghĩa với số 0 hay không? Nêu các lý do khiến một thuộc tính thiếu giá trị.</summary><div class="answer">Không. Dữ liệu có thể chưa biết, không áp dụng hoặc chưa nhập. Phải xét ý nghĩa và ràng buộc của từng trường hợp; không tự xem NULL là 0.</div></details>
+<details class="q"><summary>8. Vì sao một cột có các giá trị khác nhau trong dữ liệu mẫu chưa đủ để kết luận nó là khóa?</summary><div class="answer">Khóa phải phân biệt các thực thể trong mọi trạng thái hợp lệ theo ràng buộc nghiệp vụ. Tính khác nhau ở một mẫu nhỏ có thể chỉ là trùng hợp.</div></details>
+<details class="q"><summary>9. Superkey, candidate key, primary key và composite key khác nhau thế nào?</summary><div class="answer">Superkey bảo đảm duy nhất nhưng có thể chứa thuộc tính thừa; candidate key là superkey tối thiểu; primary key là candidate key được chọn làm khóa chính; composite key dùng nhiều thuộc tính để định danh.</div></details>
+<details class="q"><summary>10. Phân biệt ký hiệu thực thể yếu, thuộc tính đa trị và thuộc tính suy diễn.</summary><div class="answer">Thực thể yếu: chữ nhật kép; đa trị: oval kép; suy diễn: oval nét đứt (trong Chen notation dùng ở bài này).</div></details>
+<details class="q"><summary>11. Trong COMPANY, Hours của WORKS_ON nên mô tả gì?</summary><div class="answer">Số giờ làm trên một dự án cụ thể của một nhân viên, tức thông tin gắn với sự tham gia giữa EMPLOYEE và PROJECT; không phải tổng số giờ không phân biệt dự án.</div></details>
+<details class="q"><summary>12. Vì sao không thể tự quyết định DEPENDENT là thực thể yếu chỉ từ tên “người phụ thuộc”?</summary><div class="answer">Thực thể yếu là khái niệm liên quan đến định danh trong ER. Phải hỏi DEPENDENT có khóa độc lập hay chỉ được nhận dạng trong ngữ cảnh một EMPLOYEE; “phụ thuộc” trong nghĩa đời thường chưa đủ xác định ràng buộc định danh.</div></details>
+<div class="review"><p><strong>Thứ tự tư duy cần nhớ:</strong> miniworld → yêu cầu dữ liệu/chức năng/quy tắc → phạm vi và giả định → ER (entity, attribute, relationship) → khóa và domain → ánh xạ logic → cài đặt. Với mỗi quyết định trên ERD, phải giải thích được nó đến từ yêu cầu nghiệp vụ nào.</p></div>
+</section>
+</main></body></html>
