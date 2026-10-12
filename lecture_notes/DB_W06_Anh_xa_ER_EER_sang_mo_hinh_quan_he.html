@@ -1,0 +1,357 @@
+<!doctype html><html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light"><title>Database W6 · Ánh xạ ER/EER sang mô hình quan hệ</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&amp;family=Space+Grotesk:wght@400;500;600;700&amp;display=swap" rel="stylesheet"><style>
+:root{--ink:#253340;--sub:#435263;--muted:#718194;--line:#dfe5eb;--accent:#315d7d;--soft:#f6f8fa;--blue:#eef4f9}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{max-width:1032px;margin:0 auto;padding:34px 16px 80px;background:#fff;color:var(--ink);font:400 16px/1.68 'Space Grotesk',Arial,Helvetica,sans-serif}
+main{max-width:1000px;margin:0 auto}
+h1,h2,h3,h4,p{margin-top:0}
+h1{font-size:30px;line-height:1.3;letter-spacing:-.55px;margin:8px 0 0}
+h2{font-size:24px;line-height:1.35;letter-spacing:-.28px;margin:0 0 13px}
+h3{font-size:18px;line-height:1.5;margin:22px 0 9px}
+h4{font-size:17px;line-height:1.45;margin:17px 0 7px}
+p,li{font-size:16px;line-height:1.68;color:var(--sub)}
+p{margin:0 0 13px}ul,ol{margin:8px 0 15px;padding-left:25px}li{margin:0 0 6px}
+strong{color:#2e4558}a{color:var(--accent)}a:hover{text-decoration-thickness:2px}
+code,pre,.formula{font-family:'JetBrains Mono',Consolas,monospace;font-size:16px;line-height:1.65}
+code{background:#f1f3f6;border:1px solid #e4e8ee;border-radius:3px;padding:1px 4px;overflow-wrap:anywhere}
+pre{background:#f7f8fa;border:1px solid var(--line);padding:14px 17px;border-radius:5px;overflow:auto;margin:12px 0 16px;color:#34475a}
+.head{padding:19px 0 24px;border-top:3px solid var(--accent);border-bottom:1px solid var(--line)}
+.kicker{color:var(--accent);font:600 11px/1.6 'JetBrains Mono',monospace;letter-spacing:.08em}
+.toc{padding:19px 0 18px;border-bottom:1px solid var(--line);margin-bottom:8px}
+.toc>strong{display:block;margin:0 0 11px}.toc-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 23px}
+.toc a{text-decoration:none;font-size:16px;line-height:1.55;display:flex;align-items:baseline;gap:8px}.toc a:hover{text-decoration:underline}
+.toc a span{font:500 11px 'JetBrains Mono',monospace;color:#8da0af;min-width:24px}
+.sec{padding:27px 0 29px;border-bottom:1px solid #e9edf1}.sec:last-child{border-bottom:0}
+.def{background:#f4f7fa;border-left:3px solid #7396b4;padding:13px 16px;margin:14px 0 17px;color:#435a70;font-size:16px;line-height:1.7}
+.key{border-left:2px solid #9eacb9;padding:5px 14px;margin:14px 0 17px;color:#465c6f;line-height:1.68}.key strong{color:#2d526e}
+.tbl{overflow:auto;margin:14px 0 18px;border:1px solid var(--line);border-radius:5px}.tbl table{border-collapse:collapse;width:100%;min-width:690px;font-size:16px;line-height:1.58}
+.tbl th{background:#eef2f5;color:#30485d;text-align:left;padding:10px 13px;font-size:16px;vertical-align:top;font-weight:700;border-bottom:1px solid #d9e2e9}
+.tbl td{padding:11px 13px;vertical-align:top;color:#48596a;font-size:16px;border-bottom:1px solid #edf0f3}.tbl tr:last-child td{border-bottom:0}.tbl tbody tr:nth-child(even){background:#fcfcfd}
+.tbl td strong{white-space:normal}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:12px 0 18px}.plainbox{border:1px solid var(--line);padding:13px 16px;border-radius:5px}.plainbox h3{margin:0 0 8px}.plainbox p:last-child{margin-bottom:0}
+.diagram{border:1px solid var(--line);border-radius:5px;background:#fff;overflow-x:auto;margin:14px 0 17px;padding:12px 10px}
+.diagram svg{display:block;width:100%;min-width:760px;height:auto;margin:0 auto}.figcap{font-size:16px;color:#64798b;line-height:1.6;margin:10px 7px 2px}
+.label{color:#6f8495;font-size:11.5px;font-family:'JetBrains Mono',monospace;letter-spacing:.035em}
+.formula{background:#f7f8fa;border:1px solid #e1e7eb;border-radius:5px;padding:12px 14px;margin:13px 0 16px;overflow-x:auto;white-space:nowrap;text-align:center;color:#36526b}
+.note{font-size:16px;color:#66788a}.answer{padding:10px 15px;border-left:2px solid #d8e0e7;color:#465b6c;line-height:1.7;margin-top:10px}
+.q{padding:13px 0;border-bottom:1px solid #e7ecf0}.q:last-child{border-bottom:0}.q summary{font-size:16px;line-height:1.6;font-weight:600;color:#30485e;cursor:pointer}
+.q summary::marker{color:#7891a6}
+.review{background:#f7f9fa;border:1px solid #e3e8ed;border-radius:4px;padding:14px 17px;margin:15px 0}.review p{margin:0}
+.ascii{white-space:pre;line-height:1.7}
+@media(max-width:720px){body{padding:22px 12px 68px}h1{font-size:25px}h2{font-size:21px}h3{font-size:18px}h4{font-size:17px}.toc-grid,.two{grid-template-columns:1fr}.sec{padding:24px 0}.diagram{padding:8px 5px}.diagram svg{min-width:810px;width:810px}.tbl table{min-width:700px}}
+@media print{body{padding:0;font-size:16px}.sec{break-inside:auto}.diagram{break-inside:avoid}details .answer{display:block}a{text-decoration:none;color:inherit}}
+
+.svg-sm{font:12px 'Space Grotesk',Arial,sans-serif;fill:#344e62}
+.svg-md{font:600 13px 'Space Grotesk',Arial,sans-serif;fill:#294d67}
+.svg-muted{font:12px 'Space Grotesk',Arial,sans-serif;fill:#627c8f}
+.tiny{font:11.5px 'JetBrains Mono',monospace;color:#74899a}
+.mark{color:#1b5a7c;font-weight:700}
+.warn{border-left:3px solid #d4a173;background:#fffcf7;padding:10px 15px;margin:12px 0 16px;color:#5e554c}
+.flag{display:inline-block;background:#f1f5f8;border:1px solid #e0e8ee;border-radius:3px;padding:2px 7px;font-size:12px;color:#607b8d}
+.diagram svg{max-width:980px}
+@media(max-width:720px){.diagram svg{width:880px;min-width:880px}}
+
+.viz svg{max-width:980px}
+.tok{font:500 12px 'JetBrains Mono',monospace;fill:#647b8f}
+.viz-card{fill:#f0f5f9;stroke:#92aec1;stroke-width:1.6}
+.viz-card2{fill:#f7f9fb;stroke:#a4b6c5;stroke-width:1.5}
+.viz-line{stroke:#8aa3b7;stroke-width:2;fill:none}
+.viz-circle{fill:white;stroke:#7d9cb2;stroke-width:1.6}
+.matrix{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:14px 0 16px}
+.matrix .item{border:1px solid #dfe6eb;background:#fcfdfe;padding:13px 15px;border-radius:5px}
+.matrix .item strong{display:block;font-weight:700;color:#31566f;margin-bottom:5px}
+.matrix .item p{margin-bottom:0}
+.minihead{font-weight:700;color:#31516a;margin:16px 0 7px}
+@media(max-width:720px){.matrix{grid-template-columns:1fr}}
+
+
+/* W5 relational model diagrams */
+.diagram svg{max-width:970px}
+.rel-table{fill:#f3f7fa;stroke:#8aa7bc;stroke-width:1.5}
+.rel-head{fill:#e5eff6;stroke:#8aa7bc;stroke-width:1.5}
+.rel-line{fill:none;stroke:#8aa7bc;stroke-width:1.6}
+.r-small{font:12px 'Space Grotesk',Arial,sans-serif;fill:#344b60}
+.r-title{font:600 13px 'Space Grotesk',Arial,sans-serif;fill:#274c68}
+.r-code{font:12px 'JetBrains Mono',monospace;fill:#35536b}
+.warn{border-left:3px solid #c9a37f;background:#fffcf7;padding:11px 15px;margin:12px 0 17px;color:#625447;line-height:1.68}
+.stacked{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:13px 0 17px}
+.stacked>div{border:1px solid #dfe6ec;padding:13px 14px;border-radius:5px}
+.stacked strong{display:block;margin-bottom:4px}
+.stacked p{margin-bottom:0}
+math{font-size:1em}
+@media(max-width:720px){.stacked{grid-template-columns:1fr}}
+
+/* W6 precise mapping figures */
+.diagram svg .n{font:600 13px 'Space Grotesk',Arial,sans-serif;fill:#2c4e68}
+.diagram svg .s{font:12px 'Space Grotesk',Arial,sans-serif;fill:#485f72}
+.diagram svg .c{font:12px 'JetBrains Mono',monospace;fill:#31516a}
+.diagram svg .line{stroke:#89a3b8;stroke-width:2;fill:none}
+.diagram svg .tab{fill:#f0f5f9;stroke:#89a5ba;stroke-width:1.5}
+.diagram svg .ink{fill:#e9f0f6;stroke:#89a5ba;stroke-width:1.5}
+.diagram svg .grey{fill:#fafcfd;stroke:#b1c0cc;stroke-width:1.4}
+.formula{font-size:16px}
+.sel{border:1px solid var(--line);border-radius:5px;padding:14px 17px;margin:12px 0}
+.sel p:last-child{margin-bottom:0}
+.pairs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:12px 0 17px}
+.pairs>div{border:1px solid #dfe5eb;border-radius:5px;padding:13px 15px}
+.pairs h4{margin:0 0 7px}
+.pairs p:last-child{margin-bottom:0}
+@media(max-width:720px){.pairs{grid-template-columns:1fr}}
+</style></head><body><main><header class="head"><div class="kicker">DATABASE · WEEK 06</div><h1>Ánh xạ ER/EER sang mô hình quan hệ</h1><p style="margin:8px 0 0;color:#60798a">ER Mapping · PK/FK · 1:1 / 1:N / M:N · Specialization · Category</p></header><nav class="toc"><strong>Nội dung</strong><div class="toc-grid"><a href="#s01"><span>01</span>Toàn cảnh: từ ER/EER đến lược đồ quan hệ</a><a href="#s02"><span>02</span>Bước 1 — Kiểu thực thể mạnh</a><a href="#s03"><span>03</span>Bước 2 — Thực thể yếu: owner + partial key</a><a href="#s04"><span>04</span>Bước 3 — Liên kết nhị phân 1:1</a><a href="#s05"><span>05</span>Bước 4 — Liên kết nhị phân 1:N và tự liên kết</a><a href="#s06"><span>06</span>Bước 5 — Liên kết nhị phân M:N</a><a href="#s07"><span>07</span>Bước 6 — Thuộc tính đa trị</a><a href="#s08"><span>08</span>Bước 7 — Liên kết n-ngôi và khóa phụ thuộc ngữ nghĩa</a><a href="#s09"><span>09</span>Bảy bước ER áp dụng cho COMPANY</a><a href="#s10"><span>10</span>Bước 8 — EER: chọn cách lưu lớp cha và lớp con</a><a href="#s11"><span>11</span>8A — Giữ bảng superclass và bảng subclass</a><a href="#s12"><span>12</span>8B — Chỉ giữ các bảng subclass</a><a href="#s13"><span>13</span>8C — Một bảng với một Type</a><a href="#s14"><span>14</span>8D — Một bảng với nhiều cờ subtype</a><a href="#s15"><span>15</span>Shared subclass và đa kế thừa</a><a href="#s16"><span>16</span>Bước 9 — Category / union type</a><a href="#s17"><span>17</span>Bài tập đọc nhanh: Quản lý thi tuyển sinh</a><a href="#s18"><span>18</span>Bảng tổng hợp: chọn phương án ánh xạ khi thi</a><a href="#s19"><span>19</span>Tự kiểm tra: 15 câu hỏi trọng tâm</a></div></nav><section class="sec" id="s01"><h2>01. Toàn cảnh: từ ER/EER đến lược đồ quan hệ</h2>
+<div class="def"><strong>Ánh xạ (mapping)</strong> là chuyển thành phần của ER/EER — kiểu thực thể, liên kết, thuộc tính, khóa và các ràng buộc — thành các <strong>lược đồ quan hệ</strong> có PK, FK và những điều kiện cần thực thi.</div>
+<p>Không phải mỗi hình chữ nhật hoặc hình thoi trong ERD đều trở thành một bảng riêng. <strong>Loại liên kết, số lượng tham gia và ràng buộc nghiệp vụ</strong> quyết định cách ánh xạ. Quy trình gồm <strong>7 bước ánh xạ ER</strong> và <strong>2 bước ánh xạ EER</strong> (bước 8 có các phương án 8A–8D).</p>
+<div class="diagram"><svg viewBox="0 0 960 300" role="img" aria-label="Sơ đồ tóm tắt ER entity relationship attribute sang bảng khóa chính khóa ngoại">
+<defs><marker id="arr6a" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M1 1 L8 4 L1 7" fill="none" stroke="#718ea4" stroke-width="1.5"/></marker></defs>
+<rect x="20" y="38" width="284" height="216" rx="7" class="grey"/><text x="162" y="66" text-anchor="middle" class="n">ER / EER</text>
+<rect x="46" y="86" width="231" height="37" rx="4" class="tab"/><text x="161" y="110" text-anchor="middle" class="c">Entity + attributes</text>
+<rect x="46" y="139" width="231" height="37" rx="4" class="tab"/><text x="161" y="163" text-anchor="middle" class="c">Relationship + min/max</text>
+<rect x="46" y="192" width="231" height="37" rx="4" class="tab"/><text x="161" y="216" text-anchor="middle" class="c">IS-A + d/o + total/partial</text>
+<path d="M320 147 H397" class="line" marker-end="url(#arr6a)"/><text x="358" y="133" text-anchor="middle" class="s">Mapping</text>
+<rect x="415" y="38" width="523" height="216" rx="7" class="grey"/><text x="675" y="66" text-anchor="middle" class="n">Relational schema + constraints</text>
+<rect x="444" y="88" width="218" height="36" rx="4" class="ink"/><text x="553" y="111" text-anchor="middle" class="c">Relations + PK</text>
+<rect x="687" y="88" width="218" height="36" rx="4" class="ink"/><text x="797" y="111" text-anchor="middle" class="c">FK + UNIQUE + NULL</text>
+<rect x="444" y="144" width="461" height="39" rx="4" class="tab"/><text x="675" y="169" text-anchor="middle" class="s">Bảng riêng cho M:N, thuộc tính đa trị, liên kết n-ngôi</text>
+<rect x="444" y="202" width="461" height="34" rx="4" class="tab"/><text x="675" y="225" text-anchor="middle" class="s">Bảo toàn các quy tắc nghiệp vụ còn lại</text>
+<text x="479" y="282" text-anchor="middle" class="s">Kết quả đúng khi có thể khôi phục đúng dữ liệu và ngữ nghĩa.</text>
+</svg></div>
+<div class="tbl"><table><thead><tr><th>ER/EER</th><th>Chuyển thành</th><th>Điểm quyết định</th></tr></thead><tbody>
+<tr><td>Thực thể mạnh</td><td>Quan hệ riêng</td><td>PK và các thuộc tính đơn.</td></tr>
+<tr><td>Thực thể yếu</td><td>Quan hệ riêng có khóa của owner</td><td>PK ghép owner + partial key.</td></tr>
+<tr><td>Nhị phân 1:1 / 1:N</td><td>FK ở một bảng thích hợp</td><td>Phía đặt FK, UNIQUE và NOT NULL.</td></tr>
+<tr><td>Nhị phân M:N; n-ngôi</td><td>Quan hệ mới</td><td>PK dựa trên các FK và ngữ nghĩa.</td></tr>
+<tr><td>Thuộc tính đa trị</td><td>Quan hệ mới</td><td>Khóa owner + giá trị thuộc tính.</td></tr>
+<tr><td>IS-A / category</td><td>Một hay nhiều quan hệ</td><td>Rời rạc/chồng lấp, toàn phần/bộ phận, kiểu hợp.</td></tr>
+</tbody></table></div>
+</section><section class="sec" id="s02"><h2>02. Bước 1 — Kiểu thực thể mạnh</h2>
+<p>Với mỗi <strong>strong entity type</strong> E, tạo một quan hệ cùng tên. Chuyển các thuộc tính đơn; thuộc tính phức hợp được phân rã thành những thành phần đơn cần lưu. Không nhét thuộc tính <strong>đa trị</strong> vào một cột chứa danh sách, và thông thường không lưu riêng các thuộc tính <strong>suy diễn</strong> nếu có thể tính từ dữ liệu đã lưu.</p>
+<div class="formula">E(K, A₁, …, Aₙ) ⟶ E(<u>K</u>, A₁, …, Aₙ)</div>
+<pre>EMPLOYEE(<u>Ssn</u>, Fname, Minit, Lname, Bdate,
+         Address, Sex, Salary)
+DEPARTMENT(<u>Dnumber</u>, Dname)
+PROJECT(<u>Pnumber</u>, Pname, Plocation)</pre>
+<p><strong>Quy ước trong tài liệu:</strong> thuộc tính được <u>gạch dưới</u> là thành phần khóa chính (PK); FK sẽ ghi bằng chú thích rõ ràng. Các quan hệ trên mới là kết quả <strong>sau bước 1</strong>, nên chưa có <code>Dno</code>, <code>Mgr_ssn</code> hoặc <code>Dnum</code> từ các liên kết được ánh xạ ở bước sau.</p>
+<div class="key"><strong>Chú ý:</strong> thuộc tính khóa có thể gồm nhiều thành phần. Thuộc tính phức hợp <code>Name(Fname,Minit,Lname)</code> được lưu bằng các thành phần; không vừa lưu <code>Name</code> vừa lưu các thành phần nếu không có lý do thiết kế.</div>
+</section><section class="sec" id="s03"><h2>03. Bước 2 — Thực thể yếu: owner + partial key</h2>
+<div class="def">Thực thể yếu không có khóa nhận dạng độc lập trong ER, nên khi ánh xạ phải mang theo <strong>khóa chính của thực thể chủ (owner)</strong>. Khóa bộ phận chỉ phân biệt thực thể yếu <em>trong phạm vi cùng một chủ</em>.</div>
+<div class="diagram"><svg viewBox="0 0 960 260" role="img" aria-label="Sơ đồ ánh xạ EMPLOYEE có DEPENDENT yếu, PK Essn Dependent_name và FK Essn tham chiếu Employee Ssn">
+<rect x="22" y="26" width="348" height="196" rx="7" class="grey"/>
+<text x="195" y="53" text-anchor="middle" class="n">Cấu trúc ER (rút gọn)</text>
+<rect x="43" y="96" width="133" height="41" class="ink"/><text x="110" y="122" text-anchor="middle" class="c">EMPLOYEE</text>
+<rect x="250" y="94" width="101" height="45" class="tab"/><rect x="254" y="98" width="93" height="37" fill="none" stroke="#89a5ba" stroke-width="1.3"/><text x="300" y="122" text-anchor="middle" class="c">DEPENDENT</text>
+<polygon points="206,89 229,115 206,141 184,115" fill="#fff" stroke="#86a1b5" stroke-width="1.7"/><polygon points="206,95 223,115 206,135 189,115" fill="none" stroke="#86a1b5" stroke-width="1.2"/>
+<path d="M176 115 H184 M227 111 H250 M227 119 H250" stroke="#7292aa" stroke-width="2"/><text x="197" y="180" text-anchor="middle" class="s">Identifying relationship</text>
+<text x="196" y="200" text-anchor="middle" class="s">(hình thoi đôi + thực thể đôi)</text>
+<path d="M380 122 H429" class="line"/><path d="M424 117 L429 122 L424 127" fill="none" stroke="#89a5ba" stroke-width="2"/>
+<rect x="446" y="27" width="489" height="195" rx="7" class="grey"/>
+<text x="690" y="56" text-anchor="middle" class="n">Quan hệ kết quả</text>
+<rect x="470" y="75" width="446" height="45" rx="4" class="ink"/><text x="488" y="103" class="c">EMPLOYEE(</text><text x="582" y="103" class="c" text-decoration="underline">Ssn</text><text x="610" y="103" class="c">, ...)</text>
+<rect x="470" y="139" width="446" height="53" rx="4" class="tab"/>
+<text x="488" y="162" class="c">DEPENDENT(</text><text x="586" y="162" class="c" text-decoration="underline">Essn, Dependent_name</text><text x="778" y="162" class="c">, ...)</text>
+<text x="488" y="181" class="s">Essn vừa là PK-part vừa là FK → EMPLOYEE.Ssn</text>
+</svg></div>
+<pre>DEPENDENT(<u>Essn</u>, <u>Dependent_name</u>, Sex, Bdate, Relationship)
+FK: DEPENDENT.Essn → EMPLOYEE.Ssn
+PK: (Essn, Dependent_name)</pre>
+<p><strong>Vì sao không chỉ lấy <code>Dependent_name</code>?</strong> Hai nhân viên khác nhau có thể cùng có người phụ thuộc tên “An”. Cặp <code>(Essn, Dependent_name)</code> mới xác định được đúng đối tượng theo giả định của COMPANY.</p>
+<p>Thông thường <strong>không tạo bảng <code>DEPENDENTS_OF</code> riêng</strong> cho identifying relationship, vì quan hệ DEPENDENT đã chứa khóa owner. Tuy nhiên muốn khẳng định PK ghép này đúng phải có quy tắc khóa bộ phận <em>duy nhất trong phạm vi một owner</em>.</p>
+</section><section class="sec" id="s04"><h2>04. Bước 3 — Liên kết nhị phân 1:1</h2>
+<p>Với liên kết 1:1, có thể đặt <strong>FK trong một trong hai quan hệ</strong>. Phía <strong>tham gia toàn phần</strong> thường là lựa chọn tốt, vì giảm số giá trị NULL. Đưa <strong>thuộc tính của liên kết</strong> sang cùng bảng chứa FK.</p>
+<div class="formula">MANAGES(EMPLOYEE, DEPARTMENT, Start_date)</div>
+<pre>DEPARTMENT(<u>Dnumber</u>, Dname, Mgr_ssn, Mgr_start_date)
+FK: Mgr_ssn → EMPLOYEE.Ssn</pre>
+<p>Nếu mỗi department <strong>phải có đúng một</strong> manager và một employee <strong>quản lý tối đa một</strong> department, cần thêm <code>Mgr_ssn NOT NULL</code> và <code>UNIQUE(Mgr_ssn)</code>. Chỉ khai báo FK <em>không đủ</em> để thể hiện tính 1:1. <code>Mgr_start_date</code> ở DEPARTMENT bởi nó mô tả lần một nhân viên quản lý một phòng cụ thể.</p>
+<div class="tbl"><table><thead><tr><th>Phương án</th><th>Điều kiện, ưu nhược điểm</th></tr></thead><tbody>
+<tr><td><strong>FK tại phía toàn phần</strong></td><td>Phổ biến; giảm NULL, dễ ghi NOT NULL nếu mọi thực thể phía đó tham gia.</td></tr>
+<tr><td><strong>FK tại phía kia</strong></td><td>Vẫn có thể đúng khi thêm UNIQUE và ràng buộc bắt buộc thích hợp; đôi khi khó biểu diễn bắt buộc phía đối diện chỉ bằng NOT NULL.</td></tr>
+<tr><td><strong>Gộp hai quan hệ</strong></td><td>Chỉ cân nhắc khi cả hai phía toàn phần và hai thực thể thật sự đi cùng vòng đời.</td></tr>
+<tr><td><strong>Quan hệ riêng cho 1:1</strong></td><td>Có ích nếu liên kết thưa hoặc cần quản lý nó độc lập; sẽ cần FK, UNIQUE và participation constraints.</td></tr>
+</tbody></table></div>
+<div class="key"><strong>Bẫy đề thi:</strong> 1:1 chỉ giới hạn số liên kết <em>tối đa</em>, không tự suy ra có bắt buộc tham gia hay không. <code>NOT NULL</code> phải dựa vào <em>min</em> của đúng phía đã đặt FK.</div>
+</section><section class="sec" id="s05"><h2>05. Bước 4 — Liên kết nhị phân 1:N và tự liên kết</h2>
+<div class="def"><strong>Quy tắc quan trọng nhất:</strong> Với liên kết <strong>1:N</strong>, mang PK của phía <strong>1</strong> sang quan hệ phía <strong>N</strong> để làm FK. Thuộc tính của liên kết (nếu có) cũng được đặt ở phía N.</div>
+<div class="diagram"><svg viewBox="0 0 960 275" role="img" aria-label="EMPLOYEE thuộc nhiều ở phía N có Dno khóa ngoại tham chiếu DEPARTMENT Dnumber ở phía 1, sơ đồ mũi tên FK về PK">
+<defs><marker id="ar61" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M1 1 L7 4 L1 7" fill="none" stroke="#7192aa" stroke-width="1.6"/></marker></defs>
+<text x="25" y="36" class="n">Ví dụ WORKS_FOR: DEPARTMENT 1 — N EMPLOYEE</text>
+<rect x="34" y="75" width="375" height="104" rx="6" class="tab"/><text x="52" y="101" class="n">EMPLOYEE · phía N</text>
+<text x="52" y="131" class="c">Ssn (PK), Fname, …,</text><text x="52" y="154" class="c">Dno (FK)</text>
+<rect x="543" y="75" width="382" height="104" rx="6" class="ink"/><text x="563" y="101" class="n">DEPARTMENT · phía 1</text>
+<text x="563" y="139" class="c">Dnumber (PK), Dname</text>
+<path d="M280 189 V217 H731 V189" class="line" marker-end="url(#ar61)"/><text x="505" y="245" text-anchor="middle" class="s">EMPLOYEE.Dno (FK) → DEPARTMENT.Dnumber (PK)</text>
+</svg></div>
+<pre>EMPLOYEE(<u>Ssn</u>, Fname, ..., Dno)
+FK: EMPLOYEE.Dno → DEPARTMENT.Dnumber
+</pre>
+<p>Ví dụ <code>CONTROLS</code>: một DEPARTMENT quản lý nhiều PROJECT; mỗi PROJECT thuộc tối đa một DEPARTMENT. Kết quả <code>PROJECT(Pnumber, Pname, Plocation, Dnum)</code> với <code>Dnum → DEPARTMENT.Dnumber</code>. Nếu mọi PROJECT bắt buộc có phòng phụ trách, <code>Dnum NOT NULL</code>.</p>
+<h3>1:N đệ quy — SUPERVISION</h3>
+<p>Cả hai vai trò đều thuộc <code>EMPLOYEE</code>: một supervisor có thể giám sát nhiều employee, một supervisee có tối đa một supervisor. FK tự tham chiếu <code>Super_ssn → EMPLOYEE.Ssn</code> nằm ở bản ghi <strong>người được giám sát</strong> (phía N). Nếu có người không có cấp trên, FK được phép NULL.</p>
+<pre>EMPLOYEE(<u>Ssn</u>, ..., Dno, Super_ssn)
+FK: Super_ssn → EMPLOYEE.Ssn</pre>
+</section><section class="sec" id="s06"><h2>06. Bước 5 — Liên kết nhị phân M:N</h2>
+<p>Không thể đặt một FK đơn ở mỗi bên để biểu diễn đầy đủ M:N theo mô hình quan hệ cơ bản. Phải tạo <strong>một quan hệ mới cho relationship</strong>, gồm khóa của cả hai kiểu thực thể (FK) và các thuộc tính riêng của liên kết.</p>
+<pre>WORKS_ON(<u>Essn</u>, <u>Pno</u>, Hours)
+PK: (Essn, Pno)
+FK: Essn → EMPLOYEE.Ssn
+FK: Pno  → PROJECT.Pnumber</pre>
+<div class="diagram"><svg viewBox="0 0 960 248" role="img" aria-label="WORKS_ON là bảng trung gian có Essn Pno khóa ghép tham chiếu EMPLOYEE PROJECT">
+<defs><marker id="ar62" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M1 1 L8 4 L1 7" fill="none" stroke="#7797ac" stroke-width="1.5"/></marker></defs>
+<rect x="10" y="34" width="260" height="94" rx="5" class="tab"/><text x="139" y="60" text-anchor="middle" class="n">EMPLOYEE</text><text x="139" y="88" text-anchor="middle" class="c">Ssn (PK), …</text>
+<rect x="348" y="15" width="267" height="143" rx="5" class="ink"/><text x="481" y="45" text-anchor="middle" class="n">WORKS_ON</text><text x="481" y="78" text-anchor="middle" class="c">Essn (PK/FK)</text><text x="481" y="102" text-anchor="middle" class="c">Pno (PK/FK)</text><text x="481" y="126" text-anchor="middle" class="c">Hours</text>
+<rect x="693" y="34" width="257" height="94" rx="5" class="tab"/><text x="821" y="60" text-anchor="middle" class="n">PROJECT</text><text x="821" y="88" text-anchor="middle" class="c">Pnumber (PK), …</text>
+<path d="M348 89 H275" class="line" marker-end="url(#ar62)"/><path d="M615 100 H690" class="line" marker-end="url(#ar62)"/>
+<text x="481" y="200" text-anchor="middle" class="s">Một dòng = một cặp nhân viên – dự án, với số giờ riêng</text>
+<text x="481" y="223" text-anchor="middle" class="s">(trong giả định mỗi cặp xuất hiện tối đa một lần)</text>
+</svg></div>
+<p><strong>Tại sao <code>Hours</code> thuộc WORKS_ON?</strong> Cùng một employee có thể làm hai dự án với số giờ khác nhau; cùng một project có thể có nhiều employee với số giờ khác nhau. Số giờ phụ thuộc vào <strong>cặp (employee, project)</strong>, không thuộc riêng phía nào.</p>
+<div class="key"><strong>Ngoại lệ:</strong> nếu một employee được phép tham gia lại cùng project vào nhiều kỳ/đợt, cặp hai FK <strong>chưa chắc</strong> duy nhất; cần bổ sung thuộc tính phân biệt thời gian hoặc một định danh theo yêu cầu. PK luôn phụ thuộc ngữ nghĩa.</div>
+</section><section class="sec" id="s07"><h2>07. Bước 6 — Thuộc tính đa trị</h2>
+<p>Với thuộc tính đa trị A của một thực thể E, tạo quan hệ riêng gồm <strong>khóa của E</strong> và <strong>giá trị A</strong>. Khóa E trong bảng mới vừa là thành phần PK, vừa tham chiếu về E bằng FK.</p>
+<pre>DEPARTMENT(<u>Dnumber</u>, Dname, ...)
+DEPT_LOCATIONS(<u>Dnumber</u>, <u>Dlocation</u>)
+FK: DEPT_LOCATIONS.Dnumber → DEPARTMENT.Dnumber
+PK: (Dnumber, Dlocation)</pre>
+<p>Giả sử phòng 5 có hai địa điểm <code>Hanoi</code> và <code>Vinh</code>, ta lưu <strong>hai bộ</strong> <code>(5,Hanoi)</code> và <code>(5,Vinh)</code>; không gộp thành ô chứa “Hanoi, Vinh”.</p>
+<div class="key"><strong>Phân biệt:</strong> thuộc tính phức hợp <code>Name(Fname,Lname)</code> thường phân rã thành nhiều <em>cột</em> trong cùng bảng; thuộc tính đa trị <code>Locations</code> tạo nhiều <em>hàng</em> trong một bảng riêng. Thuộc tính có cả phức hợp và đa trị cần ánh xạ từng thành phần (theo bài W2).</div>
+</section><section class="sec" id="s08"><h2>08. Bước 7 — Liên kết n-ngôi và khóa phụ thuộc ngữ nghĩa</h2>
+<p>Liên kết giữa ba hoặc nhiều kiểu thực thể cùng lúc được ánh xạ thành <strong>quan hệ mới</strong>, chứa PK của tất cả các bên dưới dạng FK, cộng thuộc tính riêng của relationship.</p>
+<pre>SUPPLY(<u>Sname</u>, <u>Proj_name</u>, <u>Part_no</u>, Quantity)
+FK: Sname     → SUPPLIER.Sname
+FK: Proj_name → PROJECT.Proj_name
+FK: Part_no   → PART.Part_no</pre>
+<p>Ở ví dụ này, <code>Quantity</code> là số lượng supplier <em>cụ thể</em> cung cấp một part <em>cụ thể</em> cho project <em>cụ thể</em>. Nếu chỉ giữ ba quan hệ nhị phân từng cặp, có thể xuất hiện các tổ hợp ba thực thể <strong>chưa từng có trong miniworld</strong>.</p>
+<h3>Không phải lúc nào PK cũng chứa tất cả FK</h3>
+<p>Xét ví dụ: <code>TEACHES(InstructorId,CourseId,SemesterId)</code>. Giả định: với mỗi cặp <code>(CourseId,SemesterId)</code> có <strong>nhiều nhất một InstructorId</strong>. Khi đó:</p>
+<div class="formula">(CourseId, SemesterId) → InstructorId</div>
+<p>Nếu mọi bộ TEACHES biểu diễn một phân công duy nhất của một môn trong một học kỳ, <strong>PK có thể là <code>(CourseId,SemesterId)</code></strong> dù <code>InstructorId</code> vẫn bắt buộc có mặt làm FK. Đây là trường hợp khóa được rút gọn bởi ràng buộc lực lượng phía INSTRUCTOR.</p>
+<div class="warn"><strong>Không được suy ngược:</strong> thấy tam phân là lập tức ghép cả ba FK thành PK; thấy “1” ở một phía là bỏ FK ở phía đó khỏi bảng. <strong>Tất cả FK vẫn cần có</strong>; chỉ lựa chọn PK dựa trên phụ thuộc và ràng buộc thực sự được phát biểu.</div>
+</section><section class="sec" id="s09"><h2>09. Bảy bước ER áp dụng cho COMPANY</h2>
+<p>Áp dụng tuần tự các phép ánh xạ vào mô hình COMPANY:</p>
+<div class="tbl"><table><thead><tr><th>Relation sau ánh xạ đầy đủ</th><th>PK và các FK</th></tr></thead><tbody>
+<tr><td><code>EMPLOYEE(Ssn, Fname, Minit, Lname, Bdate, Address, Sex, Salary, Super_ssn, Dno)</code></td><td>PK: <code>Ssn</code>. FK: <code>Super_ssn → EMPLOYEE.Ssn</code>, <code>Dno → DEPARTMENT.Dnumber</code>.</td></tr>
+<tr><td><code>DEPARTMENT(Dname, Dnumber, Mgr_ssn, Mgr_start_date)</code></td><td>PK: <code>Dnumber</code>. FK: <code>Mgr_ssn → EMPLOYEE.Ssn</code>. Nếu MANAGES 1:1, cần UNIQUE với <code>Mgr_ssn</code>.</td></tr>
+<tr><td><code>DEPT_LOCATIONS(Dnumber, Dlocation)</code></td><td>PK: <code>(Dnumber, Dlocation)</code>. FK: <code>Dnumber → DEPARTMENT.Dnumber</code>.</td></tr>
+<tr><td><code>PROJECT(Pname, Pnumber, Plocation, Dnum)</code></td><td>PK: <code>Pnumber</code>. FK: <code>Dnum → DEPARTMENT.Dnumber</code>.</td></tr>
+<tr><td><code>WORKS_ON(Essn, Pno, Hours)</code></td><td>PK: <code>(Essn, Pno)</code>. FK: <code>Essn → EMPLOYEE.Ssn</code>; <code>Pno → PROJECT.Pnumber</code>.</td></tr>
+<tr><td><code>DEPENDENT(Essn, Dependent_name, Sex, Bdate, Relationship)</code></td><td>PK: <code>(Essn, Dependent_name)</code>. FK: <code>Essn → EMPLOYEE.Ssn</code>.</td></tr>
+</tbody></table></div>
+<div class="review"><p><strong>Cách tự kiểm tra:</strong> (1) các thực thể mạnh đã có bảng? (2) DEPENDENT đã có owner? (3) MANAGES, WORKS_FOR, CONTROLS, SUPERVISION đã tạo FK đúng phía? (4) WORKS_ON M:N đã có bảng? (5) Locations đa trị đã có bảng riêng? (6) mọi PK/FK, UNIQUE và NULL có phù hợp ràng buộc nghiệp vụ?</p></div>
+<p><strong>Không phát sinh bảng riêng</strong> cho WORKS_FOR, MANAGES, CONTROLS hoặc SUPERVISION trong phương án ánh xạ chuẩn đang xét, vì tất cả đã được biểu diễn bằng FK ở quan hệ thích hợp.</p>
+</section><section class="sec" id="s10"><h2>10. Bước 8 — EER: chọn cách lưu lớp cha và lớp con</h2>
+<p>Trong EER, một thực thể của lớp con <strong>cũng chính là một thực thể của lớp cha</strong> (IS-A); lớp con thừa kế khóa và các thuộc tính/liên kết chung. Ánh xạ phải bảo toàn tư cách thành viên đó.</p>
+<p>Giả sử lớp cha <code>C(k,a₁,…,aₙ)</code> và các lớp con <code>S₁,…,Sₘ</code>; trong đó <code>k</code> là PK của C. Có bốn phương án:</p>
+<div class="tbl"><table><thead><tr><th>Cách</th><th>Số bảng / cách lưu</th><th>Ràng buộc phù hợp</th><th>Điểm đánh đổi</th></tr></thead><tbody>
+<tr><td><strong>8A</strong></td><td>C và từng Sᵢ là những bảng riêng.</td><td><strong>Mọi trường hợp</strong> total/partial, disjoint/overlap.</td><td>Truy xuất subclass đầy đủ thường phải JOIN.</td></tr>
+<tr><td><strong>8B</strong></td><td>Chỉ các bảng Sᵢ, lặp thuộc tính chung vào mỗi bảng.</td><td><strong>Total</strong>; đặc biệt tốt khi <strong>disjoint</strong>.</td><td>Partial gây mất thực thể; overlap gây trùng thuộc tính chung.</td></tr>
+<tr><td><strong>8C</strong></td><td>Một bảng C_all + thuộc tính <code>Type</code>.</td><td><strong>Disjoint</strong> (total hoặc partial).</td><td>Các cột riêng gây NULL.</td></tr>
+<tr><td><strong>8D</strong></td><td>Một bảng C_all + nhiều flag subtype.</td><td><strong>Overlap</strong> (cũng dùng được cho disjoint).</td><td>Có thể nhiều NULL; phải kiểm tra các cờ.</td></tr>
+</tbody></table></div>
+<div class="diagram"><svg viewBox="0 0 960 302" role="img" aria-label="Sơ đồ EER superclass EMPLOYEE disjoint với SECRETARY TECHNICIAN ENGINEER, có dấu cong subset trên các nhánh IS-A và bốn lựa chọn mapping dưới">
+<rect x="350" y="16" width="258" height="44" class="tab"/><text x="479" y="43" text-anchor="middle" class="n">EMPLOYEE (superclass)</text>
+<path d="M479 60 V105" class="line"/><circle cx="479" cy="122" r="17" fill="#fff" stroke="#88a5bb" stroke-width="1.8"/><text x="479" y="127" text-anchor="middle" class="n">d</text>
+<path d="M479 139 V163 H188 V184 M479 163 V184 M479 163 H772 V184" class="line"/>
+<path d="M173 172 Q187 191 202 172 M464 172 Q479 191 494 172 M757 172 Q772 191 787 172" fill="none" stroke="#5e8bab" stroke-width="2.6"/>
+<rect x="90" y="185" width="197" height="36" class="ink"/><text x="188" y="208" text-anchor="middle" class="c">SECRETARY</text>
+<rect x="381" y="185" width="196" height="36" class="ink"/><text x="479" y="208" text-anchor="middle" class="c">TECHNICIAN</text>
+<rect x="674" y="185" width="197" height="36" class="ink"/><text x="772" y="208" text-anchor="middle" class="c">ENGINEER</text>
+<text x="479" y="261" text-anchor="middle" class="s">d = Disjoint; dấu cong ∪ biểu diễn subclass ⊆ superclass ở từng nhánh IS-A</text>
+<text x="479" y="282" text-anchor="middle" class="s">Một đường từ superclass đến vòng tròn = partial; hai đường = total.</text>
+</svg></div>
+<div class="warn"><strong>Chỉ số minh họa:</strong> sơ đồ trên thể hiện <em>disjoint + partial</em> vì từ superclass tới vòng tròn là <strong>đường đơn</strong>; đây không phải một khẳng định mọi EMPLOYEE đều thuộc một trong ba nhóm. Bốn phương án ánh xạ dưới đây cần kiểm tra điều kiện total/partial riêng.</div>
+</section><section class="sec" id="s11"><h2>11. 8A — Giữ bảng superclass và bảng subclass</h2>
+<div class="def"><strong>8A là phương án tổng quát nhất:</strong> mỗi thực thể lớp cha có một bộ trong C; nếu là thành viên Sᵢ thì có thêm một bộ cùng khóa trong bảng Sᵢ.</div>
+<pre>EMPLOYEE(<u>Ssn</u>, Fname, Minit, Lname, Bdate, Address, Job_type)
+SECRETARY(<u>Ssn</u>, Typing_speed)
+TECHNICIAN(<u>Ssn</u>, Tgrade)
+ENGINEER(<u>Ssn</u>, Eng_type)
+
+SECRETARY.Ssn  = PK, FK → EMPLOYEE.Ssn
+TECHNICIAN.Ssn = PK, FK → EMPLOYEE.Ssn
+ENGINEER.Ssn   = PK, FK → EMPLOYEE.Ssn</pre>
+<p><strong>Thừa kế:</strong> thông tin riêng engineer ở <code>ENGINEER</code>, thông tin chung ở <code>EMPLOYEE</code>. Muốn xem kỹ sư cùng tên và địa chỉ, JOIN hai bảng theo <code>Ssn</code>.</p>
+<p><strong>Phù hợp:</strong> total/partial, disjoint/overlap đều được. FK ở subclass bảo đảm một thực thể lớp con <em>phải có</em> thực thể lớp cha. Nhưng các ràng buộc “mỗi employee phải có ít nhất một subclass” hoặc “không thuộc hai subclass cùng lúc” có thể cần cơ chế bổ sung ngoài PK/FK.</p>
+</section><section class="sec" id="s12"><h2>12. 8B — Chỉ giữ các bảng subclass</h2>
+<p>Bỏ bảng superclass, mỗi bảng subclass lưu cả <strong>thuộc tính kế thừa</strong> lẫn <strong>thuộc tính riêng</strong>. Ví dụ VEHICLE được chuyên biệt hóa thành CAR và TRUCK:</p>
+<pre>CAR(<u>Vehicle_id</u>, License_plate_no, Price,
+    Max_speed, No_of_passengers)
+TRUCK(<u>Vehicle_id</u>, License_plate_no, Price,
+      No_of_axles, Tonnage)</pre>
+<p><strong>Chỉ dùng khi specialization là total</strong>: mọi VEHICLE đều phải xuất hiện trong ít nhất một subclass. Nếu partial, những xe chỉ thuộc VEHICLE mà chưa thuộc CAR/TRUCK sẽ <strong>bị mất</strong> khi bỏ bảng cha.</p>
+<p><strong>Khuyến nghị disjoint:</strong> một xe thuộc đúng một bảng nên không cần lặp dữ liệu chung. Nếu overlapping thì một xe có thể xuất hiện ở cả CAR và TRUCK: dữ liệu chung (<code>Price</code>, biển số…) bị nhân đôi và khó cập nhật nhất quán.</p>
+<div class="key"><strong>Phân biệt với 8A:</strong> ở 8A, bảng subclass thường chỉ chứa khóa kế thừa và <em>thuộc tính riêng</em>; ở 8B, bảng subclass chứa <em>cả thuộc tính chung</em> vì không còn bảng superclass.</div>
+</section><section class="sec" id="s13"><h2>13. 8C — Một bảng với một Type</h2>
+<p>Tạo một bảng chứa toàn bộ thuộc tính chung và riêng của các subclass, bổ sung <strong>một thuộc tính phân loại</strong> <code>Type</code> (hoặc <code>Job_type</code>).</p>
+<pre>EMPLOYEE_ALL(<u>Ssn</u>, Fname, Lname, Address,
+             Typing_speed, Tgrade, Eng_type, Job_type)</pre>
+<div class="tbl"><table><thead><tr><th>Ssn</th><th>Job_type</th><th>Typing_speed</th><th>Tgrade</th><th>Eng_type</th></tr></thead><tbody>
+<tr><td>E01</td><td>Secretary</td><td>85</td><td>NULL</td><td>NULL</td></tr>
+<tr><td>E02</td><td>Engineer</td><td>NULL</td><td>NULL</td><td>Software</td></tr>
+<tr><td>E03</td><td>Technician</td><td>NULL</td><td>T2</td><td>NULL</td></tr>
+</tbody></table></div>
+<p><strong>Điều kiện:</strong> specialization phải là <strong>disjoint</strong> vì mỗi bộ chỉ có một <code>Type</code>. Nếu <strong>partial</strong>, Type có thể NULL khi đối tượng chưa thuộc lớp con nào. Nếu <strong>total</strong>, Type cần có giá trị thuộc tập loại đã cho.</p>
+<p><strong>Nhược điểm:</strong> có nhiều NULL ở cột riêng của nhóm không liên quan; cần thêm quy tắc để bảo đảm khi <code>Job_type='Secretary'</code> thì những thuộc tính riêng thích hợp được dùng đúng.</p>
+</section><section class="sec" id="s14"><h2>14. 8D — Một bảng với nhiều cờ subtype</h2>
+<p>Giữ một bảng chung nhưng mỗi subclass có <strong>một cờ Boolean</strong> ghi thực thể có thuộc lớp con tương ứng hay không. Hợp với specialization <strong>overlapping</strong>.</p>
+<pre>PART_ALL(<u>Part_no</u>, Description,
+         Manufacture_date, Batch_no, Drawing_no,
+         Supplier_name, List_price,
+         Mflag, Pflag)</pre>
+<div class="tbl"><table><thead><tr><th>Part_no</th><th>Mflag</th><th>Pflag</th><th>Ý nghĩa</th></tr></thead><tbody>
+<tr><td>P01</td><td>1</td><td>0</td><td>Chỉ MANUFACTURED_PART.</td></tr>
+<tr><td>P02</td><td>0</td><td>1</td><td>Chỉ PURCHASED_PART.</td></tr>
+<tr><td>P03</td><td>1</td><td>1</td><td>Vừa sản xuất vừa mua ngoài — hợp lệ nếu overlapping.</td></tr>
+<tr><td>P04</td><td>0</td><td>0</td><td>Chỉ hợp lệ nếu specialization partial.</td></tr>
+</tbody></table></div>
+<p><strong>Quy tắc cờ:</strong> nếu total, yêu cầu có <strong>ít nhất một</strong> cờ = 1; nếu disjoint, yêu cầu có <strong>nhiều nhất một</strong> cờ = 1. Nếu vừa disjoint vừa total, phải có <strong>đúng một</strong> cờ = 1.</p>
+<p>Khác 8C, một bộ có thể đồng thời là thành viên của nhiều lớp con bằng việc bật nhiều cờ. Nhược điểm tương tự: dễ có nhiều NULL và cần kiểm tra thuộc tính riêng phù hợp cờ subtype.</p>
+</section><section class="sec" id="s15"><h2>15. Shared subclass và đa kế thừa</h2>
+<p>Trong specialization lattice, một subclass có thể là thành viên của <strong>nhiều superclass đồng thời</strong>. Ví dụ <code>STUDENT_ASSISTANT</code> vừa là <code>STUDENT</code> vừa là <code>EMPLOYEE</code>. Bản chất là <strong>giao</strong>, không phải quan hệ n-ngôi và cũng không phải category/union.</p>
+<div class="formula">STUDENT_ASSISTANT ⊆ STUDENT ∩ EMPLOYEE</div>
+<p>Khi các lớp cha dùng một định danh thống nhất, có thể áp dụng các lựa chọn ở bước 8, để cùng một thực thể vẫn giữ được danh tính qua các bảng. Nếu định danh khác nhau hoặc các kiểu nguồn không có một danh tính chung rõ ràng, cần <strong>phân tích lại</strong> mô hình (có thể liên quan category), chứ không tự gộp khóa.</p>
+<div class="key"><strong>Lưu ý:</strong> Shared subclass yêu cầu thực thể <em>đồng thời thuộc tất cả</em> lớp cha trực tiếp; không dùng chữ <code>U</code> để thay cho <em>giao</em> này.</div>
+</section><section class="sec" id="s16"><h2>16. Bước 9 — Category / union type</h2>
+<div class="def"><strong>Category C</strong> là tập con của <strong>hợp</strong> các kiểu thực thể có thể khác nhau: một OWNER có thể là PERSON <em>hoặc</em> BANK <em>hoặc</em> COMPANY. Category khác shared subclass (giao).</div>
+<div class="formula">OWNER ⊆ PERSON ∪ BANK ∪ COMPANY</div>
+<p>Nếu các kiểu nguồn dùng khóa khác nhau (ví dụ PERSON dùng Ssn, BANK dùng Bname, COMPANY dùng Cname), có thể dùng <strong>khóa thay thế <code>Owner_id</code></strong> để nhận dạng thống nhất các owner.</p>
+<pre>OWNER(<u>Owner_id</u>, ...)
+PERSON(<u>Ssn</u>, Name, ..., Owner_id)
+BANK(<u>Bname</u>, Baddress, Owner_id)
+COMPANY(<u>Cname</u>, Caddress, Owner_id)
+
+OWNER_id ở các bảng nguồn có thể là FK → OWNER.Owner_id
+trong phương án này.</pre>
+<p>Trong phương án minh họa, chỉ những PERSON/BANK/COMPANY thực sự là OWNER mới cần liên kết Owner_id; thường phải thiết kế thêm điều kiện để mỗi OWNER có một đối tượng nguồn hợp lệ và không bị nhận nhầm thành nhiều đối tượng không chủ ý. <strong>Khóa thay thế chỉ giải quyết bài toán định danh chung, không tự bảo đảm toàn bộ ngữ nghĩa union.</strong></p>
+<div class="diagram"><svg viewBox="0 0 960 275" role="img" aria-label="Category union PERSON BANK COMPANY nối vòng U, dấu subset cong từ U xuống OWNER, cùng Owner_id">
+<rect x="39" y="26" width="245" height="51" class="tab"/><text x="161" y="47" text-anchor="middle" class="n">PERSON</text><text x="161" y="65" text-anchor="middle" class="s">Ssn → Owner_id</text>
+<rect x="359" y="26" width="245" height="51" class="tab"/><text x="481" y="47" text-anchor="middle" class="n">BANK</text><text x="481" y="65" text-anchor="middle" class="s">Bname → Owner_id</text>
+<rect x="678" y="26" width="245" height="51" class="tab"/><text x="800" y="47" text-anchor="middle" class="n">COMPANY</text><text x="800" y="65" text-anchor="middle" class="s">Cname → Owner_id</text>
+<path d="M161 77 V111 H462 M481 77 V111 M800 77 V111 H500" class="line"/>
+<circle cx="481" cy="132" r="20" fill="white" stroke="#779cb6" stroke-width="2"/><text x="481" y="138" text-anchor="middle" class="n">U</text>
+<path d="M481 152 V206" class="line"/><path d="M464 191 Q481 211 498 191" fill="none" stroke="#5e8bab" stroke-width="2.8"/>
+<rect x="371" y="207" width="220" height="46" class="ink"/><text x="481" y="226" text-anchor="middle" class="n">OWNER</text><text x="481" y="244" text-anchor="middle" class="s">Owner_id (PK)</text>
+</svg></div>
+</section><section class="sec" id="s17"><h2>17. Bài tập đọc nhanh: Quản lý thi tuyển sinh</h2>
+<p>Xét một bài toán quản lý thi tuyển sinh với các kiểu thực thể như <code>THISINH</code>, <code>PHONGTHI</code>, <code>NGANH</code>, <code>TRUONG</code>, <code>KHOITHI</code>, <code>MONTHI</code> và <code>CB_COTHI</code>. Quan trọng là <strong>đọc chính xác (min,max) trên hình trước khi chọn FK</strong>.</p>
+<div class="tbl"><table><thead><tr><th>Liên kết / số lượng thể hiện trên hình</th><th>Ánh xạ hợp lý</th><th>Cái PK/FK chưa tự giải quyết</th></tr></thead><tbody>
+<tr><td><strong>THISINH–THUOC–PHONGTHI</strong>: một thí sinh (1,1) phòng, một phòng (1,30) thí sinh.</td><td>Nếu theo quy tắc này, <code>THISINH.Phongthi_Ma</code> là FK bắt buộc → <code>PHONGTHI.Ma</code>.</td><td><strong>Tối đa 30</strong> thí sinh/phòng và <strong>ít nhất 1</strong> thí sinh/phòng cần kiểm tra thêm.</td></tr>
+<tr><td><strong>THISINH–DANGKI–NGANH</strong>: thí sinh (1,2) ngành, ngành (0,n) thí sinh.</td><td>Bảng mới <code>DANGKI(SBD, MaNganh)</code>, PK ghép và hai FK.</td><td>“Mỗi thí sinh đăng ký 1–2 ngành” cần ràng buộc đếm số hàng theo <code>SBD</code>.</td></tr>
+<tr><td><strong>KHOITHI–CO–MONTHI</strong>: khối thi (3,3) môn, môn thi (1,N) khối.</td><td>Bảng mới <code>KHOI_MONTHI(MaKhoi, MaMon)</code> với hai FK.</td><td>Quy tắc <strong>mỗi khối đúng 3 môn</strong> cần kiểm soát bổ sung.</td></tr>
+</tbody></table></div>
+<p>Trong thực hành, tên quan hệ/thuộc tính đích có thể được đặt phù hợp quy ước, nhưng phải bảo toàn khóa và ràng buộc. Với các liên kết khác trong sơ đồ (ví dụ <code>DIEM</code>, <code>GSAT</code>, <code>COI</code>) cần đọc từng vai trò và participation trực tiếp từ hình lớn; đừng tự suy ra PK khi chưa xác định đầy đủ ngữ nghĩa của sự kiện.</p>
+<div class="warn"><strong>Phân biệt:</strong> ràng buộc “1–30 người/phòng” không có nghĩa một FK tự giới hạn số bản ghi trỏ đến cùng phòng. FK chỉ kiểm tra giá trị tham chiếu tồn tại; giới hạn đếm và điều kiện bắt buộc <em>phía được tham chiếu</em> phải được thực thi riêng.</div>
+</section><section class="sec" id="s18"><h2>18. Bảng tổng hợp: chọn phương án ánh xạ khi thi</h2>
+<div class="tbl"><table><thead><tr><th>Khi thấy trong đề</th><th>Thao tác đầu tiên</th><th>Lỗi phải tránh</th></tr></thead><tbody>
+<tr><td>Thực thể mạnh</td><td>Bảng riêng + thuộc tính đơn + PK.</td><td>Giữ nguyên đa trị trong một ô.</td></tr>
+<tr><td>Thực thể yếu / identifying relationship</td><td>Thêm owner key, PK ghép partial key.</td><td>Chọn partial key một mình.</td></tr>
+<tr><td>1:1</td><td>Chọn nơi đặt FK theo participation; xét UNIQUE.</td><td>Nhầm FK là đã đảm bảo 1:1.</td></tr>
+<tr><td>1:N</td><td>PK phía 1 → FK phía N.</td><td>Đặt FK ở phía 1.</td></tr>
+<tr><td>Recursive 1:N</td><td>FK tự tham chiếu trong cùng bảng, đúng vai trò.</td><td>Nhầm FK supervisor với PK của supervisee.</td></tr>
+<tr><td>M:N</td><td>Tạo bảng liên kết gồm hai FK và thuộc tính liên kết.</td><td>Ép thành FK đơn ở một bảng.</td></tr>
+<tr><td>Multivalued attribute</td><td>Tạo bảng owner key + value.</td><td>Gộp thành chuỗi nhiều giá trị.</td></tr>
+<tr><td>Ternary / n-ary</td><td>Bảng n-ngôi gồm FK tất cả phía.</td><td>Mặc định PK luôn bằng toàn bộ FK.</td></tr>
+<tr><td>EER partial / overlap</td><td>Kiểm tra điều kiện của 8A–8D.</td><td>Dùng 8B cho partial; dùng 8C cho overlap.</td></tr>
+<tr><td>Category có khóa nguồn khác nhau</td><td>Xem xét ID thống nhất cho category.</td><td>Nhầm category là shared subclass.</td></tr>
+</tbody></table></div>
+</section><section class="sec" id="s19"><h2>19. Tự kiểm tra: 15 câu hỏi trọng tâm</h2>
+<p>Mở từng câu sau khi đã tự trả lời; các tình huống có giả định đều được ghi rõ.</p>
+<details class="q"><summary>1. Chuyển một strong entity có Name phức hợp và Phone đa trị như thế nào?</summary><div class="answer">Tạo bảng cho thực thể, giữ các thành phần Name cần lưu; tạo quan hệ riêng cho Phone gồm khóa owner và số điện thoại, với PK phù hợp.</div></details><details class="q"><summary>2. Tại sao DEPENDENT.Name không đủ làm PK?</summary><div class="answer">Tên người phụ thuộc có thể trùng giữa nhiều owner. Dùng PK ghép (Essn, Dependent_name) khi Dependent_name duy nhất trong phạm vi mỗi EMPLOYEE.</div></details><details class="q"><summary>3. Quan hệ MANAGES 1:1, mỗi department phải có manager: Mgr_ssn cần gì?</summary><div class="answer">Nếu đặt Mgr_ssn tại DEPARTMENT: FK → EMPLOYEE.Ssn, NOT NULL (department total) và UNIQUE (mỗi employee quản lý tối đa một department).</div></details><details class="q"><summary>4. DEPARTMENT 1:N EMPLOYEE: FK đặt ở bảng nào?</summary><div class="answer">EMPLOYEE phía N giữ Dno → DEPARTMENT.Dnumber. NOT NULL nếu mỗi employee bắt buộc thuộc một department.</div></details><details class="q"><summary>5. SUPERVISION là quan hệ đệ quy thì có bắt buộc tạo bảng SUPERVISION không?</summary><div class="answer">Không với ánh xạ 1:N chuẩn: đặt EMPLOYEE.Super_ssn tự tham chiếu EMPLOYEE.Ssn; có thể NULL nếu nhân viên chưa có cấp trên.</div></details><details class="q"><summary>6. WORKS_ON M:N tại sao cần bảng riêng?</summary><div class="answer">Một employee tham gia nhiều project và ngược lại. Bảng WORKS_ON(Essn,Pno,Hours) ghi mỗi cặp và thuộc tính Hours; hai FK thường tạo PK ghép nếu mỗi cặp chỉ có một instance.</div></details><details class="q"><summary>7. Thuộc tính Locations của DEPARTMENT có hai giá trị thì lưu sao?</summary><div class="answer">DEPT_LOCATIONS(Dnumber,Dlocation), hai bộ riêng tương ứng hai địa điểm; Dnumber vừa là FK vừa là thành phần PK.</div></details><details class="q"><summary>8. Liên kết ba ngôi SUPPLY có thể thay bằng ba liên kết nhị phân không?</summary><div class="answer">Không nói chung: các cặp tồn tại không xác định đúng tổ hợp (supplier, part, project). Quantity phụ thuộc toàn bộ bộ ba.</div></details><details class="q"><summary>9. TEACHES có CourseId, SemesterId → InstructorId: PK phù hợp?</summary><div class="answer">PK có thể là (CourseId, SemesterId) theo quy tắc một giảng viên tối đa cho mỗi cặp (course, semester); InstructorId vẫn phải lưu làm FK.</div></details><details class="q"><summary>10. 8A khác 8B về lưu thuộc tính chung thế nào?</summary><div class="answer">8A giữ bảng cha C với thuộc tính chung; bảng con chứa PK/FK và thuộc tính riêng. 8B không có bảng cha; từng bảng con chứa cả thuộc tính chung lẫn riêng.</div></details><details class="q"><summary>11. Vì sao 8B không an toàn cho partial specialization?</summary><div class="answer">Có thực thể chỉ thuộc lớp cha và không thuộc subclass nào; khi bỏ bảng cha thì không còn quan hệ nào lưu thực thể đó.</div></details><details class="q"><summary>12. Vì sao 8C không phù hợp overlapping?</summary><div class="answer">Một Type đơn không biểu diễn đồng thời nhiều nhóm con trong cùng specialization. Với overlap, dùng nhiều flag như 8D hoặc bảng con riêng như 8A.</div></details><details class="q"><summary>13. PART có Mflag=Pflag=1 có hợp lệ?</summary><div class="answer">Hợp lệ nếu overlapping cho phép một PART vừa manufactured vừa purchased. Không hợp lệ nếu disjoint.</div></details><details class="q"><summary>14. Shared subclass khác category thế nào?</summary><div class="answer">Shared subclass S là tập con của giao các superclass; category C là tập con của hợp các kiểu nguồn. Ví dụ STUDENT_ASSISTANT vừa STUDENT vừa EMPLOYEE; OWNER là PERSON hoặc BANK hoặc COMPANY.</div></details><details class="q"><summary>15. Phòng thi tối đa 30 thí sinh: có được đảm bảo chỉ bằng FK THISINH.Phongthi_Ma?</summary><div class="answer">Không. FK kiểm tra phòng tồn tại, không giới hạn số thí sinh cùng tham chiếu. Cần kiểm soát số lượng 1–30 bằng ràng buộc nghiệp vụ bổ sung.</div></details>
+<div class="review"><p><strong>Checklist làm bài mapping:</strong> đánh số từng kiểu thực thể, xác định PK và kiểu thuộc tính → đọc tỷ lệ lực lượng cùng participation → chọn vị trí FK hoặc tạo bảng mới → đưa thuộc tính relationship vào đúng nơi → kiểm tra UNIQUE, NULL và khóa ghép → kiểm tra điều kiện EER total/partial, d/o → chỉ rõ ràng buộc nào PK/FK không thể tự biểu diễn.</p></div>
+</section></main></body></html>
